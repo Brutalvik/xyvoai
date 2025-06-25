@@ -48,3 +48,17 @@ git clone https://github.com/Brutalvik/xyvoai.git
 cd xyvoai
 
 ```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+
+```
+
+### 3. Start Dev Server
+
+```bash
+Start the Dev Server
+
+```
