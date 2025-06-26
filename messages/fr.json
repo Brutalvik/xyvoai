@@ -1,6 +1,13 @@
 {
   "hero": {
-    "title": "Réinventez votre façon de travailler avec {brand}",
+    "title": "{verb} votre façon de travailler avec {brand}",
+    "verbs": [
+      "Réinventez",
+      "Accélérez",
+      "Simplifiez",
+      "Transformez",
+      "Libérez"
+    ],
     "subtitle": "Une plateforme de gestion de projet entièrement native à l'IA qui élimine le chaos et amplifie la clarté"
   },
   "cta": {

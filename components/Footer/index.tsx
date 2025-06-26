@@ -6,7 +6,7 @@ export default function Footer() {
   const t = useTranslations("footer");
 
   return (
-    <footer className="w-full border-t border-gray-800 bg-[#0B0F11] py-6 text-center text-sm text-gray-400">
+    <footer className="w-full bg-background py-6 text-center text-sm text-gray-500">
       <div className="container mx-auto px-4">{t("plain")}</div>
     </footer>
   );

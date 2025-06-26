@@ -14,10 +14,18 @@ const config = {
         sans: ["var(--font-sans)"],
         mono: ["var(--font-mono)"],
       },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      colors: {
+        background: "hsl(var(--background))",
+      },
     },
   },
-  darkMode: "class",
-  plugins: [heroui()],
+  darkMode: ["class", "class"],
+  plugins: [heroui(), require("tailwindcss-animate")],
 };
 
 module.exports = config;
