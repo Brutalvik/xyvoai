@@ -16,7 +16,7 @@ import { SearchInput } from "@/components/SearchInput";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { Logo } from "../icons";
+import { Logo } from "@/components/Logo";
 
 export default function Navbar() {
   return (

@@ -28,9 +28,9 @@ export default async function LocaleLayout({ children, params }: Props) {
         )}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <div className="relative flex flex-col min-h-screen">
+          <div className="relative flex flex-col font-sans antialiased">
             <Navbar />
-            <main className="flex-grow container">{children}</main>
+            <main className="w-full max-w-none flex-grow">{children}</main>
             <Footer />
           </div>
         </NextIntlClientProvider>
