@@ -1,9 +1,17 @@
 "use client";
 
+import React from "react";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from "@heroui/react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setLanguage } from "@/store/slices/languageSlice";
 import { useRouter, usePathname } from "next/navigation";
-import { useState } from "react";
+import { selectLanguage } from "@/store/selectors";
 import clsx from "clsx";
 
 const languages = [
@@ -12,51 +20,46 @@ const languages = [
 ];
 
 export default function LanguageSwitch() {
-  const selected = useAppSelector((state) => state.language.selected);
+  const lang = useAppSelector(selectLanguage);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathname = usePathname();
 
-  const [open, setOpen] = useState(false);
+  const selectedKeys = new Set([lang]);
 
-  const handleSelect = (code: "en" | "fr") => {
-    dispatch(setLanguage(code));
-    const newPath = pathname.replace(/^\/(en|fr)/, `/${code}`);
+  const handleSelectionChange = (keys: React.Key[]) => {
+    const selected = keys[0] as "en" | "fr";
+    dispatch(setLanguage(selected));
+    const newPath = pathname.replace(/^\/(en|fr)/, `/${selected}`);
     router.push(newPath);
-    setOpen(false);
   };
 
-  const current = languages.find((l) => l.code === selected)!;
+  const selected = languages.find((l) => l.code === lang)!;
 
   return (
-    <div
-      className="relative inline-block"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
-      <button className="flex items-center gap-1 px-2 py-1 rounded-md hover:bg-default-100">
-        <span className="text-xl">{current.flag}</span>
-        <span className="text-sm font-medium">{current.label}</span>
-      </button>
-
-      {open && (
-        <div className="absolute left-0 mt-2 bg-white dark:bg-neutral-800 rounded shadow z-50">
-          {languages
-            .filter((l) => l.code !== selected)
-            .map((lang) => (
-              <button
-                key={lang.code}
-                onClick={() => handleSelect(lang.code as "en" | "fr")}
-                className={clsx(
-                  "flex items-center gap-1 px-3 py-2 text-sm w-full text-left hover:bg-default-100"
-                )}
-              >
-                <span className="text-xl">{lang.flag}</span>
-                <span>{lang.label}</span>
-              </button>
-            ))}
+    <Dropdown type="menu">
+      <DropdownTrigger>
+        <div className="hover:cursor-pointer">
+          <span className="text-md mr-1">{selected.flag}</span>
+          {selected.label}
         </div>
-      )}
-    </div>
+      </DropdownTrigger>
+      <DropdownMenu
+        aria-label="Language Selection"
+        selectionMode="single"
+        selectedKeys={selectedKeys}
+        onSelectionChange={(keys) => handleSelectionChange(Array.from(keys))}
+        className="w-30"
+      >
+        {languages
+          .filter((l) => l.code !== lang)
+          .map((lang) => (
+            <DropdownItem key={lang.code}>
+              <span className="text-md mr-1">{lang.flag}</span>
+              {lang.label}
+            </DropdownItem>
+          ))}
+      </DropdownMenu>
+    </Dropdown>
   );
 }

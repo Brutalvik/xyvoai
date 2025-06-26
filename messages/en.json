@@ -1,7 +1,7 @@
 {
   "hero": {
-    "title": "{verb} how you work with {brand}",
     "verbs": ["Reinvent", "Accelerate", "Simplify", "Transform", "Unleash"],
+    "headingRest": "how you work with Xyvo AI",
     "subtitle": "A fully AI-native project management platform that eliminates chaos and supercharges clarity"
   },
   "cta": {

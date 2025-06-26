@@ -18,6 +18,7 @@ import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 
 import { Logo } from "@/components/icons";
+import LanguageSwitch from "@/components/LanguageSwitch";
 
 export default function Navbar() {
   return (
@@ -53,6 +54,9 @@ export default function Navbar() {
       >
         <NavbarItem className="hidden lg:flex">
           <SearchInput />
+        </NavbarItem>
+        <NavbarItem>
+          <LanguageSwitch />
         </NavbarItem>
         <NavbarItem>
           <ThemeSwitch />

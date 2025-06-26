@@ -25,7 +25,7 @@ export default function HeroSection() {
             <span className="inline-block">
               <WordRotate words={verbs} className="inline-block text-primary" />
             </span>
-            <span className="inline-block">how you work with Xyvo AI</span>
+            <span className="inline-block">{t("hero.headingRest")}</span>
           </motion.h1>
 
           <motion.p

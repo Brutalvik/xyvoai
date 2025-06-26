@@ -1,7 +1,7 @@
 // app/layout.tsx
 
 import "@/styles/globals.css";
-import { Providers } from "./providers";
+
 import { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
@@ -21,5 +21,5 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <Providers>{children}</Providers>;
+  return <>{children}</>;
 }
