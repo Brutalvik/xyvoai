@@ -17,7 +17,7 @@ const config = {
     },
   },
   darkMode: "class",
-  plugins: [heroui(), require("tailwind-scrollbar")],
+  plugins: [heroui()],
 };
 
 module.exports = config;
