@@ -1,14 +1,18 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
 import { Rocket } from "lucide-react";
 import { Button } from "@heroui/button";
-import { motion } from "framer-motion";
 import Image from "next/image";
 import { BackgroundLines } from "@/components/ui/BackgroundLines";
 
 export default function HeroSection() {
+  const t = useTranslations();
+
   return (
     <BackgroundLines>
       <section className="min-h-screen px-6 lg:px-24 py-12 flex flex-col-reverse lg:flex-row items-center justify-between">
-        {/* Left Content */}
         <div className="text-center lg:text-left max-w-xl flex-1">
           <motion.h1
             className="text-5xl font-bold leading-tight"
@@ -16,8 +20,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            Reinvent How You Work with{" "}
-            <span className="text-primary">Xyvo AI</span>
+            {t("hero.title", { brand: "Xyvo AI" })}
           </motion.h1>
           <motion.p
             className="mt-6 text-lg text-default-500"
@@ -25,8 +28,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            A fully AI-native project management platform that eliminates chaos
-            and supercharges clarity.
+            {t("hero.subtitle")}
           </motion.p>
           <motion.div
             className="mt-10 flex gap-4 flex-wrap justify-center lg:justify-start"
@@ -36,15 +38,14 @@ export default function HeroSection() {
           >
             <Button variant="solid" size="lg">
               <Rocket className="w-5 h-5 mr-2" />
-              Get Started
+              {t("cta.getStarted")}
             </Button>
             <Button variant="ghost" size="lg">
-              Explore Features
+              {t("cta.explore")}
             </Button>
           </motion.div>
         </div>
 
-        {/* Right Image */}
         <motion.div
           className="flex-1 max-w-2xl w-full mb-12 lg:mb-0"
           initial={{ opacity: 0, scale: 0.95 }}
