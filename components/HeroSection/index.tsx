@@ -36,11 +36,11 @@ export default function HeroSection() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.6 }}
           >
-            <Button variant="solid" size="lg">
+            <Button variant="solid" color="primary" size="lg">
               <Rocket className="w-5 h-5 mr-2" />
               {t("cta.getStarted")}
             </Button>
-            <Button variant="ghost" size="lg">
+            <Button variant="solid" size="lg">
               {t("cta.explore")}
             </Button>
           </motion.div>

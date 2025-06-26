@@ -1,6 +1,6 @@
 import { Input } from "@heroui/input";
 import { Kbd } from "@heroui/kbd";
-import { SearchIcon } from "lucide-react";
+import { SearchIcon } from "@/components/icons";
 import React from "react";
 
 export const SearchInput = () => {
