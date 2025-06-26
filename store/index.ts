@@ -11,12 +11,16 @@ import {
   REGISTER,
 } from "redux-persist";
 
-//REDUCERS
-import { languageSlice } from "@/store/slices/languageSlice";
+// default import
+import languageReducer from "@/store/slices/languageSlice";
 
 const rootReducer = combineReducers({
-  language: languageSlice,
+  language: languageReducer,
+  // other reducers...
 });
+
+export type RootState = ReturnType<typeof rootReducer>;
+export type AppDispatch = typeof store.dispatch;
 
 const persistConfig = {
   key: "root",
@@ -38,6 +42,3 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
