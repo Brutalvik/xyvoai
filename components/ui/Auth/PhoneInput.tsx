@@ -3,6 +3,7 @@
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/react";
 import { useState, useEffect, ChangeEvent, FocusEvent } from "react";
+import { useTranslations } from "next-intl";
 import countryCodes from "@/chunks/countryCodes.json";
 import { AnimatePresence, motion } from "framer-motion";
 import { getFlagFromPhone } from "@/utils";
@@ -29,8 +30,8 @@ interface PhoneInputProps {
 export function PhoneInput({
   id,
   name,
-  label = "Phone Number",
-  placeholder = "e.g., 780 123 4567",
+  label,
+  placeholder,
   value,
   onChange,
   onBlur,
@@ -40,27 +41,27 @@ export function PhoneInput({
   setFormikFieldValue,
   formikCountryCode,
 }: PhoneInputProps) {
-  const [selectedCode, setSelectedCode] = useState(formikCountryCode);
+  const t = useTranslations("phone");
+  const [selectedId, setSelectedId] = useState("1");
   const [flag, setFlag] = useState("🇺🇸");
 
   useEffect(() => {
-    setSelectedCode(formikCountryCode);
-    const initialCountry = countryCodes.find(
-      (c) => c.dial_code === formikCountryCode
-    );
-    if (initialCountry) {
-      setFlag(initialCountry.flag);
+    const matched = countryCodes.find((c) => c.dial_code === formikCountryCode);
+    if (matched) {
+      setSelectedId(matched.id);
+      setFlag(matched.flag);
     } else {
+      setSelectedId("1");
       setFlag("🌐");
     }
   }, [formikCountryCode]);
 
-  const handleCodeChange = (code: string) => {
-    setSelectedCode(code);
-    setFormikFieldValue("countryCode", code);
-    const selected = countryCodes.find((c) => c.dial_code === code);
+  const handleCodeChange = (id: string) => {
+    setSelectedId(id);
+    const selected = countryCodes.find((c) => c.id === id);
     if (selected) {
       setFlag(selected.flag);
+      setFormikFieldValue("countryCode", selected.dial_code);
     } else {
       setFlag("🌐");
     }
@@ -68,10 +69,9 @@ export function PhoneInput({
 
   const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange(e);
-
-    const phone = e.target.value;
-    const digits = phone.replace(/\D/g, "");
-    if (selectedCode === "+1" && digits.length >= 3) {
+    const digits = e.target.value.replace(/\D/g, "");
+    const current = countryCodes.find((c) => c.id === selectedId);
+    if (current?.dial_code === "+1" && digits.length >= 3) {
       const dynamicFlag = getFlagFromPhone(digits);
       if (dynamicFlag && dynamicFlag !== flag) {
         setFlag(dynamicFlag);
@@ -98,17 +98,20 @@ export function PhoneInput({
           variant="bordered"
           size="md"
           className="w-full"
-          selectedKeys={new Set([selectedCode])}
+          selectedKeys={new Set([selectedId])}
           onSelectionChange={(keys) => {
-            const code = String(Array.from(keys)[0]);
-            handleCodeChange(code);
+            const id = String(Array.from(keys)[0]);
+            handleCodeChange(id);
           }}
-          renderValue={() => <span>{selectedCode}</span>}
-          aria-label="Country Code"
+          renderValue={() => {
+            const selected = countryCodes.find((c) => c.id === selectedId);
+            return <span>{selected?.dial_code || ""}</span>;
+          }}
+          aria-label={t("countryCode")}
         >
           {countryCodes.map((country) =>
             country.code === "CA" ? null : (
-              <SelectItem key={country.dial_code} textValue={country.dial_code}>
+              <SelectItem key={country.id} textValue={country.dial_code}>
                 <div className="flex items-center gap-2">
                   <span className="text-xs">{country.code}</span>
                   <span>{country.dial_code}</span>
@@ -119,9 +122,10 @@ export function PhoneInput({
         </Select>
       </div>
       <Input
-        id="phone"
-        name="phone"
-        label="Phone"
+        id={id}
+        name={name}
+        label={label || t("label")}
+        placeholder={placeholder || t("placeholder")}
         variant="bordered"
         value={value}
         onChange={handlePhoneChange}
@@ -129,7 +133,7 @@ export function PhoneInput({
         isInvalid={isInvalid}
         errorMessage={errorMessage}
         className="w-full sm:w-2/3"
-        size="sm"
+        size={size}
       />
     </div>
   );

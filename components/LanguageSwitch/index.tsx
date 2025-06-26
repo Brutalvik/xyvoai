@@ -6,7 +6,6 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Button,
 } from "@heroui/react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setLanguage } from "@/store/slices/languageSlice";

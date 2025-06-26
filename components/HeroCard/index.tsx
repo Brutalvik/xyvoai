@@ -2,8 +2,11 @@
 
 import React from "react";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3DCard";
+import { useTranslations } from "next-intl";
 
 export default function ThreeDCardDemo() {
+  const t = useTranslations("card");
+
   return (
     <CardContainer className="inter-var select-none">
       <CardBody
@@ -12,15 +15,17 @@ export default function ThreeDCardDemo() {
              shadow-black/10 hover:shadow-xl dark:hover:shadow-blue-400/20"
       >
         <CardItem translateZ="50" className="text-xl font-bold text-blue-500">
-          Smarter Sprints, Powered by AI
+          {t("title")}
         </CardItem>
+
         <CardItem
           as="p"
           translateZ="60"
           className="text-default-200 text-sm max-w-sm mt-2 "
         >
-          Track velocity, burndown, and blockers with intelligent automation.
+          {t("subtitle")}
         </CardItem>
+
         <CardItem translateZ="100" className="w-full mt-4">
           <img
             src="/tracker.png"
@@ -30,20 +35,14 @@ export default function ThreeDCardDemo() {
             alt="thumbnail"
           />
         </CardItem>
+
         <div className="flex justify-between items-center mt-20">
           <CardItem
             translateZ={20}
             className="px-4 py-2 rounded-xl text-xs font-normal text-default-50 hover:cursor-pointer"
           >
-            Try now →
+            {t("cta")}
           </CardItem>
-          {/* <CardItem
-            translateZ={20}
-            as="button"
-            className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
-          >
-            Sign up
-          </CardItem> */}
         </div>
       </CardBody>
     </CardContainer>

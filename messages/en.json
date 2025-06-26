@@ -8,6 +8,11 @@
     "getStarted": "Get Started",
     "explore": "Explore Features"
   },
+  "card": {
+    "title": "Smarter Sprints, Powered by AI",
+    "subtitle": "Track velocity, burndown, and blockers with intelligent automation.",
+    "cta": "Try now →"
+  },
   "footer": {
     "plain": "© 2025 Xyvo — All rights reserved."
   },
@@ -20,5 +25,33 @@
       "lowercase": "1 lowercase",
       "number": "1 number"
     }
+  },
+  "password": {
+    "label": "Password",
+    "placeholder": "At least 8 characters",
+    "error": "Please enter a valid password"
+  },
+  "phone": {
+    "label": "Phone Number",
+    "placeholder": "e.g., 780 123 4567",
+    "countryCode": "Country Code"
+  },
+
+  "register": {
+    "title": "Sign up for XYVO",
+    "name": "Your name",
+    "email": "Email",
+    "continue": "Continue",
+    "registering": "Registering...",
+    "haveAccount": "Already have an account?",
+    "signin": "Sign in"
+  },
+  "validation": {
+    "required": "Required",
+    "invalidEmail": "Invalid email",
+    "nameShort": "Too short",
+    "phoneInvalid": "Please enter a valid phone number",
+    "passwordLength": "Password must be at least 8 characters",
+    "passwordPattern": "Password must contain at least one uppercase letter, one lowercase letter, and one number."
   }
 }

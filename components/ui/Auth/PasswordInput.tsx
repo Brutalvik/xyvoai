@@ -3,6 +3,7 @@
 import { Input } from "@heroui/input";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface PasswordInputProps {
   id: string;
@@ -20,8 +21,8 @@ interface PasswordInputProps {
 export function PasswordInput({
   id,
   name,
-  label = "Password",
-  placeholder = "At least 8 characters",
+  label,
+  placeholder,
   value,
   onChange,
   onBlur,
@@ -29,38 +30,38 @@ export function PasswordInput({
   errorMessage,
   size = "sm",
 }: PasswordInputProps) {
+  const t = useTranslations("password");
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => setIsPasswordVisible((prev) => !prev);
 
   return (
-    <>
-      <Input
-        id={id}
-        name={name}
-        type={isPasswordVisible ? "text" : "password"}
-        label={label}
-        placeholder={placeholder}
-        variant="bordered"
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        isInvalid={isInvalid}
-        errorMessage={errorMessage}
-        size={size}
-        endContent={
-          <button
-            type="button"
-            onClick={togglePasswordVisibility}
-            className="h-full flex items-center pr-2"
-          >
-            {isPasswordVisible ? (
-              <FaEyeSlash className="text-lg text-default-400 pointer-events-none" />
-            ) : (
-              <FaEye className="text-lg text-default-400 pointer-events-none" />
-            )}
-          </button>
-        }
-      />
-    </>
+    <Input
+      id={id}
+      name={name}
+      type={isPasswordVisible ? "text" : "password"}
+      label={label || t("label")}
+      placeholder={placeholder || t("placeholder")}
+      variant="bordered"
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      isInvalid={isInvalid}
+      errorMessage={errorMessage || t("error")}
+      size={size}
+      endContent={
+        <button
+          type="button"
+          onClick={togglePasswordVisibility}
+          className="h-full flex items-center pr-2"
+        >
+          {isPasswordVisible ? (
+            <FaEyeSlash className="text-lg text-default-400 pointer-events-none" />
+          ) : (
+            <FaEye className="text-lg text-default-400 pointer-events-none" />
+          )}
+        </button>
+      }
+    />
   );
 }

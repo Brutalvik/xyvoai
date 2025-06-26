@@ -14,14 +14,17 @@ import { PhoneInput } from "@/components/ui/Auth/PhoneInput";
 import { PasswordInput } from "@/components/ui/Auth/PasswordInput";
 import PasswordTooltip from "@/components/ui/Auth/PasswordTooltip";
 import { passwordRules } from "@/utils";
-// import { setUser } from "@/store/slices/userSlice";
 import { useAppDispatch } from "@/store/hooks";
+import { useTranslations } from "next-intl";
 
 export default function Register() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
   const prefilledEmail = searchParams?.get("email") || "";
+
+  const t = useTranslations("register");
+  const v = useTranslations("validation");
 
   const formik = useFormik({
     initialValues: {
@@ -32,54 +35,16 @@ export default function Register() {
       countryCode: "+1",
     },
     validationSchema: Yup.object({
-      email: Yup.string().email("Invalid email").required("Required"),
-      name: Yup.string().min(2, "Too short").required("Required"),
-      phone: Yup.string()
-        .min(10, "Please enter a valid phone number")
-        .required("Required"),
+      email: Yup.string().email(v("invalidEmail")).required(v("required")),
+      name: Yup.string().min(2, v("nameShort")).required(v("required")),
+      phone: Yup.string().min(10, v("phoneInvalid")).required(v("required")),
       password: Yup.string()
-        .min(8, "Password must be at least 8 characters")
-        .matches(passwordRules, {
-          message:
-            "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
-        })
-        .required("Required"),
+        .min(8, v("passwordLength"))
+        .matches(passwordRules, { message: v("passwordPattern") })
+        .required(v("required")),
     }),
     onSubmit: async (values, { setSubmitting }) => {
-      // try {
-      //   const res = await fetch(`${CDN.userAuthApi}/auth/register`, {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({
-      //       email: values.email,
-      //       phone: values.countryCode + values.phone,
-      //       password: values.password,
-      //       name: values.name,
-      //     }),
-      //   });
-      //   if (res.ok) {
-      //     const { user } = await res.json();
-      //     dispatch(setUser(user));
-      //     router.push("/");
-      //   } else {
-      //     const errorData = await res.json();
-      //     addToast({
-      //       description:
-      //         errorData.message || "Registration failed. Please try again.",
-      //       color: "danger",
-      //       timeout: 5000,
-      //     });
-      //   }
-      // } catch (err) {
-      //   console.error("Client-side registration error:", err);
-      //   addToast({
-      //     description: "An unexpected error occurred. Please try again later.",
-      //     color: "danger",
-      //     timeout: 3000,
-      //   });
-      // } finally {
-      //   setSubmitting(false);
-      // }
+      // Implementation omitted
     },
   });
 
@@ -99,12 +64,12 @@ export default function Register() {
         </div>
       ) : (
         <AuthFormLayout
-          title="Sign up for XYVO"
+          title={t("title")}
           subtitle=""
           alternativeAuthLink={{
-            text: "Already have an account?",
+            text: t("haveAccount"),
             href: "/auth",
-            linkText: "Sign in",
+            linkText: t("signin"),
           }}
           showSocials={true}
         >
@@ -113,7 +78,7 @@ export default function Register() {
               <Input
                 id="name"
                 name="name"
-                label="Your name"
+                label={t("name")}
                 type="text"
                 variant="bordered"
                 value={formik.values.name}
@@ -129,7 +94,7 @@ export default function Register() {
                 id="email"
                 name="email"
                 type="email"
-                label="Email"
+                label={t("email")}
                 variant="bordered"
                 value={formik.values.email}
                 onChange={formik.handleChange}
@@ -176,7 +141,7 @@ export default function Register() {
 
             <div className="flex flex-col space-y-1 mt-4">
               {formik.isSubmitting ? (
-                <p>Registering...</p>
+                <p>{t("registering")}</p>
               ) : (
                 <Button
                   type="submit"
@@ -185,7 +150,7 @@ export default function Register() {
                   isDisabled={formik.isSubmitting}
                   className="w-full"
                 >
-                  Continue
+                  {t("continue")}
                 </Button>
               )}
             </div>

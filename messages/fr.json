@@ -14,6 +14,11 @@
     "getStarted": "Commencer",
     "explore": "Explorer les fonctionnalités"
   },
+  "card": {
+    "title": "Des sprints plus intelligents grâce à l'IA",
+    "subtitle": "Suivez la vélocité, l'avancement et les blocages avec une automatisation intelligente.",
+    "cta": "Essayez maintenant →"
+  },
   "footer": {
     "plain": "© 2025 Xyvo — Tous droits réservés."
   },
@@ -26,5 +31,32 @@
       "lowercase": "1 minuscule",
       "number": "1 chiffre"
     }
+  },
+  "password": {
+    "label": "Mot de passe",
+    "placeholder": "Au moins 8 caractères",
+    "error": "Veuillez entrer un mot de passe valide"
+  },
+  "phone": {
+    "label": "Numéro de téléphone",
+    "placeholder": "ex. : 780 123 4567",
+    "countryCode": "Indicatif du pays"
+  },
+  "register": {
+    "title": "Inscrivez-vous à XYVO",
+    "name": "Votre nom",
+    "email": "Courriel",
+    "continue": "Continuer",
+    "registering": "Inscription en cours...",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "signin": "Se connecter"
+  },
+  "validation": {
+    "required": "Obligatoire",
+    "invalidEmail": "Courriel invalide",
+    "nameShort": "Trop court",
+    "phoneInvalid": "Veuillez entrer un numéro de téléphone valide",
+    "passwordLength": "Le mot de passe doit contenir au moins 8 caractères",
+    "passwordPattern": "Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre."
   }
 }
