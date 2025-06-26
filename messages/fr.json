@@ -16,5 +16,15 @@
   },
   "footer": {
     "plain": "© 2025 Xyvo — Tous droits réservés."
+  },
+  "auth": {
+    "password": {
+      "instructionsLabel": "Instructions de mot de passe",
+      "minCharacters": "Au moins 8 caractères",
+      "specialCharacter": "1 caractère spécial",
+      "uppercase": "1 majuscule",
+      "lowercase": "1 minuscule",
+      "number": "1 chiffre"
+    }
   }
 }
