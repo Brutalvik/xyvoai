@@ -53,5 +53,24 @@
     "phoneInvalid": "Please enter a valid phone number",
     "passwordLength": "Password must be at least 8 characters",
     "passwordPattern": "Password must contain at least one uppercase letter, one lowercase letter, and one number."
+  },
+  "HowItWorks": {
+    "title": "How Xyvo Supercharges Your Projects",
+    "taskCreation": {
+      "title": "AI-Powered Task Creation",
+      "description": "Turn plain language into organized, actionable tasks instantly."
+    },
+    "smartScheduling": {
+      "title": "Smart Scheduling Assistant",
+      "description": "Never miss a meeting. Xyvo syncs your calendar and finds ideal times."
+    },
+    "progressTracking": {
+      "title": "Real-Time Progress Tracking",
+      "description": "Visualize your team’s momentum across tasks and timelines."
+    },
+    "multilingual": {
+      "title": "Multilingual Collaboration",
+      "description": "Work seamlessly in English or French with automatic translation."
+    }
   }
 }

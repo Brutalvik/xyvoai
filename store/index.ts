@@ -26,7 +26,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage: storageSession,
-  whitelist: ["user", "auth", "language"],
+  whitelist: ["language"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
