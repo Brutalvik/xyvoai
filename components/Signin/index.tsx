@@ -54,7 +54,7 @@ export default function Signin() {
           color: "success",
           icon: <HiBadgeCheck />,
         });
-        router.push("/dashboard/individual/landing");
+        router.push("/dashboard/individual/create-project");
       } catch (error: any) {
         addToast({
           title: t("errorTitle"),
