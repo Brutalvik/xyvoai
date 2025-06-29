@@ -72,5 +72,28 @@
       "title": "Multilingual Collaboration",
       "description": "Work seamlessly in English or French with automatic translation."
     }
+  },
+  "AutomationSteps": {
+    "title": "AI Workflow Automation",
+    "input": {
+      "badge": "Listening…",
+      "fakeUI": "\"Plan team sync for next week\"..."
+    },
+    "taskGen": {
+      "badge": "Tasks Generated",
+      "fakeUI": "📌 Team Sync — Monday 10am\n📌 Design Review — Tuesday 2pm"
+    },
+    "calendar": {
+      "badge": "Auto-Scheduling",
+      "fakeUI": "📅 Calendar slot booked: 10am Monday"
+    },
+    "assign": {
+      "badge": "Shared with Team",
+      "fakeUI": "👤 Assigned to: Alex, Priya"
+    },
+    "summary": {
+      "badge": "AI Summary",
+      "fakeUI": "📝 Summary: Weekly planning initiated with tasks and timeline."
+    }
   }
 }

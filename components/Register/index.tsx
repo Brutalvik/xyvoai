@@ -44,7 +44,46 @@ export default function Register() {
         .required(v("required")),
     }),
     onSubmit: async (values, { setSubmitting }) => {
-      // Implementation omitted
+      try {
+        const res = await fetch(
+          "https://dkft2r7o6f.execute-api.us-east-2.amazonaws.com/live/auth/register",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: values.name,
+              email: values.email,
+              phone: values.phone,
+              password: values.password,
+              countryCode: values.countryCode,
+            }),
+          }
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data?.message || "Registration failed.");
+        }
+
+        addToast({
+          title: t("successTitle"),
+          description: t("successMessage"),
+          color: "success",
+        });
+
+        router.push("/auth?registered=1");
+      } catch (error: any) {
+        addToast({
+          title: t("errorTitle"),
+          description: error.message || t("errorMessage"),
+          color: "danger",
+        });
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 

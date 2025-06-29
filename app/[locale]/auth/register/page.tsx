@@ -1,6 +1,6 @@
 "use client";
 
-import RegisterCard from "@/components/Register";
+import Register from "@/components/Register";
 
 export default function RegisterPage() {
   return (
@@ -10,7 +10,7 @@ export default function RegisterPage() {
       }
     >
       <div className="w-full lg:w-1/2 flex items-center justify-center">
-        <RegisterCard />
+        <Register />
       </div>
     </div>
   );

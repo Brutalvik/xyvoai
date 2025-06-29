@@ -77,5 +77,28 @@
       "title": "Collaboration multilingue",
       "description": "Travaillez en anglais ou en français grâce à la traduction automatique."
     }
+  },
+  "AutomationSteps": {
+    "title": "Automatisation du flux de travail par l'IA",
+    "input": {
+      "badge": "Écoute en cours…",
+      "fakeUI": "\"Planifier une réunion d'équipe pour la semaine prochaine\"..."
+    },
+    "taskGen": {
+      "badge": "Tâches générées",
+      "fakeUI": "📌 Réunion d'équipe — Lundi 10h\n📌 Revue de conception — Mardi 14h"
+    },
+    "calendar": {
+      "badge": "Planification automatique",
+      "fakeUI": "📅 Créneau réservé : Lundi 10h"
+    },
+    "assign": {
+      "badge": "Partagé avec l’équipe",
+      "fakeUI": "👤 Assigné à : Alex, Priya"
+    },
+    "summary": {
+      "badge": "Résumé par l'IA",
+      "fakeUI": "📝 Résumé : Planification hebdomadaire initiée avec tâches et calendrier."
+    }
   }
 }

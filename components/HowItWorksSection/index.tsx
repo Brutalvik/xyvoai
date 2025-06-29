@@ -58,7 +58,7 @@ export default function HowItWorksSection() {
                     <div className="bg-primary/20 rounded-full p-4 shadow-inner">
                       <Icon className="w-8 h-8 text-primary" />
                     </div>
-                    <h3 className="text-xl font-semibold text-white leading-snug">
+                    <h3 className="text-xl font-semibold text-default-700 leading-snug">
                       {t(`${feature.key}.title`)}
                     </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
