@@ -2,6 +2,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { CDN } from "@/config";
 import { clearUser, setUser } from "@/store/slices/userSlice";
+import { User } from "@/types";
 
 type SignupForm = {
   name: string;
@@ -99,11 +100,39 @@ export const signinThunk = createAsyncThunk(
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || "Sign in failed");
+      console.log("DATA : ", data);
 
-      return data;
+      if (!res.ok || !data?.isLoggedIn) {
+        throw new Error(data?.message || "Sign in failed");
+      }
+
+      return { isLoggedIn: true };
     } catch (error: any) {
-      return rejectWithValue(error.message || "Sign in failed");
+      return rejectWithValue(error?.message || "Sign in failed");
+    }
+  }
+);
+
+//fetch user data after successful login
+
+export const meThunk = createAsyncThunk(
+  "auth/me",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await fetch(`${CDN.userAuthUrl}/me`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data?.isLoggedIn || !data?.user) {
+        throw new Error(data?.message || "Failed to fetch user");
+      }
+
+      return data.user as User;
+    } catch (error: any) {
+      return rejectWithValue(error?.message || "Failed to fetch user");
     }
   }
 );

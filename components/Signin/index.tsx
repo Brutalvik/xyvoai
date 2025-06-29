@@ -18,7 +18,7 @@ import { PasswordInput } from "@/components/ui/Auth/PasswordInput";
 import PasswordTooltip from "@/components/ui/Auth/PasswordTooltip";
 import { passwordRules } from "@/utils";
 import { useAppDispatch } from "@/store/hooks";
-import { signinThunk } from "@/store/auth/thunks";
+import { meThunk, signinThunk } from "@/store/auth/thunks";
 
 export default function Signin() {
   const dispatch = useAppDispatch();
@@ -45,6 +45,7 @@ export default function Signin() {
       setLoading(true);
       try {
         await dispatch(signinThunk(values)).unwrap();
+        await dispatch(meThunk()).unwrap();
         addToast({
           title: t("successTitle"),
           description: t("successMessage"),
@@ -74,6 +75,10 @@ export default function Signin() {
         color: "warning",
         icon: <HiExclamation />,
       });
+
+      const url = new URL(window.location.href);
+      url.searchParams.delete("redirected");
+      window.history.replaceState({}, "", url.toString());
     }
   }, [searchParams]);
 

@@ -19,6 +19,17 @@
     "subtitle": "Suivez la vélocité, l'avancement et les blocages avec une automatisation intelligente.",
     "cta": "Essayez maintenant →"
   },
+  "Navbar": {
+    "signIn": "Connexion",
+    "signUp": "Inscription",
+    "signOut": "Déconnexion",
+    "welcome": "Bienvenue",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "accountType": "Type de compte",
+    "signedOutTitle": "Déconnecté",
+    "signedOutDescription": "Vous avez été déconnecté avec succès."
+  },
   "footer": {
     "plain": "© 2025 Xyvo — Tous droits réservés.",
     "privacy": "Politique de confidentialité",

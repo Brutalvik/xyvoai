@@ -3,8 +3,6 @@
 import {
   Navbar as HeroUINavbar,
   NavbarContent,
-  NavbarMenu,
-  NavbarMenuToggle,
   NavbarBrand,
   NavbarItem,
 } from "@heroui/navbar";
@@ -18,19 +16,22 @@ import {
   DrawerFooter,
   useDisclosure,
 } from "@heroui/react";
-import { Link } from "@heroui/link";
 import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
+import { usePathname, useRouter } from "next/navigation";
+import { useMemo } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { selectUser, isLoggedIn } from "@/store/selectors";
+import { signoutThunk } from "@/store/auth/thunks";
 import { SearchInput } from "@/components/SearchInput";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Logo } from "@/components/icons";
 import LanguageSwitch from "@/components/LanguageSwitch";
-import { useAppSelector } from "@/store/hooks";
-import { useLocale } from "next-intl";
-import { selectUser, isLoggedIn } from "@/store/selectors/index";
-import { useMemo } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { addToast } from "@heroui/react";
+import { HiInformationCircle } from "react-icons/hi";
 
 function getInitial(name: string) {
   return name?.charAt(0)?.toUpperCase() || "?";
@@ -58,9 +59,13 @@ function getUserColor(seed: string): string {
 }
 
 export default function Navbar() {
+  const t = useTranslations("Navbar");
   const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
   const user = useAppSelector(selectUser);
   const loggedIn = useAppSelector(isLoggedIn);
+  const dispatch = useAppDispatch();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const avatarBg = useMemo(() => {
@@ -70,6 +75,9 @@ export default function Navbar() {
   const avatarInitial = useMemo(() => {
     return getInitial(user?.name || "");
   }, [user?.name]);
+
+  const isSignInPage = pathname === `/${locale}/auth/signin`;
+  const isSignUpPage = pathname === `/${locale}/auth/signup`;
 
   return (
     <HeroUINavbar maxWidth="full" position="sticky">
@@ -113,54 +121,70 @@ export default function Navbar() {
 
         {!loggedIn ? (
           <>
-            <NavbarItem>
-              <NextLink href={`/${locale}/auth/signup`}>
-                <Button size="sm" variant="ghost" color="primary">
-                  Sign Up
-                </Button>
-              </NextLink>
-            </NavbarItem>
-            <NavbarItem>
-              <NextLink href={`/${locale}/auth/signin`}>
-                <Button size="sm" variant="flat" color="primary">
-                  Sign In
-                </Button>
-              </NextLink>
-            </NavbarItem>
+            {!isSignUpPage && (
+              <NavbarItem>
+                <NextLink href={`/${locale}/auth/signup`}>
+                  <Button size="sm" variant="ghost" color="primary">
+                    {t("signUp")}
+                  </Button>
+                </NextLink>
+              </NavbarItem>
+            )}
+            {!isSignInPage && (
+              <NavbarItem>
+                <NextLink href={`/${locale}/auth/signin`}>
+                  <Button size="sm" variant="flat" color="primary">
+                    {t("signIn")}
+                  </Button>
+                </NextLink>
+              </NavbarItem>
+            )}
           </>
         ) : (
           <NavbarItem>
             <Avatar
               size="sm"
+              src={user?.image || undefined}
               className={clsx("text-white cursor-pointer", avatarBg)}
               onClick={onOpen}
             >
-              {avatarInitial}
+              {!user?.image && avatarInitial}
             </Avatar>
             <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
               <DrawerContent>
                 {(onClose) => (
                   <>
                     <DrawerHeader className="flex flex-col gap-1">
-                      Welcome, {user?.name}
+                      {t("welcome")}, {user?.name}
                     </DrawerHeader>
                     <DrawerBody>
-                      <p>Email: {user?.email}</p>
-                      <p>Phone: {user?.phone}</p>
-                      <p>Account Type: {user?.accountType}</p>
+                      <p>
+                        {t("email")}: {user?.email}
+                      </p>
+                      <p>
+                        {t("phone")}: {user?.phone}
+                      </p>
+                      <p>
+                        {t("accountType")}: {user?.accountType}
+                      </p>
                     </DrawerBody>
-                    <DrawerFooter>
-                      <Button color="danger" variant="light" onPress={onClose}>
-                        Close
-                      </Button>
+                    <DrawerFooter className="justify-end">
                       <Button
-                        color="primary"
-                        onPress={() => {
-                          // TODO: sign out logic
+                        color="danger"
+                        variant="solid"
+                        onPress={async () => {
+                          await dispatch(signoutThunk());
+                          router.push("/");
+                          addToast({
+                            title: t("signedOutTitle"),
+                            description: t("signedOutDescription"),
+                            color: "success",
+                            icon: <HiInformationCircle />,
+                          });
                           onClose();
                         }}
                       >
-                        Sign Out
+                        {t("signOut")}
                       </Button>
                     </DrawerFooter>
                   </>

@@ -13,6 +13,17 @@
     "subtitle": "Track velocity, burndown, and blockers with intelligent automation.",
     "cta": "Try now →"
   },
+  "Navbar": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "welcome": "Welcome",
+    "email": "Email",
+    "phone": "Phone",
+    "accountType": "Account Type",
+    "signedOutTitle": "Signed Out",
+    "signedOutDescription": "You have been signed out successfully."
+  },
   "footer": {
     "plain": "© 2025 Xyvo — All rights reserved.",
     "privacy": "Privacy Policy",
