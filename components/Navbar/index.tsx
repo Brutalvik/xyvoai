@@ -123,6 +123,20 @@ export default function Navbar() {
           <ThemeSwitch />
         </NavbarItem>
 
+        {loggedIn && user && (
+          <NavbarItem className="hidden sm:flex">
+            <Avatar
+              size="sm"
+              src={user?.image || undefined}
+              className={clsx("text-white cursor-pointer", avatarBg)}
+              onClick={onOpen}
+              name={!user?.image ? avatarInitial : ""}
+            >
+              {!user?.image && avatarInitial}
+            </Avatar>
+          </NavbarItem>
+        )}
+
         {!loggedIn && (
           <>
             {!isSignUpPage && (
@@ -145,68 +159,10 @@ export default function Navbar() {
             )}
           </>
         )}
-
-        {loggedIn && user && (
-          <NavbarItem>
-            <Avatar
-              size="sm"
-              src={user?.image || undefined}
-              className={clsx("text-white cursor-pointer", avatarBg)}
-              onClick={onOpen}
-              name={!user?.image ? avatarInitial : ""}
-            >
-              {!user?.image && avatarInitial}
-            </Avatar>
-            <Drawer
-              isOpen={isOpen}
-              onOpenChange={onOpenChange}
-              placement="right"
-            >
-              <DrawerContent>
-                {(onClose) => (
-                  <>
-                    <DrawerHeader className="flex flex-col gap-1">
-                      <div className="flex flex-col">
-                        <p>
-                          {t("welcome")}, {_.capitalize(user?.name)}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {_.capitalize(t(user?.role ?? "Individual"))}
-                        </p>
-                      </div>
-                    </DrawerHeader>
-                    <DrawerBody></DrawerBody>
-                    <DrawerFooter className="justify-end">
-                      <Button
-                        color="danger"
-                        variant="solid"
-                        onPress={async () => {
-                          await dispatch(signoutThunk());
-                          router.push("/");
-                          addToast({
-                            title: t("signedOutTitle"),
-                            description: t("signedOutDescription"),
-                            color: "success",
-                            icon: <HiInformationCircle />,
-                          });
-                          onClose();
-                        }}
-                      >
-                        {t("signOut")}
-                      </Button>
-                    </DrawerFooter>
-                  </>
-                )}
-              </DrawerContent>
-            </Drawer>
-          </NavbarItem>
-        )}
       </NavbarContent>
 
-      {!loggedIn && !user ? (
-        <NavbarMenuToggle className="sm:hidden" />
-      ) : (
-        <NavbarItem>
+      {loggedIn && user && (
+        <NavbarItem className="sm:hidden">
           <Avatar
             size="sm"
             src={user?.image || undefined}
@@ -218,6 +174,8 @@ export default function Navbar() {
           </Avatar>
         </NavbarItem>
       )}
+
+      {!loggedIn && !user && <NavbarMenuToggle className="sm:hidden" />}
 
       <NavbarMenu>
         <div className="p-4 space-y-6">
@@ -251,6 +209,54 @@ export default function Navbar() {
           )}
         </div>
       </NavbarMenu>
+
+      <Drawer isOpen={isOpen} onOpenChange={onOpenChange} placement="right">
+        <DrawerContent>
+          {(onClose) => (
+            <>
+              <DrawerHeader className="flex flex-col gap-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex flex-col">
+                    <p>
+                      {t("welcome")}, {_.capitalize(user?.name)}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {_.capitalize(t(user?.role ?? "individual"))}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4 block sm:hidden">
+                    <LanguageSwitch />
+                    <ThemeSwitch />
+                  </div>
+                </div>
+                <div className="w-full mt-3 block sm:hidden">
+                  <SearchInput />
+                </div>
+              </DrawerHeader>
+              <DrawerBody></DrawerBody>
+              <DrawerFooter className="justify-end">
+                <Button
+                  color="danger"
+                  variant="solid"
+                  onPress={async () => {
+                    await dispatch(signoutThunk());
+                    router.push("/");
+                    addToast({
+                      title: t("signedOutTitle"),
+                      description: t("signedOutDescription"),
+                      color: "success",
+                      icon: <HiInformationCircle />,
+                    });
+                    onClose();
+                  }}
+                >
+                  {t("signOut")}
+                </Button>
+              </DrawerFooter>
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
     </HeroUINavbar>
   );
 }
