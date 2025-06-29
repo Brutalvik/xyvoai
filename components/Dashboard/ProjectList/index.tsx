@@ -10,71 +10,17 @@ import { HiEye, HiTrash } from "react-icons/hi";
 import { Chip, Avatar, AvatarGroup } from "@heroui/react";
 import { Progress } from "@heroui/progress";
 import { getBgColor, getInitial } from "@/utils";
+import { ProjectsListProps } from "@/types";
 
-const dummyProjects = [
-  {
-    id: "1",
-    name: "AI Assistant Redesign",
-    color: "#4f46e5",
-    tags: ["🧠 ai", "🖼 frontend"],
-    startDate: "2025-07-01",
-    dueDate: "2025-08-15",
-    visibility: "Private",
-    aiTasks: true,
-    projectType: "Internal",
-    priority: "High",
-    status: "In Progress",
-    completion: 45,
-    team: [
-      { name: "Roger", src: "https://bit.ly/4erJlQT" },
-      { name: "Steven", src: "" },
-      { name: "Nathan", src: "http://bit.ly/3TcQU46" },
-      { name: "Lori", src: "https://bit.ly/4lxG30J" },
-    ],
-    nextAction: "Review new UI mockups",
-  },
-  {
-    id: "2",
-    name: "Client Portal Launch",
-    color: "#10b981",
-    tags: ["💼 client", "🚀 launch"],
-    startDate: "2025-06-15",
-    dueDate: "2025-07-30",
-    visibility: "Public",
-    aiTasks: false,
-    projectType: "Client",
-    priority: "Urgent",
-    status: "Completed",
-    completion: 100,
-    team: [
-      { name: "Sara", src: "" },
-      { name: "Leo", src: "http://bit.ly/44rfJ1t" },
-      { name: "Gabriel", src: "" },
-      { name: "Frank", src: "http://bit.ly/4l5RWLr" },
-      { name: "Nathan", src: "http://bit.ly/3TcQU46" },
-    ],
-    nextAction: "Send final report to client",
-  },
-];
-
-function getRandomColor(name: string) {
-  const colors = [
-    "#1abc9c",
-    "#2ecc71",
-    "#3498db",
-    "#9b59b6",
-    "#f39c12",
-    "#e67e22",
-    "#e74c3c",
-  ];
-  const index = name.charCodeAt(0) % colors.length;
-  return colors[index];
-}
-
-export default function ProjectsList() {
+export default function ProjectsList({
+  showAIOnly,
+  statusFilter,
+  visibilityFilter,
+  projects,
+}: ProjectsListProps) {
   const t = useTranslations("ProjectList");
 
-  if (dummyProjects.length === 0) {
+  if (!projects || projects.length === 0) {
     return (
       <div className="p-4 text-center text-gray-500 dark:text-gray-400">
         {t("empty")}
@@ -82,9 +28,18 @@ export default function ProjectsList() {
     );
   }
 
+  const filteredProjects = projects.filter((project) => {
+    const matchesAI = !showAIOnly || project.aiTasks;
+    const matchesStatus =
+      statusFilter === "" || project.status === statusFilter;
+    const matchesVisibility =
+      visibilityFilter === "" || project.visibility === visibilityFilter;
+    return matchesAI && matchesStatus && matchesVisibility;
+  });
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-      {dummyProjects.map((project) => (
+      {filteredProjects.map((project) => (
         <Card
           key={project.id}
           className="relative border-l-4"
@@ -146,7 +101,9 @@ export default function ProjectsList() {
                     ? "success"
                     : project.status === "In Progress"
                       ? "primary"
-                      : "warning"
+                      : project.status === "Blocked"
+                        ? "danger"
+                        : "default"
                 }
               >
                 {project.status}

@@ -18,3 +18,45 @@ export interface User {
   accountType?: "personal" | "organization";
   attributes?: Record<string, string>;
 }
+
+export type TeamMember = {
+  name: string;
+  src: string;
+};
+
+export type ProjectType = "Internal" | "Client" | "AI-Generated";
+
+export type ProjectPriority = "Low" | "Medium" | "High" | "Urgent";
+
+export type ProjectStatus =
+  | "Not Started"
+  | "In Progress"
+  | "Blocked"
+  | "Completed"
+  | "Cancelled";
+
+export type Visibility = "Public" | "Private";
+
+export type Project = {
+  id: string;
+  name: string;
+  color: string;
+  tags: string[];
+  startDate: string;
+  dueDate: string;
+  visibility: Visibility;
+  aiTasks: boolean;
+  projectType: ProjectType;
+  priority: ProjectPriority;
+  status: ProjectStatus;
+  completion: number;
+  team: TeamMember[];
+  nextAction: string;
+};
+
+export type ProjectsListProps = {
+  showAIOnly: boolean;
+  statusFilter: string;
+  visibilityFilter: string;
+  projects?: Project[];
+};
