@@ -1,8 +1,8 @@
 "use client";
 
-import Register from "@/components/Register";
+import Signup from "@/components/Signup";
 
-export default function RegisterPage() {
+export default function SignupPage() {
   return (
     <div
       className={
@@ -10,7 +10,7 @@ export default function RegisterPage() {
       }
     >
       <div className="w-full lg:w-1/2 flex items-center justify-center">
-        <Register />
+        <Signup />
       </div>
     </div>
   );

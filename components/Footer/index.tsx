@@ -19,10 +19,10 @@ export default function Footer() {
           {t("privacy")}
         </Link>
         <Link
-          href={`/${locale}/legal/terms`}
+          href={`/${locale}/legal/conditions`}
           className="underline hover:text-primary transition-colors"
         >
-          {t("terms")}
+          {t("conditions")}
         </Link>
       </div>
     </footer>

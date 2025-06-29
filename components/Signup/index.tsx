@@ -17,7 +17,7 @@ import { passwordRules } from "@/utils";
 import { useAppDispatch } from "@/store/hooks";
 import { useTranslations } from "next-intl";
 
-export default function Register() {
+export default function Signup() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();

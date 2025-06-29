@@ -80,7 +80,7 @@ export default function Navbar() {
         {!loggedIn ? (
           <>
             <NavbarItem>
-              <NextLink href={`/${locale}/auth/register`}>
+              <NextLink href={`/${locale}/auth/signup`}>
                 <Button size="sm" variant="ghost" color="primary">
                   Sign Up
                 </Button>
