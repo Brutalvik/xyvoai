@@ -36,28 +36,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { addToast } from "@heroui/react";
 import { HiInformationCircle } from "react-icons/hi";
 import _ from "lodash";
-import { getInitial } from "@/utils";
-
-function getUserColor(seed: string): string {
-  const colors = [
-    "bg-red-500",
-    "bg-pink-500",
-    "bg-purple-500",
-    "bg-indigo-500",
-    "bg-blue-500",
-    "bg-teal-500",
-    "bg-green-500",
-    "bg-amber-500",
-    "bg-orange-500",
-    "bg-rose-500",
-  ];
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) {
-    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const index = Math.abs(hash) % colors.length;
-  return colors[index];
-}
+import { getBgColor, getInitial } from "@/utils";
 
 export default function Navbar() {
   const t = useTranslations("Navbar");
@@ -70,7 +49,7 @@ export default function Navbar() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const avatarBg = useMemo(() => {
-    return user?.id ? getUserColor(user.id) : "bg-gray-400";
+    return user?.id ? getBgColor(user.id) : "bg-gray-400";
   }, [user?.id]);
 
   const avatarInitial = useMemo(() => {

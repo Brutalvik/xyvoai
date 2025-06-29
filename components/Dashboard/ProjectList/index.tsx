@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import { HiEye, HiTrash } from "react-icons/hi";
 import { Chip, Avatar, AvatarGroup } from "@heroui/react";
 import { Progress } from "@heroui/progress";
-import { getInitial } from "@/utils";
+import { getBgColor, getInitial } from "@/utils";
 
 const dummyProjects = [
   {
@@ -47,11 +47,11 @@ const dummyProjects = [
     status: "Completed",
     completion: 100,
     team: [
-      { name: "Sara", src: "/avatars/sara.png" },
-      { name: "Leo", src: "/avatars/leo.png" },
-      { name: "Gabriel", src: "/avatars/leo.png" },
-      { name: "Ankur", src: "/avatars/leo.png" },
-      { name: "Sangam", src: "/avatars/leo.png" },
+      { name: "Sara", src: "" },
+      { name: "Leo", src: "http://bit.ly/44rfJ1t" },
+      { name: "Gabriel", src: "" },
+      { name: "Frank", src: "http://bit.ly/4l5RWLr" },
+      { name: "Nathan", src: "http://bit.ly/3TcQU46" },
     ],
     nextAction: "Send final report to client",
   },
@@ -98,9 +98,16 @@ export default function ProjectsList() {
                   style={{ backgroundColor: project.color }}
                 />
                 {project.aiTasks ? (
-                  <Badge color="danger" content="AI" size="sm">
-                    <h2 className="text-lg font-semibold">{project.name}</h2>
-                  </Badge>
+                  <Tooltip content={t("managedByAI")}>
+                    <Badge
+                      color="danger"
+                      content="AI"
+                      size="sm"
+                      className="hover:cursor-pointer"
+                    >
+                      <h2 className="text-lg font-semibold">{project.name}</h2>
+                    </Badge>
+                  </Tooltip>
                 ) : (
                   <h2 className="text-lg font-semibold">{project.name}</h2>
                 )}
@@ -114,6 +121,7 @@ export default function ProjectsList() {
                         size="sm"
                         variant="flat"
                         color="primary"
+                        className="hover:cursor-pointer"
                       >
                         {tag.trim()}
                       </Chip>
@@ -168,22 +176,25 @@ export default function ProjectsList() {
               <strong>{t("team")}: </strong>
               <AvatarGroup className="mt-1">
                 {project.team.map((member) => (
-                  <Avatar
-                    key={member.name}
-                    src={member.src || undefined}
-                    alt={member.name}
-                    name={getInitial(member.name)}
-                    size="sm"
-                    style={
-                      !member.src || member.src === ""
-                        ? {
-                            backgroundColor: getRandomColor(member.name),
-                            color: "white",
-                            fontWeight: "bold",
-                          }
-                        : {}
-                    }
-                  />
+                  <Tooltip content={member.name}>
+                    <Avatar
+                      key={member.name}
+                      src={member.src || undefined}
+                      alt={member.name}
+                      name={getInitial(member.name)}
+                      size="sm"
+                      style={
+                        !member.src || member.src === ""
+                          ? {
+                              backgroundColor: getBgColor(member.name, true),
+                              color: "text-default-700",
+                              fontWeight: "bold",
+                            }
+                          : {}
+                      }
+                      className="hover:cursor-pointer"
+                    />
+                  </Tooltip>
                 ))}
               </AvatarGroup>
             </div>

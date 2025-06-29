@@ -88,6 +88,13 @@ export default function CreateProject() {
     },
   });
 
+  const generateRandomColor = () => {
+    const randomColor = `#${Math.floor(Math.random() * 16777215)
+      .toString(16)
+      .padStart(6, "0")}`;
+    formik.setFieldValue("color", randomColor);
+  };
+
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-6">
       <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
@@ -188,12 +195,7 @@ export default function CreateProject() {
               type="button"
               variant="flat"
               className="w-1/5"
-              onClick={() => {
-                const randomColor = `#${Math.floor(Math.random() * 16777215)
-                  .toString(16)
-                  .padStart(6, "0")}`;
-                formik.setFieldValue("color", randomColor);
-              }}
+              onPress={generateRandomColor}
             >
               {t("randomColor")}
             </Button>

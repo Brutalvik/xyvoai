@@ -241,6 +241,7 @@
     "empty": "No projects available.",
     "status": "Status",
     "team": "Team",
-    "nextAction": "Next Action"
+    "nextAction": "Next Action",
+    "managedByAI": "Managed by AI"
   }
 }

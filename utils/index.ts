@@ -19,3 +19,26 @@ export const getFlagFromPhone = (phone: string): string => {
 export const getInitial = (name: string) => {
   return name?.charAt(0)?.toUpperCase() || "?";
 };
+
+export const getBgColor = (seed: string, asHex: boolean = false): string => {
+  const colorMap = [
+    { class: "bg-red-500", hex: "#ef4444" },
+    { class: "bg-pink-500", hex: "#ec4899" },
+    { class: "bg-purple-500", hex: "#8b5cf6" },
+    { class: "bg-indigo-500", hex: "#6366f1" },
+    { class: "bg-blue-500", hex: "#3b82f6" },
+    { class: "bg-teal-500", hex: "#14b8a6" },
+    { class: "bg-green-500", hex: "#22c55e" },
+    { class: "bg-amber-500", hex: "#f59e0b" },
+    { class: "bg-orange-500", hex: "#f97316" },
+    { class: "bg-rose-500", hex: "#f43f5e" },
+  ];
+
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % colorMap.length;
+
+  return asHex ? colorMap[index].hex : colorMap[index].class;
+};

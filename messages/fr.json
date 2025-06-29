@@ -246,6 +246,7 @@
     "delete": "Supprimer",
     "status": "Status",
     "team": "Team",
-    "nextAction": "Next Action"
+    "nextAction": "Next Action",
+    "managedByAI": "Géré par l'IA"
   }
 }
