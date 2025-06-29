@@ -110,7 +110,7 @@ export default function Register() {
             href: "/auth",
             linkText: t("signin"),
           }}
-          showSocials={true}
+          showSocials={false} //hardcoded now, replace in future once social auth is implemented
         >
           <form onSubmit={formik.handleSubmit}>
             <div className="space-y-2">

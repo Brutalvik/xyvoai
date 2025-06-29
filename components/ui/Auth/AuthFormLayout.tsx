@@ -7,6 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { RiKeyFill } from "react-icons/ri"; // Import RiKeyFill
+import { useLocale } from "next-intl";
 
 interface AuthFormLayoutProps {
   title: string;
@@ -29,6 +30,7 @@ export default function AuthFormLayout({
   alternativeAuthLink,
   showKeyIcon = false, // Default to false
 }: AuthFormLayoutProps) {
+  const locale = useLocale();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -63,11 +65,17 @@ export default function AuthFormLayout({
         <CardFooter className="flex flex-col space-y-1">
           <p className="text-xs text-center px-2">
             By continuing, you agree to XYVO&apos;s{" "}
-            <Link href="/conditions" className="underline hover:text-blue-500">
+            <Link
+              href={`/${locale}/legal/conditions`}
+              className="underline hover:text-blue-500"
+            >
               Conditions of Use
             </Link>{" "}
             and{" "}
-            <Link href="/privacy" className="underline hover:text-blue-500">
+            <Link
+              href={`/${locale}/legal/privacy`}
+              className="underline hover:text-blue-500"
+            >
               Privacy Notice
             </Link>
             .

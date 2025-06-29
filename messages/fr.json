@@ -100,5 +100,41 @@
       "badge": "Résumé par l'IA",
       "fakeUI": "📝 Résumé : Planification hebdomadaire initiée avec tâches et calendrier."
     }
+  },
+  "conditions": {
+    "title": "Conditions d'utilisation",
+    "intro": "Bienvenue sur Xyvo. En accédant à nos services, vous acceptez de respecter les conditions suivantes.",
+    "acceptanceTitle": "1. Acceptation des conditions",
+    "acceptance": "En utilisant Xyvo, vous acceptez d'être lié par toutes les lois applicables et les termes de cet accord. Si vous n'acceptez pas, n'utilisez pas nos services.",
+    "intellectualTitle": "2. Propriété intellectuelle",
+    "intellectual": "Tout le contenu, les marques, les logos et les logiciels sont la propriété de Xyvo Inc. ou de ses concédants et sont protégés par les lois canadiennes, américaines et internationales sur la propriété intellectuelle.",
+    "disclaimerTitle": "3. Avertissement de garantie",
+    "disclaimer": "Nos services sont fournis 'tels quels', sans aucune garantie. Nous ne garantissons pas que le service sera ininterrompu ou exempt d'erreurs.",
+    "limitationTitle": "4. Limitation de responsabilité",
+    "limitation": "Dans toute la mesure permise par la loi, Xyvo Inc. ne pourra être tenue responsable de tout dommage indirect, accidentel ou consécutif résultant de l'utilisation de nos services.",
+    "userConductTitle": "5. Comportement de l'utilisateur",
+    "userConduct": "Vous vous engagez à ne pas abuser de la plateforme, à ne pas participer à des activités illégales, ni à tenter d'accéder à nos systèmes de manière non autorisée.",
+    "governingLawTitle": "6. Loi applicable",
+    "governingLaw": "Cet accord est régi par les lois de l'Alberta, Canada et les lois fédérales applicables du Canada et des États-Unis. Tout litige sera résolu par les tribunaux de l'Alberta ou les juridictions fédérales concernées.",
+    "modificationTitle": "7. Modifications",
+    "modification": "Xyvo se réserve le droit de modifier ces conditions à tout moment. L'utilisation continue du service vaut acceptation de ces modifications."
+  },
+  "privacy": {
+    "title": "Politique de confidentialité",
+    "intro": "Votre vie privée est importante pour nous. Cette politique explique comment Xyvo collecte, utilise et protège vos données personnelles conformément aux normes canadiennes (LPRPDE), américaines (CCPA) et internationales.",
+    "collectionTitle": "1. Informations collectées",
+    "collection": "Nous collectons les informations que vous fournissez directement (nom, email, téléphone, détails de l'organisation) ainsi que des données via votre utilisation (adresse IP, navigateur, cookies, journaux d’utilisation).",
+    "usageTitle": "2. Utilisation de vos informations",
+    "usage": "Nous utilisons vos données pour fournir et améliorer nos services, envoyer des mises à jour, faire respecter les conditions d’utilisation et garantir la sécurité de la plateforme. Nous ne vendons pas vos données.",
+    "sharingTitle": "3. Partage des données",
+    "sharing": "Nous pouvons partager vos données avec des sous-traitants de confiance pour l’analyse, l’infrastructure cloud ou pour nous conformer à la loi. Tous les tiers doivent respecter les lois de confidentialité applicables.",
+    "securityTitle": "4. Sécurité des données",
+    "security": "Nous mettons en œuvre des mesures organisationnelles, techniques et administratives pour protéger vos données. Aucun système n'est 100% sécurisé, mais nous visons les normes les plus élevées.",
+    "yourRightsTitle": "5. Vos droits",
+    "yourRights": "Vous pouvez accéder, corriger ou supprimer vos données, et retirer votre consentement à tout moment. Les utilisateurs canadiens et américains bénéficient de droits supplémentaires selon la LPRPDE et la CCPA.",
+    "retentionTitle": "6. Conservation des données",
+    "retention": "Nous conservons les données personnelles uniquement pendant la durée nécessaire aux services, obligations légales ou objectifs commerciaux. Elles sont ensuite supprimées de manière sécurisée.",
+    "contactTitle": "7. Nous contacter",
+    "contact": "Pour toute question ou exercice de vos droits, contactez-nous à privacy@xyvo.ca."
   }
 }

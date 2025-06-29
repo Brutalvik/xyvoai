@@ -10,6 +10,7 @@ export interface User {
   refreshToken?: string;
   role?: string;
   organizationId?: string | null;
+  image?: string;
 }
 
 interface UserState {

@@ -95,5 +95,41 @@
       "badge": "AI Summary",
       "fakeUI": "📝 Summary: Weekly planning initiated with tasks and timeline."
     }
+  },
+  "conditions": {
+    "title": "Conditions of Use",
+    "intro": "Welcome to Xyvo. By accessing or using our services, you agree to comply with the following conditions.",
+    "acceptanceTitle": "1. Acceptance of Terms",
+    "acceptance": "By using Xyvo, you agree to be bound by all applicable laws and the terms outlined in this agreement. If you do not agree, do not use our services.",
+    "intellectualTitle": "2. Intellectual Property",
+    "intellectual": "All content, trademarks, logos, and software are the property of Xyvo Inc. or its licensors and are protected under Canadian, US, and international copyright and IP laws.",
+    "disclaimerTitle": "3. Disclaimer of Warranties",
+    "disclaimer": "Our services are provided 'as is' without warranties of any kind. We do not guarantee that the service will be uninterrupted or error-free.",
+    "limitationTitle": "4. Limitation of Liability",
+    "limitation": "To the maximum extent permitted by law, Xyvo Inc. shall not be liable for any indirect, incidental, or consequential damages resulting from the use of our services.",
+    "userConductTitle": "5. User Conduct",
+    "userConduct": "You agree not to misuse the platform, engage in unlawful activity, or attempt unauthorized access to our systems.",
+    "governingLawTitle": "6. Governing Law",
+    "governingLaw": "This agreement shall be governed by the laws of Alberta, Canada and applicable federal laws of Canada and the United States. Any disputes shall be resolved in the courts of Alberta or relevant federal jurisdiction.",
+    "modificationTitle": "7. Modifications",
+    "modification": "Xyvo reserves the right to update or change these terms at any time. Continued use of the service constitutes acceptance of those changes."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "Your privacy is important to us. This policy explains how Xyvo collects, uses, and protects your personal data in accordance with Canadian (PIPEDA), US (CCPA), and international standards.",
+    "collectionTitle": "1. Information We Collect",
+    "collection": "We collect information you provide directly (name, email, phone, org details), and data through your usage (IP, browser, cookies, usage logs).",
+    "usageTitle": "2. How We Use Your Information",
+    "usage": "We use your data to provide and improve our services, send updates, enforce terms, and ensure platform security. We do not sell personal data.",
+    "sharingTitle": "3. Data Sharing",
+    "sharing": "We may share data with trusted processors for analytics, cloud infrastructure, or legal compliance. All third parties must comply with applicable privacy laws.",
+    "securityTitle": "4. Data Security",
+    "security": "We implement organizational, technical, and administrative measures to protect your data. No method is 100% secure, but we aim for the highest standards.",
+    "yourRightsTitle": "5. Your Rights",
+    "yourRights": "You may access, correct, or delete your data, and withdraw consent at any time. US and Canadian users have additional rights under CCPA and PIPEDA.",
+    "retentionTitle": "6. Data Retention",
+    "retention": "We retain personal data only as long as necessary for service provision, legal, or business purposes. After that, data is securely deleted.",
+    "contactTitle": "7. Contact Us",
+    "contact": "For questions or to exercise your rights, contact us at privacy@xyvo.ca."
   }
 }

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Navbar as HeroUINavbar,
   NavbarContent,
@@ -5,22 +7,36 @@ import {
   NavbarMenuToggle,
   NavbarBrand,
   NavbarItem,
-  NavbarMenuItem,
 } from "@heroui/navbar";
-import { Button } from "@heroui/button";
+import {
+  Button,
+  Avatar,
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  DrawerFooter,
+  useDisclosure,
+} from "@heroui/react";
 import { Link } from "@heroui/link";
 import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
 import { SearchInput } from "@/components/SearchInput";
-
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-
 import { Logo } from "@/components/icons";
 import LanguageSwitch from "@/components/LanguageSwitch";
+import { useAppSelector } from "@/store/hooks";
+import { useLocale } from "next-intl";
+import { selectUser, isLoggedIn } from "@/store/selectors/index";
 
 export default function Navbar() {
+  const locale = useLocale();
+  const user = useAppSelector(selectUser);
+  const loggedIn = useAppSelector(isLoggedIn);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   return (
     <HeroUINavbar maxWidth="full" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
@@ -38,7 +54,6 @@ export default function Navbar() {
                   linkStyles({ color: "foreground" }),
                   "data-[active=true]:text-primary data-[active=true]:font-medium"
                 )}
-                color="foreground"
                 href={item.href}
               >
                 {item.label}
@@ -61,6 +76,64 @@ export default function Navbar() {
         <NavbarItem>
           <ThemeSwitch />
         </NavbarItem>
+
+        {!loggedIn ? (
+          <>
+            <NavbarItem>
+              <NextLink href={`/${locale}/auth/register`}>
+                <Button size="sm" variant="ghost" color="primary">
+                  Sign Up
+                </Button>
+              </NextLink>
+            </NavbarItem>
+            <NavbarItem>
+              <NextLink href={`/${locale}/auth/signin`}>
+                <Button size="sm" variant="flat" color="primary">
+                  Sign In
+                </Button>
+              </NextLink>
+            </NavbarItem>
+          </>
+        ) : (
+          <NavbarItem>
+            <Avatar
+              size="sm"
+              name={user?.name}
+              src={user?.image || "/user.png"}
+              onClick={onOpen}
+              className="cursor-pointer"
+            />
+            <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
+              <DrawerContent>
+                {(onClose) => (
+                  <>
+                    <DrawerHeader className="flex flex-col gap-1">
+                      Welcome, {user?.name}
+                    </DrawerHeader>
+                    <DrawerBody>
+                      <p>Email: {user?.email}</p>
+                      {/* Add more user-related actions here */}
+                    </DrawerBody>
+                    <DrawerFooter>
+                      <Button color="danger" variant="light" onPress={onClose}>
+                        Close
+                      </Button>
+                      <Button
+                        color="primary"
+                        onPress={() => {
+                          // Add sign-out logic here
+                          onClose();
+                        }}
+                      >
+                        Sign Out
+                      </Button>
+                    </DrawerFooter>
+                  </>
+                )}
+              </DrawerContent>
+            </Drawer>
+          </NavbarItem>
+        )}
       </NavbarContent>
     </HeroUINavbar>
   );
