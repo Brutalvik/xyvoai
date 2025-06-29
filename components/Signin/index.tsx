@@ -18,7 +18,8 @@ import { PasswordInput } from "@/components/ui/Auth/PasswordInput";
 import PasswordTooltip from "@/components/ui/Auth/PasswordTooltip";
 import { passwordRules } from "@/utils";
 import { useAppDispatch } from "@/store/hooks";
-import { meThunk, signinThunk } from "@/store/auth/thunks";
+import { meThunk, signInThunk } from "@/store/auth/thunks";
+import { setUser } from "@/store/slices/userSlice";
 
 export default function Signin() {
   const dispatch = useAppDispatch();
@@ -44,8 +45,9 @@ export default function Signin() {
     onSubmit: async (values, { setSubmitting }) => {
       setLoading(true);
       try {
-        await dispatch(signinThunk(values)).unwrap();
-        await dispatch(meThunk()).unwrap();
+        await dispatch(signInThunk(values)).unwrap();
+        const user = await dispatch(meThunk()).unwrap();
+        dispatch(setUser(user));
         addToast({
           title: t("successTitle"),
           description: t("successMessage"),

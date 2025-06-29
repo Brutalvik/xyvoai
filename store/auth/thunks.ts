@@ -83,7 +83,7 @@ type SigninPayload = {
   password: string;
 };
 
-export const signinThunk = createAsyncThunk(
+export const signInThunk = createAsyncThunk(
   "auth/signin",
   async (values: SigninPayload, { rejectWithValue }) => {
     try {
@@ -105,7 +105,6 @@ export const signinThunk = createAsyncThunk(
       if (!res.ok || !data?.isLoggedIn) {
         throw new Error(data?.message || "Sign in failed");
       }
-
       return { isLoggedIn: true };
     } catch (error: any) {
       return rejectWithValue(error?.message || "Sign in failed");

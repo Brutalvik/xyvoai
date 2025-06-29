@@ -119,7 +119,7 @@ export default function Navbar() {
           <ThemeSwitch />
         </NavbarItem>
 
-        {!loggedIn ? (
+        {!loggedIn && (
           <>
             {!isSignUpPage && (
               <NavbarItem>
@@ -140,7 +140,9 @@ export default function Navbar() {
               </NavbarItem>
             )}
           </>
-        ) : (
+        )}
+
+        {loggedIn && user && (
           <NavbarItem>
             <Avatar
               size="sm"

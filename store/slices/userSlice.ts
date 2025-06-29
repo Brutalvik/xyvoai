@@ -9,6 +9,7 @@ interface UserState {
   isLoggedIn: boolean;
   loading: boolean;
   error: string | null;
+  hasFetched: boolean;
 }
 
 const initialState: UserState = {
@@ -16,6 +17,7 @@ const initialState: UserState = {
   isLoggedIn: false,
   loading: false,
   error: null,
+  hasFetched: false,
 };
 
 // Thunk to fetch the current user from /auth/me
@@ -62,11 +64,13 @@ const userSlice = createSlice({
         state.user = action.payload;
         state.isLoggedIn = true;
         state.loading = false;
+        state.hasFetched = true;
       })
       .addCase(meThunk.rejected, (state, action) => {
         state.user = null;
         state.isLoggedIn = false;
         state.loading = false;
+        state.hasFetched = true;
         state.error = action.payload as string;
       });
   },
