@@ -17,6 +17,7 @@ import { passwordRules } from "@/utils";
 import { useAppDispatch } from "@/store/hooks";
 import { useTranslations, useLocale } from "next-intl";
 import UsageTypeSelector from "@/components/Signup/UsageType";
+import { CDN } from "@/config";
 
 export default function Signup() {
   const dispatch = useAppDispatch();
@@ -52,7 +53,7 @@ export default function Signup() {
     onSubmit: async (values, { setSubmitting }) => {
       try {
         sessionStorage.setItem("signup-form", JSON.stringify(values));
-        const res = await fetch("https://auth.xyvo.ca/auth/signup", {
+        const res = await fetch(`${CDN.userAuthUrl}`, {
           method: "POST",
           credentials: "include",
           headers: {
@@ -113,7 +114,7 @@ export default function Signup() {
     values.usageType = usageType;
 
     try {
-      const res = await fetch("https://auth.xyvo.ca/auth/signup", {
+      const res = await fetch(`${CDN.userAuthUrl}`, {
         method: "POST",
         credentials: "include",
         headers: {
