@@ -18,6 +18,7 @@ import { useAppDispatch } from "@/store/hooks";
 import { useTranslations, useLocale } from "next-intl";
 import UsageTypeSelector from "@/components/Signup/UsageType";
 import { signupThunk, signupWithUsageTypeThunk } from "@/store/auth/thunks";
+import { HiBan, HiBadgeCheck } from "react-icons/hi";
 
 export default function Signup() {
   const dispatch = useAppDispatch();
@@ -66,6 +67,7 @@ export default function Signup() {
           title: t("successTitle"),
           description: t("successMessage"),
           color: "success",
+          icon: <HiBadgeCheck />,
         });
         router.push(`/${locale}`);
       } catch (error: any) {
@@ -73,6 +75,7 @@ export default function Signup() {
           title: t("errorTitle"),
           description: error || t("errorMessage"),
           color: "danger",
+          icon: <HiBan />,
         });
       } finally {
         setSubmitting(false);

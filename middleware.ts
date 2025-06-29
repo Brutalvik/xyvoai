@@ -1,11 +1,30 @@
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export default createMiddleware(routing);
+const intlMiddleware = createMiddleware(routing);
+const protectedRoutes = ["/dashboard", "/projects", "/tasks"];
+
+export default function middleware(req: NextRequest) {
+  const pathname = req.nextUrl.pathname;
+  const xToken = req.cookies.get("x-token")?.value;
+
+  const isProtected = protectedRoutes.some((route) =>
+    pathname.startsWith(`/${req.nextUrl.locale}${route}`)
+  );
+
+  if (isProtected && !xToken) {
+    const redirectUrl = new URL(
+      `/${req.nextUrl.locale}/auth/signin?redirected=1`,
+      req.url
+    );
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  return intlMiddleware(req);
+}
 
 export const config = {
-  // Match all pathnames except for
-  // - … if they start with `/api`, `/trpc`, `/_next` or `/_vercel`
-  // - … the ones containing a dot (e.g. `favicon.ico`)
   matcher: "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
 };

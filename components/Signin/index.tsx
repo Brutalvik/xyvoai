@@ -8,7 +8,9 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { addToast } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { HiBan, HiBadgeCheck, HiExclamation } from "react-icons/hi";
 
 import XyvoLoader from "@/components/ui/XyvoLoader";
 import AuthFormLayout from "@/components/ui/Auth/AuthFormLayout";
@@ -20,6 +22,7 @@ import { signinThunk } from "@/store/auth/thunks";
 
 export default function Signin() {
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const t = useTranslations("signin");
   const v = useTranslations("signinvalidation");
@@ -46,6 +49,7 @@ export default function Signin() {
           title: t("successTitle"),
           description: t("successMessage"),
           color: "success",
+          icon: <HiBadgeCheck />,
         });
         router.push("/");
       } catch (error: any) {
@@ -53,6 +57,7 @@ export default function Signin() {
           title: t("errorTitle"),
           description: error || t("errorMessage"),
           color: "danger",
+          icon: <HiBan />,
         });
       } finally {
         setSubmitting(false);
@@ -60,6 +65,17 @@ export default function Signin() {
       }
     },
   });
+
+  useEffect(() => {
+    if (searchParams.get("redirected") === "1") {
+      addToast({
+        title: t("warningTitle"),
+        description: t("warningMessage"),
+        color: "warning",
+        icon: <HiExclamation />,
+      });
+    }
+  }, [searchParams]);
 
   return (
     <motion.div

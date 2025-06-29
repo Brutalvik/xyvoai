@@ -30,12 +30,46 @@ import LanguageSwitch from "@/components/LanguageSwitch";
 import { useAppSelector } from "@/store/hooks";
 import { useLocale } from "next-intl";
 import { selectUser, isLoggedIn } from "@/store/selectors/index";
+import { useMemo } from "react";
+
+function getInitial(name: string) {
+  return name?.charAt(0)?.toUpperCase() || "?";
+}
+
+function getUserColor(seed: string): string {
+  const colors = [
+    "bg-red-500",
+    "bg-pink-500",
+    "bg-purple-500",
+    "bg-indigo-500",
+    "bg-blue-500",
+    "bg-teal-500",
+    "bg-green-500",
+    "bg-amber-500",
+    "bg-orange-500",
+    "bg-rose-500",
+  ];
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % colors.length;
+  return colors[index];
+}
 
 export default function Navbar() {
   const locale = useLocale();
   const user = useAppSelector(selectUser);
   const loggedIn = useAppSelector(isLoggedIn);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const avatarBg = useMemo(() => {
+    return user?.id ? getUserColor(user.id) : "bg-gray-400";
+  }, [user?.id]);
+
+  const avatarInitial = useMemo(() => {
+    return getInitial(user?.name || "");
+  }, [user?.name]);
 
   return (
     <HeroUINavbar maxWidth="full" position="sticky">
@@ -98,11 +132,11 @@ export default function Navbar() {
           <NavbarItem>
             <Avatar
               size="sm"
-              name={user?.name}
-              src={user?.image || "/user.png"}
+              className={clsx("text-white cursor-pointer", avatarBg)}
               onClick={onOpen}
-              className="cursor-pointer"
-            />
+            >
+              {avatarInitial}
+            </Avatar>
             <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
               <DrawerContent>
                 {(onClose) => (
@@ -112,7 +146,8 @@ export default function Navbar() {
                     </DrawerHeader>
                     <DrawerBody>
                       <p>Email: {user?.email}</p>
-                      {/* Add more user-related actions here */}
+                      <p>Phone: {user?.phone}</p>
+                      <p>Account Type: {user?.accountType}</p>
                     </DrawerBody>
                     <DrawerFooter>
                       <Button color="danger" variant="light" onPress={onClose}>
@@ -121,7 +156,7 @@ export default function Navbar() {
                       <Button
                         color="primary"
                         onPress={() => {
-                          // Add sign-out logic here
+                          // TODO: sign out logic
                           onClose();
                         }}
                       >

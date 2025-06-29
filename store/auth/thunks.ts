@@ -1,6 +1,7 @@
 // store/auth/thunks.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { CDN } from "@/config";
+import { clearUser, setUser } from "@/store/slices/userSlice";
 
 type SignupForm = {
   name: string;
@@ -10,11 +11,12 @@ type SignupForm = {
   password: string;
 };
 
+//intiaal signup
 export const signupThunk = createAsyncThunk(
   "auth/signup",
   async (values: SignupForm, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${CDN.userAuthUrl}`, {
+      const res = await fetch(`${CDN.userAuthUrl}/signup`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -38,6 +40,7 @@ export const signupThunk = createAsyncThunk(
   }
 );
 
+//signup with usage type
 export const signupWithUsageTypeThunk = createAsyncThunk(
   "auth/signup",
   async (
@@ -48,7 +51,7 @@ export const signupWithUsageTypeThunk = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await fetch(`${CDN.userAuthUrl}`, {
+      const res = await fetch(`${CDN.userAuthUrl}/signup`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -101,6 +104,59 @@ export const signinThunk = createAsyncThunk(
       return data;
     } catch (error: any) {
       return rejectWithValue(error.message || "Sign in failed");
+    }
+  }
+);
+
+//refresh token
+export const refreshTokenThunk = createAsyncThunk(
+  "auth/refresh",
+  async (_, { getState, dispatch, rejectWithValue }) => {
+    try {
+      const state: any = getState();
+      const refreshToken = state.user?.user?.refreshToken;
+
+      if (!refreshToken) throw new Error("Missing refresh token");
+
+      const res = await fetch(`${CDN.userAuthUrl}/refresh`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      if (!res.ok) throw new Error("Refresh token failed");
+
+      const data = await res.json();
+      dispatch(setUser(data.user));
+      return data.user;
+    } catch (err) {
+      dispatch(clearUser());
+      return rejectWithValue("Session expired. Please sign in again.");
+    }
+  }
+);
+
+//signout thunk
+export const signoutThunk = createAsyncThunk(
+  "auth/signout",
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await fetch(`${CDN.userAuthUrl}/signout`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!res.ok) throw new Error("Sign out failed");
+
+      // Clear user from Redux store
+      dispatch(clearUser());
+
+      return true;
+    } catch (error: any) {
+      return rejectWithValue(error.message || "Sign out failed");
     }
   }
 );

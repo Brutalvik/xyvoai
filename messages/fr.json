@@ -159,7 +159,9 @@
     "errorTitle": "Échec de la connexion",
     "errorMessage": "Veuillez vérifier votre e-mail et votre mot de passe.",
     "noAccount": "Vous n'avez pas de compte ?",
-    "signup": "Créer un compte"
+    "signup": "Créer un compte",
+    "warningTitle": "Veuillez vous connecter",
+    "warningMessage": "Vous devez être connecté pour accéder à cette page."
   },
   "signinvalidation": {
     "required": "Ce champ est requis.",
