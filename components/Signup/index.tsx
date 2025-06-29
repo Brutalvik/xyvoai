@@ -17,7 +17,7 @@ import { passwordRules } from "@/utils";
 import { useAppDispatch } from "@/store/hooks";
 import { useTranslations, useLocale } from "next-intl";
 import UsageTypeSelector from "@/components/Signup/UsageType";
-import { CDN } from "@/config";
+import { signupThunk, signupWithUsageTypeThunk } from "@/store/auth/thunks";
 
 export default function Signup() {
   const dispatch = useAppDispatch();
@@ -53,34 +53,25 @@ export default function Signup() {
     onSubmit: async (values, { setSubmitting }) => {
       try {
         sessionStorage.setItem("signup-form", JSON.stringify(values));
-        const res = await fetch(`${CDN.userAuthUrl}`, {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: values.name,
-            email: values.email,
-            phone: values.countryCode + values.phone,
-            password: values.password,
-          }),
-        });
-        const data = await res.json();
+        const res = await dispatch(signupThunk(values)).unwrap();
 
-        if (res.status === 202 && data.requireUsageType) {
+        if (res?.requireUsageType) {
           setStep("usagetype");
           router.replace(`${pathname}?step=usagetype`);
+          return;
         }
 
-        if (!res.ok) {
-          throw new Error(data?.message || "Signup failed.");
-        }
+        sessionStorage.removeItem("signup-form");
+        addToast({
+          title: t("successTitle"),
+          description: t("successMessage"),
+          color: "success",
+        });
+        router.push(`/${locale}`);
       } catch (error: any) {
-        console.log("signed up", error);
         addToast({
           title: t("errorTitle"),
-          description: error.message || t("errorMessage"),
+          description: error || t("errorMessage"),
           color: "danger",
         });
       } finally {
@@ -111,27 +102,9 @@ export default function Signup() {
     if (!saved) return;
 
     const values = JSON.parse(saved);
-    values.usageType = usageType;
 
     try {
-      const res = await fetch(`${CDN.userAuthUrl}`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: values.name,
-          email: values.email,
-          phone: values.countryCode + values.phone,
-          password: values.password,
-          usageType: usageType,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data?.message || "Signup failed");
+      await dispatch(signupWithUsageTypeThunk({ values, usageType })).unwrap();
 
       sessionStorage.removeItem("signup-form");
       addToast({
@@ -139,16 +112,15 @@ export default function Signup() {
         description: t("successMessage"),
         color: "success",
       });
-
       router.push(`/${locale}`);
-      setProcessingSignup(false);
     } catch (error: any) {
-      setProcessingSignup(false);
       addToast({
         title: t("errorTitle"),
-        description: error.message || t("errorMessage"),
+        description: error || t("errorMessage"),
         color: "danger",
       });
+    } finally {
+      setProcessingSignup(false);
     }
   };
 
