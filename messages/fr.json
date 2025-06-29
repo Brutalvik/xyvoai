@@ -148,5 +148,23 @@
     "retention": "Nous conservons les données personnelles uniquement pendant la durée nécessaire aux services, obligations légales ou objectifs commerciaux. Elles sont ensuite supprimées de manière sécurisée.",
     "contactTitle": "7. Nous contacter",
     "contact": "Pour toute question ou exercice de vos droits, contactez-nous à privacy@xyvo.ca."
+  },
+  "signin": {
+    "title": "Connectez-vous à votre compte",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "continue": "Continuer",
+    "successTitle": "Connexion réussie",
+    "successMessage": "Bon retour parmi nous !",
+    "errorTitle": "Échec de la connexion",
+    "errorMessage": "Veuillez vérifier votre e-mail et votre mot de passe.",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "signup": "Créer un compte"
+  },
+  "signinvalidation": {
+    "required": "Ce champ est requis.",
+    "invalidEmail": "Veuillez entrer une adresse e-mail valide.",
+    "passwordLength": "Le mot de passe doit contenir au moins 8 caractères.",
+    "passwordPattern": "Le mot de passe doit inclure une majuscule, une minuscule, un chiffre et un symbole."
   }
 }

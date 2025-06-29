@@ -72,3 +72,35 @@ export const signupWithUsageTypeThunk = createAsyncThunk(
     }
   }
 );
+
+//Signin thunk
+type SigninPayload = {
+  email: string;
+  password: string;
+};
+
+export const signinThunk = createAsyncThunk(
+  "auth/signin",
+  async (values: SigninPayload, { rejectWithValue }) => {
+    try {
+      const res = await fetch(`${CDN.userAuthUrl}/signin`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.message || "Sign in failed");
+
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.message || "Sign in failed");
+    }
+  }
+);

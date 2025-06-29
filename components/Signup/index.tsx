@@ -140,7 +140,7 @@ export default function Signup() {
           subtitle=""
           alternativeAuthLink={{
             text: t("haveAccount"),
-            href: "/auth",
+            href: "/auth/signin",
             linkText: t("signin"),
           }}
           showSocials={false}
