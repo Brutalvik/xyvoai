@@ -217,6 +217,7 @@
     "randomColor": "Aléatoire"
   },
   "ProjectList": {
+    "projectId": "ID du projet",
     "createTitle": "Créer un nouveau projet",
     "nameLabel": "Nom du projet",
     "namePlaceholder": "ex : Refonte du site Web",

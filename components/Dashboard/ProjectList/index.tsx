@@ -98,16 +98,21 @@ export default function ProjectsList() {
                   style={{ backgroundColor: project.color }}
                 />
                 {project.aiTasks ? (
-                  <Tooltip content={t("managedByAI")}>
-                    <Badge
-                      color="danger"
-                      content="AI"
-                      size="sm"
-                      className="hover:cursor-pointer"
-                    >
-                      <h2 className="text-lg font-semibold">{project.name}</h2>
-                    </Badge>
-                  </Tooltip>
+                  <div className="flex flex-col">
+                    <Tooltip content={t("managedByAI")}>
+                      <Badge
+                        color="primary"
+                        content="AI"
+                        size="sm"
+                        className="hover:cursor-pointer"
+                      >
+                        <h2 className="text-lg font-semibold">
+                          {project.name}
+                        </h2>
+                      </Badge>
+                    </Tooltip>
+                    <h4 className="text-sm">{`${t("projectId")}: ${project.id}`}</h4>
+                  </div>
                 ) : (
                   <h2 className="text-lg font-semibold">{project.name}</h2>
                 )}
@@ -134,7 +139,7 @@ export default function ProjectsList() {
           <CardBody className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
             <div className="flex items-center justify-between">
               <strong>{t("status")}:</strong>
-              <Badge
+              <Chip
                 size="sm"
                 color={
                   project.status === "Completed"
@@ -145,7 +150,7 @@ export default function ProjectsList() {
                 }
               >
                 {project.status}
-              </Badge>
+              </Chip>
             </div>
             <Progress
               value={project.completion}
@@ -164,9 +169,23 @@ export default function ProjectsList() {
               <strong>{t("type")}: </strong>
               {project.projectType}
             </div>
-            <div>
+            <div className="flex items-center gap-1">
               <strong>{t("priority")}: </strong>
-              {project.priority}
+              <Chip
+                size="sm"
+                color={
+                  project.priority === "Urgent"
+                    ? "danger"
+                    : project.priority === "High"
+                      ? "warning"
+                      : project.priority === "Medium"
+                        ? "primary"
+                        : "default"
+                }
+                className="hover:cursor-pointer"
+              >
+                {project.priority}
+              </Chip>
             </div>
             <div>
               <strong>{t("visibility")}: </strong>
@@ -174,7 +193,7 @@ export default function ProjectsList() {
             </div>
             <div>
               <strong>{t("team")}: </strong>
-              <AvatarGroup className="mt-1">
+              <AvatarGroup className="mt-1" max={5} size="sm">
                 {project.team.map((member) => (
                   <Tooltip content={member.name}>
                     <Avatar
