@@ -224,7 +224,7 @@ export default function Navbar() {
                       {_.capitalize(t(user?.role ?? "individual"))}
                     </p>
                   </div>
-                  <div className="flex items-center gap-4 block sm:hidden">
+                  <div className="flex items-center gap-10 mr-10 block sm:hidden">
                     <LanguageSwitch />
                     <ThemeSwitch />
                   </div>
