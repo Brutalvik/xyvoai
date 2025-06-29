@@ -180,5 +180,34 @@
     "invalidEmail": "Please enter a valid email.",
     "passwordLength": "Password must be at least 8 characters.",
     "passwordPattern": "Password must include uppercase, lowercase, number, and symbol."
+  },
+  "Dashboard": {
+    "getStartedTitle": "Welcome to Xyvo",
+    "getStartedDescription": "Create your first project to start managing your work with AI.",
+    "projectLimitReached": "You’ve reached the limit of 1 project on the Free plan.",
+    "createProject": "Create Project",
+    "upgradePlan": "Upgrade Plan"
+  },
+  "CreateProject": {
+    "createTitle": "Create a New Project",
+    "createButton": "Create Project",
+    "createSuccess": "Project created successfully.",
+    "createError": "Something went wrong. Please try again.",
+    "nameLabel": "Project Name",
+    "namePlaceholder": "Enter project name",
+    "nameRequired": "Project name is required.",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Brief summary or goal of this project",
+    "descriptionRequired": "Description is required.",
+    "startDateLabel": "Start Date",
+    "dueDateLabel": "Due Date",
+    "priorityLabel": "Priority",
+    "typeLabel": "Project Type",
+    "tagsLabel": "Tags",
+    "visibilityLabel": "Visibility",
+    "colorLabel": "Project Color",
+    "aiTasksLabel": "Automatically generate tasks with AI",
+    "attachmentLabel": "Upload Attachment",
+    "randomColor": "Random"
   }
 }

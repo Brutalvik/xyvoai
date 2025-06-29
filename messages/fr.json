@@ -186,5 +186,34 @@
     "invalidEmail": "Veuillez entrer une adresse courriel valide.",
     "passwordLength": "Le mot de passe doit contenir au moins 8 caractères.",
     "passwordPattern": "Le mot de passe doit inclure une majuscule, une minuscule, un chiffre et un symbole."
+  },
+  "Dashboard": {
+    "getStartedTitle": "Bienvenue sur Xyvo",
+    "getStartedDescription": "Veuillez créer votre premier projet afin de commencer à gérer votre travail avec l’intelligence artificielle.",
+    "projectLimitReached": "Vous avez atteint la limite d’un projet avec le forfait gratuit.",
+    "createProject": "Créer un projet",
+    "upgradePlan": "Mettre à niveau votre forfait"
+  },
+  "CreateProject": {
+    "createTitle": "Créer un nouveau projet",
+    "createButton": "Créer le projet",
+    "createSuccess": "Projet créé avec succès.",
+    "createError": "Une erreur est survenue. Veuillez réessayer.",
+    "nameLabel": "Nom du projet",
+    "namePlaceholder": "Entrez le nom du projet",
+    "nameRequired": "Le nom du projet est requis.",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Résumé ou objectif du projet",
+    "descriptionRequired": "La description est requise.",
+    "startDateLabel": "Date de début",
+    "dueDateLabel": "Date d’échéance",
+    "priorityLabel": "Priorité",
+    "typeLabel": "Type de projet",
+    "tagsLabel": "Étiquettes",
+    "visibilityLabel": "Visibilité",
+    "colorLabel": "Couleur du projet",
+    "aiTasksLabel": "Générer automatiquement des tâches avec l’IA",
+    "attachmentLabel": "Joindre un fichier",
+    "randomColor": "Aléatoire"
   }
 }
