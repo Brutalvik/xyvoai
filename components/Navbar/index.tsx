@@ -36,10 +36,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { addToast } from "@heroui/react";
 import { HiInformationCircle } from "react-icons/hi";
 import _ from "lodash";
-
-function getInitial(name: string) {
-  return name?.charAt(0)?.toUpperCase() || "?";
-}
+import { getInitial } from "@/utils";
 
 function getUserColor(seed: string): string {
   const colors = [
