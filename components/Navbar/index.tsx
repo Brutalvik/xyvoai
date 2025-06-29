@@ -32,6 +32,7 @@ import LanguageSwitch from "@/components/LanguageSwitch";
 import { useLocale, useTranslations } from "next-intl";
 import { addToast } from "@heroui/react";
 import { HiInformationCircle } from "react-icons/hi";
+import _ from "lodash";
 
 function getInitial(name: string) {
   return name?.charAt(0)?.toUpperCase() || "?";
@@ -149,6 +150,7 @@ export default function Navbar() {
               src={user?.image || undefined}
               className={clsx("text-white cursor-pointer", avatarBg)}
               onClick={onOpen}
+              name={!user?.image ? avatarInitial : ""}
             >
               {!user?.image && avatarInitial}
             </Avatar>
@@ -157,19 +159,16 @@ export default function Navbar() {
                 {(onClose) => (
                   <>
                     <DrawerHeader className="flex flex-col gap-1">
-                      {t("welcome")}, {user?.name}
+                      <div className="flex flex-col">
+                        <p>
+                          {t("welcome")}, {_.capitalize(user?.name)}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {_.capitalize(t(user?.role ?? "Individual"))}
+                        </p>
+                      </div>
                     </DrawerHeader>
-                    <DrawerBody>
-                      <p>
-                        {t("email")}: {user?.email}
-                      </p>
-                      <p>
-                        {t("phone")}: {user?.phone}
-                      </p>
-                      <p>
-                        {t("accountType")}: {user?.accountType}
-                      </p>
-                    </DrawerBody>
+                    <DrawerBody>{/* body goes here */}</DrawerBody>
                     <DrawerFooter className="justify-end">
                       <Button
                         color="danger"

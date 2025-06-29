@@ -28,7 +28,13 @@
     "phone": "Téléphone",
     "accountType": "Type de compte",
     "signedOutTitle": "Déconnecté",
-    "signedOutDescription": "Vous avez été déconnecté avec succès."
+    "signedOutDescription": "Vous avez été déconnecté avec succès.",
+    "individual": "Individuel",
+    "organization": "Organisation"
+  },
+  "Search": {
+    "placeholder": "Rechercher...",
+    "ariaLabel": "Recherche"
   },
   "footer": {
     "plain": "© 2025 Xyvo — Tous droits réservés.",

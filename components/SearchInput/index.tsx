@@ -5,11 +5,14 @@ import { Kbd } from "@heroui/kbd";
 import { SearchIcon } from "@/components/icons";
 import React, { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 
 export const SearchInput = ({ autoFocus = false }: { autoFocus?: boolean }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const t = useTranslations("Search");
 
   const shouldExpand = isFocused || value.length > 0 || autoFocus;
 
@@ -31,7 +34,7 @@ export const SearchInput = ({ autoFocus = false }: { autoFocus?: boolean }) => {
     >
       <Input
         ref={inputRef}
-        aria-label="Search"
+        aria-label={t("ariaLabel")}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onFocus={() => setIsFocused(true)}
@@ -46,7 +49,7 @@ export const SearchInput = ({ autoFocus = false }: { autoFocus?: boolean }) => {
           </Kbd>
         }
         labelPlacement="outside"
-        placeholder="Search..."
+        placeholder={t("placeholder")}
         startContent={
           <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
         }

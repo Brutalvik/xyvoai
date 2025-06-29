@@ -22,7 +22,13 @@
     "phone": "Phone",
     "accountType": "Account Type",
     "signedOutTitle": "Signed Out",
-    "signedOutDescription": "You have been signed out successfully."
+    "signedOutDescription": "You have been signed out successfully.",
+    "individual": "Individual",
+    "organization": "Organization"
+  },
+  "Search": {
+    "placeholder": "Search...",
+    "ariaLabel": "Search"
   },
   "footer": {
     "plain": "© 2025 Xyvo — All rights reserved.",
