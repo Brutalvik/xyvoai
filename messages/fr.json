@@ -20,11 +20,12 @@
     "cta": "Essayez maintenant →"
   },
   "Navbar": {
+    "menu": "Menu",
     "signIn": "Connexion",
     "signUp": "Inscription",
     "signOut": "Déconnexion",
     "welcome": "Bienvenue",
-    "email": "E-mail",
+    "email": "courriel",
     "phone": "Téléphone",
     "accountType": "Type de compte",
     "signedOutTitle": "Déconnecté",
@@ -168,13 +169,13 @@
   },
   "signin": {
     "title": "Connectez-vous à votre compte",
-    "email": "Adresse e-mail",
+    "email": "Courriel",
     "password": "Mot de passe",
     "continue": "Continuer",
     "successTitle": "Connexion réussie",
     "successMessage": "Bon retour parmi nous !",
     "errorTitle": "Échec de la connexion",
-    "errorMessage": "Veuillez vérifier votre e-mail et votre mot de passe.",
+    "errorMessage": "Veuillez vérifier votre courriel et votre mot de passe.",
     "noAccount": "Vous n'avez pas de compte ?",
     "signup": "Créer un compte",
     "warningTitle": "Veuillez vous connecter",
@@ -182,7 +183,7 @@
   },
   "signinvalidation": {
     "required": "Ce champ est requis.",
-    "invalidEmail": "Veuillez entrer une adresse e-mail valide.",
+    "invalidEmail": "Veuillez entrer une adresse courriel valide.",
     "passwordLength": "Le mot de passe doit contenir au moins 8 caractères.",
     "passwordPattern": "Le mot de passe doit inclure une majuscule, une minuscule, un chiffre et un symbole."
   }

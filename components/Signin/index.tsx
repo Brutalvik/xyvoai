@@ -15,7 +15,6 @@ import { HiBan, HiBadgeCheck, HiExclamation } from "react-icons/hi";
 import XyvoLoader from "@/components/ui/XyvoLoader";
 import AuthFormLayout from "@/components/ui/Auth/AuthFormLayout";
 import { PasswordInput } from "@/components/ui/Auth/PasswordInput";
-import PasswordTooltip from "@/components/ui/Auth/PasswordTooltip";
 import { passwordRules } from "@/utils";
 import { useAppDispatch } from "@/store/hooks";
 import { meThunk, signInThunk } from "@/store/auth/thunks";
@@ -134,7 +133,6 @@ export default function Signin() {
               }
               size="sm"
             />
-            <PasswordTooltip />
             <Button
               type="submit"
               variant="solid"

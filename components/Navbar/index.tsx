@@ -5,6 +5,9 @@ import {
   NavbarContent,
   NavbarBrand,
   NavbarItem,
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem,
 } from "@heroui/navbar";
 import {
   Button,
@@ -154,7 +157,11 @@ export default function Navbar() {
             >
               {!user?.image && avatarInitial}
             </Avatar>
-            <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
+            <Drawer
+              isOpen={isOpen}
+              onOpenChange={onOpenChange}
+              placement="right"
+            >
               <DrawerContent>
                 {(onClose) => (
                   <>
@@ -168,7 +175,7 @@ export default function Navbar() {
                         </p>
                       </div>
                     </DrawerHeader>
-                    <DrawerBody>{/* body goes here */}</DrawerBody>
+                    <DrawerBody></DrawerBody>
                     <DrawerFooter className="justify-end">
                       <Button
                         color="danger"
@@ -195,6 +202,55 @@ export default function Navbar() {
           </NavbarItem>
         )}
       </NavbarContent>
+
+      {!loggedIn && !user ? (
+        <NavbarMenuToggle className="sm:hidden" />
+      ) : (
+        <NavbarItem>
+          <Avatar
+            size="sm"
+            src={user?.image || undefined}
+            className={clsx("text-white cursor-pointer", avatarBg)}
+            onClick={onOpen}
+            name={!user?.image ? avatarInitial : ""}
+          >
+            {!user?.image && avatarInitial}
+          </Avatar>
+        </NavbarItem>
+      )}
+
+      <NavbarMenu>
+        <div className="p-4 space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">{t("menu")}</h2>
+            <div className="flex items-center gap-2">
+              <LanguageSwitch />
+              <ThemeSwitch />
+            </div>
+          </div>
+
+          <SearchInput />
+
+          {!isSignInPage && (
+            <NavbarMenuItem>
+              <NextLink href={`/${locale}/auth/signin`} passHref>
+                <Button fullWidth variant="solid" color="primary">
+                  {t("signIn")}
+                </Button>
+              </NextLink>
+            </NavbarMenuItem>
+          )}
+          {!isSignUpPage && (
+            <NavbarMenuItem>
+              <NextLink href={`/${locale}/auth/signup`} passHref>
+                <Button fullWidth variant="bordered" color="primary">
+                  {t("signUp")}
+                </Button>
+              </NextLink>
+            </NavbarMenuItem>
+          )}
+        </div>
+      </NavbarMenu>
     </HeroUINavbar>
   );
 }
