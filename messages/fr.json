@@ -20,7 +20,9 @@
     "cta": "Essayez maintenant →"
   },
   "footer": {
-    "plain": "© 2025 Xyvo — Tous droits réservés."
+    "plain": "© 2025 Xyvo — Tous droits réservés.",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation"
   },
   "auth": {
     "password": {

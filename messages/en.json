@@ -14,7 +14,9 @@
     "cta": "Try now →"
   },
   "footer": {
-    "plain": "© 2025 Xyvo — All rights reserved."
+    "plain": "© 2025 Xyvo — All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Conditions of Use"
   },
   "auth": {
     "password": {
