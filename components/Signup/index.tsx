@@ -52,13 +52,18 @@ export default function Signup() {
     onSubmit: async (values, { setSubmitting }) => {
       try {
         sessionStorage.setItem("signup-form", JSON.stringify(values));
-        const res = await fetch("https://auth.xyvo.ca/live/signup", {
+        const res = await fetch("https://auth.xyvo.ca/auth/signup", {
           method: "POST",
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values),
+          body: JSON.stringify({
+            name: values.name,
+            email: values.email,
+            phone: values.countryCode + values.phone,
+            password: values.password,
+          }),
         });
         const data = await res.json();
 
@@ -108,13 +113,19 @@ export default function Signup() {
     values.usageType = usageType;
 
     try {
-      const res = await fetch("https://auth.xyvo.ca/live/signup", {
+      const res = await fetch("https://auth.xyvo.ca/auth/signup", {
         method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          name: values.name,
+          email: values.email,
+          phone: values.countryCode + values.phone,
+          password: values.password,
+          usageType: usageType,
+        }),
       });
 
       const data = await res.json();
