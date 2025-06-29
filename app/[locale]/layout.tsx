@@ -10,6 +10,7 @@ import { fontSans } from "@/config/fonts";
 import clsx from "clsx";
 import { ReduxProvider } from "@/store/Provider";
 import { ToastProvider } from "@heroui/toast";
+import PageTransitionLoader from "@/components/ui/PageTransitionLoader";
 
 type Props = {
   children: React.ReactNode;
@@ -30,6 +31,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           fontSans.variable
         )}
       >
+        <PageTransitionLoader />
         <Providers>
           <ReduxProvider>
             <NextIntlClientProvider locale={locale} messages={messages}>
