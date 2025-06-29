@@ -9,6 +9,7 @@ import "@/styles/globals.css";
 import { fontSans } from "@/config/fonts";
 import clsx from "clsx";
 import { ReduxProvider } from "@/store/Provider";
+import { ToastProvider } from "@heroui/toast";
 
 type Props = {
   children: React.ReactNode;
@@ -32,6 +33,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <Providers>
           <ReduxProvider>
             <NextIntlClientProvider locale={locale} messages={messages}>
+              <ToastProvider />
               <div className="relative flex flex-col font-sans antialiased">
                 <Navbar />
                 <main className="w-full max-w-none flex-grow">{children}</main>

@@ -1,7 +1,7 @@
 {
   "hero": {
     "verbs": ["Reinvent", "Accelerate", "Simplify", "Transform", "Unleash"],
-    "headingRest": "how you work with Xyvo AI",
+    "headingRest": "your work with Xyvo AI",
     "subtitle": "A fully AI-native project management platform that eliminates chaos and supercharges clarity"
   },
   "cta": {
@@ -38,15 +38,24 @@
     "placeholder": "e.g., 780 123 4567",
     "countryCode": "Country Code"
   },
-
-  "register": {
+  "signup": {
     "title": "Sign up for XYVO",
     "name": "Your name",
     "email": "Email",
     "continue": "Continue",
-    "registering": "Registering...",
+    "singingup": "Signing Up...",
     "haveAccount": "Already have an account?",
-    "signin": "Sign in"
+    "signin": "Sign in",
+    "agreementNotice": "By continuing, you agree to XYVO's <terms>Conditions of Use</terms> and <privacy>Privacy Notice</privacy>.",
+    "successTitle": "Account created!",
+    "successMessage": "You’ve successfully registered. Please log in.",
+    "errorTitle": "Registration failed",
+    "errorMessage": "Something went wrong. Please try again.",
+    "selectUsageTitle": "How will you use Xyvo?",
+    "selectUsageDescription": "This helps us customize your experience",
+    "selectUsageOptionIndividual": "Just for myself (Individual use)",
+    "selectUsageOptionTeam": "With my team (Organization)",
+    "selectUsageError": "Please select how you will use Xyvo"
   },
   "validation": {
     "required": "Required",

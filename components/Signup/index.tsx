@@ -4,10 +4,10 @@ import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { motion } from "framer-motion";
-import { useSearchParams, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter, usePathname } from "next/navigation";
 import { addToast } from "@heroui/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import XyvoLoader from "@/components/ui/XyvoLoader";
 import AuthFormLayout from "@/components/ui/Auth/AuthFormLayout";
 import { PhoneInput } from "@/components/ui/Auth/PhoneInput";
@@ -15,22 +15,28 @@ import { PasswordInput } from "@/components/ui/Auth/PasswordInput";
 import PasswordTooltip from "@/components/ui/Auth/PasswordTooltip";
 import { passwordRules } from "@/utils";
 import { useAppDispatch } from "@/store/hooks";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import UsageTypeSelector from "@/components/Signup/UsageType";
 
 export default function Signup() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const prefilledEmail = searchParams?.get("email") || "";
-
-  const t = useTranslations("register");
+  const pathname = usePathname();
+  const t = useTranslations("signup");
   const v = useTranslations("validation");
+  const locale = useLocale();
+
+  const [prevLocale, setPrevLocale] = useState(locale);
+  const [usageType, setUsageType] = useState<"personal" | "team" | "">("");
+  const [hasTriedUsageSubmit, setHasTriedUsageSubmit] = useState(false);
+  const [step, setStep] = useState<"form" | "usagetype">("form");
+  const [processingSignup, setProcessingSignup] = useState<boolean>(false);
 
   const formik = useFormik({
     initialValues: {
-      email: prefilledEmail,
-      phone: "",
       name: "",
+      email: "",
+      phone: "",
       password: "",
       countryCode: "+1",
     },
@@ -45,37 +51,27 @@ export default function Signup() {
     }),
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        const res = await fetch(
-          "https://dkft2r7o6f.execute-api.us-east-2.amazonaws.com/live/auth/register",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: values.name,
-              email: values.email,
-              phone: values.phone,
-              password: values.password,
-              countryCode: values.countryCode,
-            }),
-          }
-        );
-
+        sessionStorage.setItem("signup-form", JSON.stringify(values));
+        const res = await fetch("https://auth.xyvo.ca/live/signup", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        });
         const data = await res.json();
 
-        if (!res.ok) {
-          throw new Error(data?.message || "Registration failed.");
+        if (res.status === 202 && data.requireUsageType) {
+          setStep("usagetype");
+          router.replace(`${pathname}?step=usagetype`);
         }
 
-        addToast({
-          title: t("successTitle"),
-          description: t("successMessage"),
-          color: "success",
-        });
-
-        router.push("/auth?registered=1");
+        if (!res.ok) {
+          throw new Error(data?.message || "Signup failed.");
+        }
       } catch (error: any) {
+        console.log("signed up", error);
         addToast({
           title: t("errorTitle"),
           description: error.message || t("errorMessage"),
@@ -88,8 +84,61 @@ export default function Signup() {
   });
 
   useEffect(() => {
-    formik.resetForm();
-  }, []);
+    const saved = sessionStorage.getItem("signup-form");
+
+    if (prevLocale !== locale && saved) {
+      const parsed = JSON.parse(saved);
+      formik.setValues(parsed);
+    } else {
+      sessionStorage.removeItem("signup-form");
+    }
+
+    setPrevLocale(locale);
+  }, [locale]);
+
+  const handleUsageContinue = async () => {
+    setProcessingSignup(true);
+    setHasTriedUsageSubmit(true);
+    if (!usageType) return;
+
+    const saved = sessionStorage.getItem("signup-form");
+    if (!saved) return;
+
+    const values = JSON.parse(saved);
+    values.usageType = usageType;
+
+    try {
+      const res = await fetch("https://auth.xyvo.ca/live/signup", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data?.message || "Signup failed");
+
+      sessionStorage.removeItem("signup-form");
+      addToast({
+        title: t("successTitle"),
+        description: t("successMessage"),
+        color: "success",
+      });
+
+      router.push(`/${locale}`);
+      setProcessingSignup(false);
+    } catch (error: any) {
+      setProcessingSignup(false);
+      addToast({
+        title: t("errorTitle"),
+        description: error.message || t("errorMessage"),
+        color: "danger",
+      });
+    }
+  };
 
   return (
     <motion.div
@@ -110,90 +159,112 @@ export default function Signup() {
             href: "/auth",
             linkText: t("signin"),
           }}
-          showSocials={false} //hardcoded now, replace in future once social auth is implemented
+          showSocials={false}
         >
-          <form onSubmit={formik.handleSubmit}>
-            <div className="space-y-2">
-              <Input
-                id="name"
-                name="name"
-                label={t("name")}
-                type="text"
-                variant="bordered"
-                value={formik.values.name}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={!!(formik.touched.name && formik.errors.name)}
-                errorMessage={
-                  formik.touched.name ? formik.errors.name : undefined
-                }
-                size="sm"
-              />
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                label={t("email")}
-                variant="bordered"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={!!(formik.touched.email && formik.errors.email)}
-                errorMessage={
-                  formik.touched.email ? formik.errors.email : undefined
-                }
-                size="sm"
-              />
-
-              <PhoneInput
-                id="phone"
-                name="phone"
-                value={formik.values.phone}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={!!(formik.touched.phone && formik.errors.phone)}
-                errorMessage={
-                  formik.touched.phone ? formik.errors.phone : undefined
-                }
-                setFormikFieldValue={formik.setFieldValue}
-                formikCountryCode={formik.values.countryCode}
-                size="sm"
-              />
-
-              <PasswordInput
-                id="password"
-                name="password"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={
-                  !!(formik.touched.password && formik.errors.password)
-                }
-                errorMessage={
-                  formik.touched.password ? formik.errors.password : undefined
-                }
-                size="sm"
-              />
-
-              <PasswordTooltip />
-            </div>
-
-            <div className="flex flex-col space-y-1 mt-4">
-              {formik.isSubmitting ? (
-                <p>{t("registering")}</p>
-              ) : (
+          <AnimatePresence mode="wait">
+            {step === "usagetype" ? (
+              <motion.div
+                key="usagetype"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-4"
+              >
+                <UsageTypeSelector
+                  value={usageType}
+                  onChange={setUsageType}
+                  isInvalid={!usageType && hasTriedUsageSubmit}
+                />
                 <Button
-                  type="submit"
+                  onClick={handleUsageContinue}
                   variant="solid"
                   color="primary"
-                  isDisabled={formik.isSubmitting}
                   className="w-full"
                 >
                   {t("continue")}
                 </Button>
-              )}
-            </div>
-          </form>
+              </motion.div>
+            ) : (
+              <motion.form
+                key="signup-form"
+                onSubmit={formik.handleSubmit}
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 50 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-4"
+              >
+                <Input
+                  id="name"
+                  name="name"
+                  label={t("name")}
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={!!(formik.touched.name && formik.errors.name)}
+                  errorMessage={
+                    formik.touched.name ? formik.errors.name : undefined
+                  }
+                  variant="bordered"
+                  size="sm"
+                />
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  label={t("email")}
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={!!(formik.touched.email && formik.errors.email)}
+                  errorMessage={
+                    formik.touched.email ? formik.errors.email : undefined
+                  }
+                  variant="bordered"
+                  size="sm"
+                />
+                <PhoneInput
+                  id="phone"
+                  name="phone"
+                  value={formik.values.phone}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={!!(formik.touched.phone && formik.errors.phone)}
+                  errorMessage={
+                    formik.touched.phone ? formik.errors.phone : undefined
+                  }
+                  setFormikFieldValue={formik.setFieldValue}
+                  formikCountryCode={formik.values.countryCode}
+                  size="sm"
+                />
+                <PasswordInput
+                  id="password"
+                  name="password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={
+                    !!(formik.touched.password && formik.errors.password)
+                  }
+                  errorMessage={
+                    formik.touched.password ? formik.errors.password : undefined
+                  }
+                  size="sm"
+                />
+                <PasswordTooltip />
+                <Button
+                  type="submit"
+                  variant="solid"
+                  color="primary"
+                  className="w-full"
+                  isLoading={formik.isSubmitting}
+                >
+                  {t("continue")}
+                </Button>
+              </motion.form>
+            )}
+          </AnimatePresence>
         </AuthFormLayout>
       )}
     </motion.div>

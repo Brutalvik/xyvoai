@@ -7,7 +7,7 @@
       "Transformez",
       "Libérez"
     ],
-    "headingRest": "votre façon de travailler avec Xyvo AI",
+    "headingRest": "votre travail avec Xyvo AI",
     "subtitle": "Une plateforme de gestion de projet entièrement native à l'IA qui élimine le chaos et amplifie la clarté"
   },
   "cta": {
@@ -44,14 +44,24 @@
     "placeholder": "ex. : 780 123 4567",
     "countryCode": "Indicatif du pays"
   },
-  "register": {
+  "signup": {
     "title": "Inscrivez-vous à XYVO",
     "name": "Votre nom",
     "email": "Courriel",
     "continue": "Continuer",
-    "registering": "Inscription en cours...",
+    "signingup": "Inscription en cours...",
     "haveAccount": "Vous avez déjà un compte ?",
-    "signin": "Se connecter"
+    "signin": "Se connecter",
+    "agreementNotice": "En continuant, vous acceptez les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy> de XYVO.",
+    "successTitle": "Compte créé !",
+    "successMessage": "Vous vous êtes inscrit avec succès. Veuillez vous connecter.",
+    "errorTitle": "Échec de l'inscription",
+    "errorMessage": "Une erreur s'est produite. Veuillez réessayer.",
+    "selectUsageTitle": "Comment allez-vous utiliser Xyvo ?",
+    "selectUsageDescription": "Cela nous aide à personnaliser votre expérience",
+    "selectUsageOptionIndividual": "Juste pour moi (utilisation individuelle)",
+    "selectUsageOptionTeam": "Avec mon équipe (organisation)",
+    "selectUsageError": "Veuillez sélectionner comment vous utiliserez Xyvo"
   },
   "validation": {
     "required": "Obligatoire",

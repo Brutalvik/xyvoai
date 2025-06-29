@@ -8,6 +8,7 @@ import { FaFacebook } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { RiKeyFill } from "react-icons/ri"; // Import RiKeyFill
 import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 
 interface AuthFormLayoutProps {
   title: string;
@@ -28,9 +29,10 @@ export default function AuthFormLayout({
   children,
   showSocials = true,
   alternativeAuthLink,
-  showKeyIcon = false, // Default to false
+  showKeyIcon = true,
 }: AuthFormLayoutProps) {
   const locale = useLocale();
+  const t = useTranslations("signup");
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -63,22 +65,25 @@ export default function AuthFormLayout({
         <CardBody className="space-y-2">{children}</CardBody>
 
         <CardFooter className="flex flex-col space-y-1">
-          <p className="text-xs text-center px-2">
-            By continuing, you agree to XYVO&apos;s{" "}
-            <Link
-              href={`/${locale}/legal/conditions`}
-              className="underline hover:text-blue-500"
-            >
-              Conditions of Use
-            </Link>{" "}
-            and{" "}
-            <Link
-              href={`/${locale}/legal/privacy`}
-              className="underline hover:text-blue-500"
-            >
-              Privacy Notice
-            </Link>
-            .
+          <p className="text-xs text-center text-default-500 mt-2">
+            {t.rich("agreementNotice", {
+              terms: (chunks: React.ReactNode): JSX.Element => (
+                <a
+                  href={`/${locale}/legal/conditions`}
+                  className="underline text-primary"
+                >
+                  {chunks}
+                </a>
+              ),
+              privacy: (chunks: React.ReactNode): JSX.Element => (
+                <a
+                  href={`/${locale}/legal/privacy`}
+                  className="underline text-primary"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
           </p>
 
           {alternativeAuthLink && (
