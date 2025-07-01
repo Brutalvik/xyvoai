@@ -47,14 +47,13 @@ export default function Signin() {
         await dispatch(signInThunk(values)).unwrap();
         const user = await dispatch(meThunk()).unwrap();
         dispatch(setUser(user));
-        console.log("USER : ", user);
         addToast({
           title: t("successTitle"),
           description: t("successMessage"),
           color: "success",
           icon: <HiBadgeCheck />,
         });
-        router.push("/dashboard/individual/create-project");
+        router.push("/dashboard/projects");
       } catch (error: any) {
         addToast({
           title: t("errorTitle"),

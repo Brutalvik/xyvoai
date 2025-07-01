@@ -19,7 +19,6 @@ export const getFlagFromPhone = (phone: string): string => {
 export const getInitial = (name: string) => {
   return name?.charAt(0)?.toUpperCase() || "?";
 };
-
 export const getBgColor = (seed: string, asHex: boolean = false): string => {
   const colorMap = [
     { class: "bg-red-500", hex: "#ef4444" },
@@ -38,7 +37,16 @@ export const getBgColor = (seed: string, asHex: boolean = false): string => {
   for (let i = 0; i < seed.length; i++) {
     hash = seed.charCodeAt(i) + ((hash << 5) - hash);
   }
-  const index = Math.abs(hash) % colorMap.length;
+
+  let index = Math.abs(hash) % colorMap.length;
+
+  // Safeguard: ensure no black/white
+  const color = colorMap[index];
+  const isSafeColor = color.hex !== "#ffffff" && color.hex !== "#000000";
+
+  if (!isSafeColor) {
+    index = (index + 1) % colorMap.length; // fallback to next safe color
+  }
 
   return asHex ? colorMap[index].hex : colorMap[index].class;
 };

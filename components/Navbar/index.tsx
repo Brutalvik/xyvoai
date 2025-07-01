@@ -104,12 +104,23 @@ export default function Navbar() {
             <Avatar
               size="sm"
               src={user?.image || undefined}
-              className={clsx("text-white cursor-pointer", avatarBg)}
+              name={avatarInitial}
               onClick={onOpen}
-              name={!user?.image ? avatarInitial : ""}
-            >
-              {!user?.image && avatarInitial}
-            </Avatar>
+              className={clsx(
+                "cursor-pointer text-white",
+                !user?.image && avatarBg // only apply bg class if no image
+              )}
+              style={{
+                ...(user?.image
+                  ? {}
+                  : {
+                      backgroundColor: getBgColor(user?.id || "", true), // fallback to hex
+                      fontSize: "0.975rem", // ~14px
+                      fontWeight: "700",
+                      color: "#ffffff",
+                    }),
+              }}
+            />
           </NavbarItem>
         )}
 

@@ -1,30 +1,40 @@
-import createMiddleware from "next-intl/middleware";
-import { routing } from "./i18n/routing";
 import { NextResponse } from "next/server";
+import createIntlMiddleware from "next-intl/middleware";
 import type { NextRequest } from "next/server";
+import { routing } from "./i18n/routing";
 
-const intlMiddleware = createMiddleware(routing);
+// Create the intl middleware from next-intl
+const intlMiddleware = createIntlMiddleware(routing);
+
+// Define routes to protect (NO locale prefix)
 const protectedRoutes = ["/dashboard", "/projects", "/tasks"];
 
-export default function middleware(req: NextRequest) {
-  const pathname = req.nextUrl.pathname;
-  const xToken = req.cookies.get("x-token")?.value;
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const locale = request.nextUrl.locale || "en";
 
+  // Remove locale prefix from pathname (e.g., /en/dashboard -> /dashboard)
+  const pathWithoutLocale = pathname.replace(`/${locale}`, "") || "/";
+
+  // Match if this is a protected route
   const isProtected = protectedRoutes.some((route) =>
-    pathname.startsWith(`/${req.nextUrl.locale}${route}`)
+    pathWithoutLocale.startsWith(route)
   );
 
-  if (isProtected && !xToken) {
+  const isLoggedIn = Boolean(request.cookies.get("x-token")?.value);
+
+  if (isProtected && !isLoggedIn) {
     const redirectUrl = new URL(
-      `/${req.nextUrl.locale}/auth/signin?redirected=1`,
-      req.url
+      `/${locale}/auth/signin?redirected=1`,
+      request.url
     );
     return NextResponse.redirect(redirectUrl);
   }
 
-  return intlMiddleware(req);
+  // Run the locale middleware
+  return intlMiddleware(request);
 }
 
 export const config = {
-  matcher: "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
+  matcher: ["/((?!_next|api|trpc|_vercel|.*\\..*).*)"],
 };
