@@ -10,7 +10,7 @@ const Header = () => {
   const toggleSearch = () => setSearchOpen((prev) => !prev);
 
   return (
-    <header className="bg-white px-6 py-4 shadow-sm flex items-center justify-between border-b">
+    <header className="px-6 py-4 shadow-sm flex items-center justify-between border-b">
       <div className="flex flex-col">
         <nav className="text-xs text-gray-500 mb-1">
           Contoso / AdventureWorks Mobile / Boards /

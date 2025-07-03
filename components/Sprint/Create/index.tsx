@@ -92,7 +92,7 @@ export default function CreateSprintForm({ teams, onSubmit }: Props) {
       }}
     >
       {({ values, errors, touched, setFieldValue, isSubmitting }) => (
-        <Form className="space-y-4 max-w-xl p-4 bg-white shadow rounded-lg">
+        <Form className="space-y-4 max-w-xl p-4 shadow rounded-lg">
           <h2 className="text-lg font-semibold">{t("createSprint")}</h2>
 
           <Field name="name">

@@ -26,11 +26,7 @@ const Column = ({
         <h2 className="font-semibold text-lg">{t(title)}</h2>
         <span className={`text-sm ${countColor}`}>{countLabel}</span>
       </div>
-      <div
-        id={id}
-        className="bg-white rounded shadow p-3 space-y-3 flex-1"
-        data-column
-      >
+      <div id={id} className="rounded shadow p-3 space-y-3 flex-1" data-column>
         {children}
       </div>
     </div>

@@ -100,7 +100,7 @@ export default function Card({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
       className={clsx(
-        "relative rounded-xl border-l-4 p-4 shadow-sm transition-all cursor-move bg-white hover:shadow-md hover:ring-1",
+        "relative rounded-xl border-l-4 p-4 shadow-sm transition-all cursor-move hover:shadow-md hover:ring-1",
         statusBorderMap[status] ?? "border-gray-300"
       )}
       data-card

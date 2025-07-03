@@ -340,7 +340,8 @@
     "days": "Jours",
     "hours": "Heures",
     "minutes": "Minutes",
-    "seconds": "Secondes"
+    "seconds": "Secondes",
+    "endsIn": "Se termine dans :"
   },
   "Team": {
     "name": "Nom de l'équipe",

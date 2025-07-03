@@ -49,7 +49,7 @@ export default function IssueCreateForm({ sprints, users, onSubmit }: Props) {
       }}
     >
       {({ errors, touched, isSubmitting }) => (
-        <Form className="space-y-4 p-4 max-w-xl bg-white shadow rounded-lg">
+        <Form className="space-y-4 p-4 max-w-xl shadow rounded-lg">
           <h2 className="text-lg font-semibold">{t("createIssue")}</h2>
 
           <Field name="title">

@@ -7,7 +7,7 @@ const Sidebar = () => {
   const t = useTranslations("Sidebar");
 
   return (
-    <aside className="w-64 bg-white border-r shadow-sm flex flex-col">
+    <aside className="w-64 border-r shadow-sm flex flex-col">
       <div className="flex items-center px-4 py-4 text-blue-600 font-bold border-b">
         <span className="material-icons mr-2">layers</span>
         {t("projectBoard")}
