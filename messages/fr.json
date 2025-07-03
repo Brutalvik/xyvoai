@@ -338,11 +338,31 @@
     "createTeam": "Créer une équipe"
   },
   "Team": {
-    "createTeam": "Créer une nouvelle équipe",
     "name": "Nom de l'équipe",
+    "createTeam": "Créer une équipe",
+    "editTeam": "Modifier l'équipe",
+    "teamName": "Nom de l'équipe",
     "description": "Description",
-    "cancel": "Annuler",
+    "teamLead": "Chef d'équipe",
+    "lead": "Chef",
+    "members": "Membres de l'équipe",
+    "tags": "Étiquettes",
+    "visibility": "Visibilité",
+    "public": "Publique",
+    "private": "Privée",
+    "timezone": "Fuseau horaire",
+    "color": "Couleur",
+    "organization": "Organisation",
+    "createdBy": "Créé par",
+    "createdOn": "Créé le",
+    "saveChanges": "Enregistrer les modifications",
+    "updateSuccess": "Équipe mise à jour avec succès",
+    "createSuccess": "Équipe créée avec succès",
+    "settings": "Paramètres de l'équipe",
+    "required": "Ce champ est requis",
+    "invalid": "Valeur invalide",
+    "edit": "Modifier",
     "create": "Créer",
-    "createSuccess": "Équipe créée avec succès"
+    "cancel": "Annuler"
   }
 }
