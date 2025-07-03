@@ -17,7 +17,7 @@ export default function GetStarted({
   plan,
   currentProjectCount,
 }: Props) {
-  const t = useTranslations("Dashboard");
+  const t = useTranslations("DashboardProjects");
 
   const hasReachedLimit = plan === "free" && currentProjectCount >= 1;
 

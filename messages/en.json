@@ -181,7 +181,7 @@
     "passwordLength": "Password must be at least 8 characters.",
     "passwordPattern": "Password must include uppercase, lowercase, number, and symbol."
   },
-  "Dashboard": {
+  "DashboardProjects": {
     "getStartedTitle": "Welcome to Xyvo",
     "getStartedDescription": "Create your first project to start managing your work with AI.",
     "projectLimitReached": "You’ve reached the limit of 1 project on the Free plan.",
@@ -328,10 +328,15 @@
     "storyPoints": "Story Points",
     "tasks": "Tasks",
     "team": "Team",
-    "timezone": "Time Zone",
     "autoAssignTasks": "Auto-assign New Tasks",
     "create": "Create",
-    "createTeam": "Create Team"
+    "createTeam": "Create Team",
+    "timezone": "Time Zone",
+    "view": "View Sprint",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "Team": {
     "name": "Team Name",
@@ -360,5 +365,26 @@
     "edit": "Edit",
     "create": "Create",
     "cancel": "Cancel"
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "currentSprint": "Current Sprint",
+    "noSprint": "No sprint available",
+    "sprintEndsIn": "Ends in",
+    "viewSprint": "View Sprint",
+    "viewAll": "View All",
+    "teams": "Teams",
+    "noTeams": "No teams available",
+    "members": "Members",
+    "teamLead": "Team Lead",
+    "timezone": "Time Zone",
+    "aiSuggestions": "AI Suggestions",
+    "aiPlaceholder": "No AI suggestions available",
+    "noSuggestions": "No AI suggestions available",
+    "daysLeft": "{{count}} day left",
+    "daysLeft_plural": "{{count}} days left",
+    "hoursLeft": "{{count}} hour left",
+    "hoursLeft_plural": "{{count}} hours left",
+    "view": "View Sprint"
   }
 }
