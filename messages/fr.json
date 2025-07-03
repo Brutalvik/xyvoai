@@ -276,7 +276,7 @@
     "staging": "Préproduction",
     "deployed": "Déployé",
     "assigned": "Attribué à",
-    "storyPoints": "Points d'histoire",
+    "effort": "Effort",
     "projectBoard": "Tableau de projet",
     "projectName": "AdventureWorks Mobile",
     "overview": "Aperçu",
@@ -290,6 +290,59 @@
     "pipelines": "Pipelines",
     "testPlans": "Plans de test",
     "artifacts": "Artéfacts",
-    "projectSettings": "Paramètres du projet"
+    "projectSettings": "Paramètres du projet",
+    "status": {
+      "inProgress": "En cours",
+      "blocked": "Bloqué",
+      "done": "Terminé",
+      "review": "Relecture"
+    },
+    "progress": "Progression"
+  },
+  "Issue": {
+    "createIssue": "Créer un nouvel élément",
+    "title": "Titre",
+    "description": "Description",
+    "effort": "Effort",
+    "priority": "Priorité",
+    "priorityLow": "Faible",
+    "priorityMedium": "Moyenne",
+    "priorityHigh": "Élevée",
+    "priorityCritical": "Critique",
+    "assignee": "Attribué à",
+    "sprint": "Sprint",
+    "selectAssignee": "Sélectionner un responsable",
+    "selectSprint": "Sélectionner un sprint",
+    "create": "Créer l'élément"
+  },
+  "Sprint": {
+    "createSprint": "Créer un sprint",
+    "name": "Nom du sprint",
+    "goal": "Objectif",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "velocity": "Vélocité estimée",
+    "status": "Statut",
+    "planned": "Planifié",
+    "active": "Actif",
+    "completed": "Terminé",
+    "board": "Tableau",
+    "visibility": "Visibilité",
+    "team": "Équipe",
+    "organization": "Organisation",
+    "private": "Privé",
+    "timezone": "Fuseau horaire",
+    "createdBy": "Créé par",
+    "autoAssign": "Auto-assigner les nouvelles tâches",
+    "create": "Créer",
+    "createTeam": "Créer une équipe"
+  },
+  "Team": {
+    "createTeam": "Créer une nouvelle équipe",
+    "name": "Nom de l'équipe",
+    "description": "Description",
+    "cancel": "Annuler",
+    "create": "Créer",
+    "createSuccess": "Équipe créée avec succès"
   }
 }

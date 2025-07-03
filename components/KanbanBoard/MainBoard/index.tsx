@@ -25,13 +25,13 @@ const columns: {
   {
     id: "staging",
     title: "staging",
-    countLabel: "1/5",
+    countLabel: "2/5",
     countColor: "text-orange-600",
   },
   {
     id: "deployed",
     title: "deployed",
-    countLabel: "1/3",
+    countLabel: "2/3",
     countColor: "text-gray-600",
   },
 ];
@@ -39,10 +39,12 @@ const columns: {
 type CardType = {
   title: string;
   assignee: string;
-  storyPoints: number;
+  effort: number;
   issueUrl: string;
   progress: number;
   color: "blue" | "green" | "yellow" | "indigo";
+  status: "inProgress" | "blocked" | "done" | "review";
+  priority: "low" | "medium" | "high" | "critical";
 };
 
 const dummyCards: Record<ColumnKey, CardType[]> = {
@@ -50,40 +52,88 @@ const dummyCards: Record<ColumnKey, CardType[]> = {
     {
       title: "Create login endpoint",
       assignee: "Alice",
-      storyPoints: 3,
+      effort: 3,
       issueUrl: "https://example.com/issues/101",
       progress: 40,
       color: "blue",
+      status: "inProgress",
+      priority: "high",
+    },
+    {
+      title: "Design onboarding flow",
+      assignee: "Victor",
+      effort: 2,
+      issueUrl: "https://example.com/issues/105",
+      progress: 10,
+      color: "yellow",
+      status: "review",
+      priority: "medium",
     },
   ],
   active: [
     {
       title: "Fix header bug",
       assignee: "Bob",
-      storyPoints: 2,
+      effort: 2,
       issueUrl: "https://example.com/issues/102",
       progress: 75,
       color: "green",
+      status: "blocked",
+      priority: "critical",
+    },
+    {
+      title: "Implement dark mode",
+      assignee: "Diana",
+      effort: 3,
+      issueUrl: "https://example.com/issues/106",
+      progress: 50,
+      color: "indigo",
+      status: "review",
+      priority: "medium",
     },
   ],
   staging: [
     {
       title: "Prepare release",
       assignee: "Charlie",
-      storyPoints: 1,
+      effort: 1,
       issueUrl: "https://example.com/issues/103",
       progress: 100,
       color: "yellow",
+      status: "done",
+      priority: "high",
+    },
+    {
+      title: "Fix mobile layout",
+      assignee: "Eva",
+      effort: 2,
+      issueUrl: "https://example.com/issues/107",
+      progress: 100,
+      color: "blue",
+      status: "done",
+      priority: "low",
     },
   ],
   deployed: [
     {
       title: "Deploy initial version",
       assignee: "Team",
-      storyPoints: 5,
+      effort: 5,
       issueUrl: "https://example.com/issues/104",
       progress: 100,
       color: "indigo",
+      status: "done",
+      priority: "medium",
+    },
+    {
+      title: "Monitor analytics",
+      assignee: "Frank",
+      effort: 2,
+      issueUrl: "https://example.com/issues/108",
+      progress: 100,
+      color: "green",
+      status: "done",
+      priority: "low",
     },
   ],
 };

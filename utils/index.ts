@@ -1,4 +1,6 @@
 import { canadianAreaCodes } from "@/chunks/areaCodes";
+import { isWeekend } from "date-fns";
+import { CalendarDate } from "@internationalized/date";
 
 export const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/;
 
@@ -49,4 +51,12 @@ export const getBgColor = (seed: string, asHex: boolean = false): string => {
   }
 
   return asHex ? colorMap[index].hex : colorMap[index].class;
+};
+
+export const renderWeekendCell = (date: CalendarDate) => {
+  const jsDate = new Date(date.year, date.month - 1, date.day);
+  const isWeekendDay = isWeekend(jsDate);
+  return {
+    className: isWeekendDay ? "bg-yellow-50 text-yellow-700 font-semibold" : "",
+  };
 };
