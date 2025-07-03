@@ -244,5 +244,34 @@
     "team": "Team",
     "nextAction": "Next Action",
     "managedByAI": "Managed by AI"
+  },
+  "Sidebar": {
+    "projectBoard": "Flow Deck",
+    "projectName": "AdventureWorks Mobile",
+    "overview": "Overview",
+    "boards": "Boards",
+    "workItems": "Work Items",
+    "backlogs": "Backlogs",
+    "sprints": "Sprints",
+    "queries": "Queries",
+    "plans": "Plans",
+    "repos": "Repos",
+    "pipelines": "Pipelines",
+    "testPlans": "Test Plans",
+    "artifacts": "Artifacts",
+    "projectSettings": "Project settings"
+  },
+  "Header": {
+    "boardTitle": "Board",
+    "searchPlaceholder": "Search..."
+  },
+  "Board": {
+    "new": "New",
+    "active": "Active",
+    "staging": "Staging",
+    "deployed": "Deployed",
+    "assigned": "Assigned",
+    "storyPoints": "Story Points",
+    "projectBoard": "Project Board"
   }
 }

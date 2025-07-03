@@ -4,7 +4,14 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import GetStarted from "@/components/Dashboard/GetStarted";
 import ProjectsList from "@/components/Dashboard/ProjectList";
-import { Select, SelectItem, Switch, Input } from "@heroui/react";
+import {
+  Select,
+  SelectItem,
+  Switch,
+  Input,
+  Button,
+  Tooltip,
+} from "@heroui/react";
 import { demoProjects } from "@/data/dummyProjects";
 
 const ProjectsPage = () => {
@@ -66,14 +73,27 @@ const ProjectsPage = () => {
               </Select>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                AI-Managed:
-              </span>
-              <Switch
-                size="sm"
-                isSelected={showAIModeOnly}
-                onChange={(e) => setShowAIModeOnly(e.target.checked)}
-              />
+              <div>
+                <Tooltip content="Create new project">
+                  <Button
+                    variant="flat"
+                    color="primary"
+                    onPress={handleCreateProject}
+                  >
+                    + Project
+                  </Button>
+                </Tooltip>
+              </div>
+              <div>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  AI-Managed:
+                </span>
+                <Switch
+                  size="sm"
+                  isSelected={showAIModeOnly}
+                  onChange={(e) => setShowAIModeOnly(e.target.checked)}
+                />
+              </div>
             </div>
           </div>
 
