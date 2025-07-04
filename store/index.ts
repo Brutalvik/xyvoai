@@ -14,10 +14,12 @@ import {
 // default import
 import languageReducer from "@/store/slices/languageSlice";
 import userReducer from "@/store/slices/userSlice";
+import authReducer from "@/store/slices/authSlice";
 
 const rootReducer = combineReducers({
   language: languageReducer,
   user: userReducer,
+  auth: authReducer,
   // other reducers...
 });
 
@@ -28,7 +30,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage: storageSession,
-  whitelist: ["language", "user"],
+  whitelist: ["language", "user", "auth"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
