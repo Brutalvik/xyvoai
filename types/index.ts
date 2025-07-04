@@ -23,10 +23,16 @@ export interface User {
   attributes: Record<string, string>;
 }
 
-export type TeamMember = {
-  name: string;
-  src: string;
-};
+export interface TeamMember {
+  id: string; // UUID for user or member reference
+  name?: string;
+  email?: string;
+  role?: "owner" | "admin" | "member" | "viewer"; // extensible
+  avatarUrl?: string;
+  joinedAt?: string; // ISO timestamp
+  isActive?: boolean; // for soft deletes / deactivation
+  permissions?: string[]; // e.g. ["edit_tasks", "view_analytics"]
+}
 
 export type ProjectType = "Internal" | "Client" | "AI-Generated";
 

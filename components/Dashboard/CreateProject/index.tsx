@@ -7,6 +7,8 @@ import {
   Select,
   SelectItem,
   Button,
+  DatePicker,
+  Chip,
   addToast,
 } from "@heroui/react";
 import { useFormik } from "formik";
@@ -16,10 +18,20 @@ import { useState } from "react";
 import { useAppDispatch } from "@/store/hooks";
 import { createProject } from "@/store/slices/projectsSlice";
 import { Project } from "@/types";
+import {
+  parseDate,
+  today,
+  DateValue,
+  CalendarDate,
+} from "@internationalized/date";
 
 export default function CreateProject() {
   const dispatch = useAppDispatch();
   const [submitting, setSubmitting] = useState(false);
+  const [startDate, setStartDate] = useState<CalendarDate | null>(null);
+  const [endDate, setEndDate] = useState<CalendarDate | null>(null);
+  const [tagInput, setTagInput] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
 
   const formik = useFormik({
     initialValues: {
@@ -29,18 +41,13 @@ export default function CreateProject() {
       status: "active",
       visibility: "private",
       ai_tasks: false,
-      start_date: "",
-      end_date: "",
-      tags: "",
+      priority: "",
+      projectType: "",
+      teamId: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Project name is required"),
       description: Yup.string().required("Project description is required"),
-      status: Yup.string().required(),
-      visibility: Yup.string().required(),
-      color: Yup.string().required(),
-      ai_tasks: Yup.boolean(),
-      tags: Yup.string(),
     }),
     onSubmit: async (values, { resetForm }) => {
       setSubmitting(true);
@@ -49,23 +56,23 @@ export default function CreateProject() {
           name: values.name.trim(),
           description: values.description.trim(),
           color: values.color,
-          status: values.status as "active" | "completed" | "archived",
-          visibility: values.visibility as "private" | "public",
+          status: values.status as Project["status"],
+          visibility: values.visibility as Project["visibility"],
           ai_tasks: values.ai_tasks,
-          tags: values.tags
-            .split(",")
-            .map((tag) => tag.trim())
-            .filter((tag) => tag.length > 0),
-          start_date: values.start_date
-            ? new Date(values.start_date).toISOString()
+          tags,
+          priority: values.priority as Project["priority"],
+          projectType: values.projectType || undefined,
+          start_date: startDate
+            ? startDate.toDate("UTC").toISOString()
             : undefined,
-          end_date: values.end_date
-            ? new Date(values.end_date).toISOString()
-            : undefined,
+          end_date: endDate ? endDate.toDate("UTC").toISOString() : undefined,
         };
 
-        const res = await dispatch(createProject(payload)).unwrap();
-        console.log(res);
+        if (values.teamId) {
+          payload.team = [{ id: values.teamId }]; // Should match your TeamMember interface
+        }
+
+        await dispatch(createProject(payload)).unwrap();
 
         addToast({
           title: "Project created successfully",
@@ -74,6 +81,10 @@ export default function CreateProject() {
         });
 
         resetForm();
+        setTags([]);
+        setStartDate(null);
+        setEndDate(null);
+        setTagInput("");
       } catch (err) {
         addToast({
           title: "Failed to create project",
@@ -85,6 +96,21 @@ export default function CreateProject() {
       }
     },
   });
+
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (["Enter", "Tab", ","].includes(e.key)) {
+      e.preventDefault();
+      const newTag = tagInput.trim();
+      if (newTag && !tags.includes(newTag)) {
+        setTags([...tags, newTag]);
+      }
+      setTagInput("");
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter((t) => t !== tagToRemove));
+  };
 
   const generateRandomColor = () => {
     const randomColor = `#${Math.floor(Math.random() * 16777215)
@@ -102,23 +128,16 @@ export default function CreateProject() {
         <Input
           name="name"
           label="Project Name"
-          placeholder="e.g. AI Strategy Launch"
           value={formik.values.name}
           onChange={formik.handleChange}
-          isInvalid={!!(formik.touched.name && formik.errors.name)}
-          errorMessage={formik.touched.name && formik.errors.name}
         />
         <Textarea
           name="description"
           label="Description"
-          placeholder="Brief summary of the project goal..."
           value={formik.values.description}
           onChange={formik.handleChange}
-          isInvalid={
-            !!(formik.touched.description && formik.errors.description)
-          }
-          errorMessage={formik.touched.description && formik.errors.description}
         />
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Select
             name="status"
@@ -144,45 +163,102 @@ export default function CreateProject() {
             <SelectItem key="public">Public</SelectItem>
           </Select>
         </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Select
+            name="priority"
+            label="Priority"
+            selectedKeys={[formik.values.priority]}
+            onSelectionChange={(val) =>
+              formik.setFieldValue("priority", Array.from(val)[0])
+            }
+          >
+            <SelectItem key="Low">Low</SelectItem>
+            <SelectItem key="Medium">Medium</SelectItem>
+            <SelectItem key="High">High</SelectItem>
+            <SelectItem key="Urgent">Urgent</SelectItem>
+          </Select>
+          <Select
+            name="projectType"
+            label="Project Type"
+            selectedKeys={[formik.values.projectType]}
+            onSelectionChange={(val) =>
+              formik.setFieldValue("projectType", Array.from(val)[0])
+            }
+          >
+            <SelectItem key="Software">Software</SelectItem>
+            <SelectItem key="Marketing">Marketing</SelectItem>
+            <SelectItem key="Design">Design</SelectItem>
+            <SelectItem key="Research">Research</SelectItem>
+          </Select>
+        </div>
+
+        <Select
+          name="teamId"
+          label="Assign Team (Optional)"
+          selectedKeys={[formik.values.teamId]}
+          onSelectionChange={(val) =>
+            formik.setFieldValue("teamId", Array.from(val)[0])
+          }
+        >
+          <SelectItem key="">None</SelectItem>
+          <SelectItem key="team-1">Alpha Team</SelectItem>
+          <SelectItem key="team-2">Beta Team</SelectItem>
+        </Select>
+
         <Input
           name="tags"
-          label="Tags (comma-separated)"
-          placeholder="e.g. ai, onboarding, research"
-          value={formik.values.tags}
-          onChange={formik.handleChange}
+          label="Tags"
+          placeholder="Type and press Enter"
+          value={tagInput}
+          onChange={(e) => setTagInput(e.target.value)}
+          onKeyDown={handleTagKeyDown}
         />
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
-            Project Color
-          </label>
-          <div className="flex items-center gap-2">
-            <Input
-              name="color"
-              type="color"
-              className="w-4/5"
-              value={formik.values.color}
-              onChange={formik.handleChange}
-            />
-            <Button
-              type="button"
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag, i) => (
+            <Chip
+              key={i}
+              onClose={() => removeTag(tag)}
+              color="primary"
               variant="flat"
-              className="w-1/5"
-              onPress={generateRandomColor}
             >
-              Random
-            </Button>
-          </div>
+              {tag}
+            </Chip>
+          ))}
         </div>
-        <Checkbox
-          name="ai_tasks"
-          isSelected={formik.values.ai_tasks}
-          onChange={(e) => formik.setFieldValue("ai_tasks", e.target.checked)}
-        >
-          Enable AI to auto-generate tasks
-        </Checkbox>
-        <Button type="submit" variant="solid" isLoading={submitting}>
-          Create Project
-        </Button>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <DatePicker
+            label="Start Date"
+            value={startDate}
+            onChange={setStartDate}
+            minValue={today("UTC")}
+          />
+          <DatePicker
+            label="End Date"
+            value={endDate}
+            onChange={setEndDate}
+            minValue={startDate ? startDate.add({ days: 1 }) : undefined}
+          />
+        </div>
+
+        <div className="space-y-4">
+          <Checkbox
+            name="ai_tasks"
+            isSelected={formik.values.ai_tasks}
+            onChange={(e) => formik.setFieldValue("ai_tasks", e.target.checked)}
+          >
+            Enable AI to auto-generate tasks
+          </Checkbox>
+          <Button
+            type="submit"
+            variant="solid"
+            isLoading={submitting}
+            className="w-full"
+          >
+            Create Project
+          </Button>
+        </div>
       </form>
     </div>
   );
