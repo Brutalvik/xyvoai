@@ -1,45 +1,51 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchProjects } from "@/store/slices/projectsSlice";
 import GetStarted from "@/components/Dashboard/GetStarted";
 import ProjectsList from "@/components/Dashboard/ProjectList";
-import {
-  Select,
-  SelectItem,
-  Switch,
-  Input,
-  Button,
-  Tooltip,
-} from "@heroui/react";
-import { demoProjects } from "@/data/dummyProjects";
+import { Select, SelectItem, Switch, Button, Tooltip } from "@heroui/react";
+import { Project } from "@/types";
 
 const ProjectsPage = () => {
   const router = useRouter();
-
-  const user = {
-    plan: "free", // or 'pro' | 'team'
-    projects: demoProjects, // list of user's projects
-  };
-
-  const plan = user.plan as "free" | "pro" | "team";
-  const currentProjectCount = user.projects.length;
+  const dispatch = useAppDispatch();
+  const { items: projects, loading } = useAppSelector((s) => s.projects);
 
   const [showAIModeOnly, setShowAIModeOnly] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");
   const [visibilityFilter, setVisibilityFilter] = useState("");
 
+  useEffect(() => {
+    dispatch(fetchProjects());
+  }, [dispatch]);
+
+  const filteredProjects = useMemo(() => {
+    return (projects ?? []).filter((project: Project) => {
+      const matchesStatus =
+        !statusFilter ||
+        project.status.toLowerCase() === statusFilter.toLowerCase();
+      const matchesVisibility =
+        !visibilityFilter ||
+        project.visibility.toLowerCase() === visibilityFilter.toLowerCase();
+      const matchesAI = !showAIModeOnly || project.ai_tasks === true;
+      return matchesStatus && matchesVisibility && matchesAI;
+    });
+  }, [projects, statusFilter, visibilityFilter, showAIModeOnly]);
+
   const handleCreateProject = () => {
-    router.push("/dashboard/individual/create-project");
+    router.push("/dashboard/projects/create");
   };
 
   return (
     <>
-      {currentProjectCount === 0 ? (
+      {projects.length === 0 && !loading ? (
         <GetStarted
           onCreateProject={handleCreateProject}
-          plan={plan}
-          currentProjectCount={currentProjectCount}
+          plan="free"
+          currentProjectCount={0}
         />
       ) : (
         <div className="p-4 space-y-4">
@@ -53,11 +59,9 @@ const ProjectsPage = () => {
                 className="w-48"
               >
                 <SelectItem key="">All</SelectItem>
-                <SelectItem key="In Progress">In Progress</SelectItem>
-                <SelectItem key="Not Started">Not Started</SelectItem>
-                <SelectItem key="Blocked">Blocked</SelectItem>
-                <SelectItem key="Completed">Completed</SelectItem>
-                <SelectItem key="Cancelled">Cancelled</SelectItem>
+                <SelectItem key="active">Active</SelectItem>
+                <SelectItem key="completed">Completed</SelectItem>
+                <SelectItem key="archived">Archived</SelectItem>
               </Select>
 
               <Select
@@ -68,26 +72,22 @@ const ProjectsPage = () => {
                 className="w-48"
               >
                 <SelectItem key="">All</SelectItem>
-                <SelectItem key="Public">Public</SelectItem>
-                <SelectItem key="Private">Private</SelectItem>
+                <SelectItem key="private">Private</SelectItem>
+                <SelectItem key="public">Public</SelectItem>
               </Select>
             </div>
             <div className="flex items-center gap-2">
-              <div>
-                <Tooltip content="Create new project">
-                  <Button
-                    variant="flat"
-                    color="primary"
-                    onPress={handleCreateProject}
-                  >
-                    + Project
-                  </Button>
-                </Tooltip>
-              </div>
-              <div>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  AI-Managed:
-                </span>
+              <Tooltip content="Create new project">
+                <Button
+                  variant="flat"
+                  color="primary"
+                  onPress={handleCreateProject}
+                >
+                  + Project
+                </Button>
+              </Tooltip>
+              <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                AI-Managed:
                 <Switch
                   size="sm"
                   isSelected={showAIModeOnly}
@@ -98,10 +98,10 @@ const ProjectsPage = () => {
           </div>
 
           <ProjectsList
+            projects={filteredProjects}
             showAIOnly={showAIModeOnly}
             statusFilter={statusFilter}
             visibilityFilter={visibilityFilter}
-            projects={user.projects}
           />
         </div>
       )}

@@ -15,11 +15,15 @@ import {
 import languageReducer from "@/store/slices/languageSlice";
 import userReducer from "@/store/slices/userSlice";
 import authReducer from "@/store/slices/authSlice";
+import projectsReducer from "@/store/slices/projectsSlice";
+
+// combined reducer
 
 const rootReducer = combineReducers({
   language: languageReducer,
   user: userReducer,
   auth: authReducer,
+  projects: projectsReducer,
   // other reducers...
 });
 
@@ -30,7 +34,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage: storageSession,
-  whitelist: ["language", "user", "auth"],
+  whitelist: ["language", "user", "auth", "projects"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

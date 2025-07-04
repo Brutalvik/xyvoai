@@ -17,7 +17,7 @@ export const signupThunk = createAsyncThunk(
   "auth/signup",
   async (values: SignupForm, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${CDN.userAuthUrl}/signup`, {
+      const res = await fetch(`${CDN.userAuthUrl}/auth/signup`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -52,7 +52,7 @@ export const signupWithUsageTypeThunk = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await fetch(`${CDN.userAuthUrl}/signup`, {
+      const res = await fetch(`${CDN.userAuthUrl}/auth/signup`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -87,7 +87,7 @@ export const signInThunk = createAsyncThunk(
   "auth/signin",
   async (values: SigninPayload, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${CDN.userAuthUrl}/signin`, {
+      const res = await fetch(`${CDN.userAuthUrl}/auth/signin`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -118,7 +118,7 @@ export const meThunk = createAsyncThunk(
   "auth/me",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${CDN.userAuthUrl}/me`, {
+      const res = await fetch(`${CDN.userAuthUrl}/auth/me`, {
         method: "GET",
         credentials: "include",
       });
@@ -146,7 +146,7 @@ export const refreshTokenThunk = createAsyncThunk(
 
       if (!refreshToken) throw new Error("Missing refresh token");
 
-      const res = await fetch(`${CDN.userAuthUrl}/refresh`, {
+      const res = await fetch(`${CDN.userAuthUrl}/auth/refresh`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -172,7 +172,7 @@ export const signoutThunk = createAsyncThunk(
   "auth/signout",
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const res = await fetch(`${CDN.userAuthUrl}/signout`, {
+      const res = await fetch(`${CDN.userAuthUrl}/auth/signout`, {
         method: "POST",
         credentials: "include",
       });

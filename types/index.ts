@@ -8,15 +8,19 @@ export interface User {
   sub: string;
   email: string;
   name: string;
-  phone?: string;
-  countryCode?: string;
-  token: string;
-  refreshToken?: string;
-  role?: string;
-  organizationId?: string | null;
-  image?: string;
-  accountType?: "personal" | "organization";
-  attributes?: Record<string, string>;
+  phone: string;
+  image: string;
+  organizationId: string | null;
+  organizationName: string | null;
+  timezone: string;
+  role: string;
+  accountType: string;
+  socialIdp: string | null;
+  createdAt: string | null;
+  lastLogin: string | null;
+  status: string;
+  permissions: string[];
+  attributes: Record<string, string>;
 }
 
 export type TeamMember = {
@@ -37,22 +41,29 @@ export type ProjectStatus =
 
 export type Visibility = "Public" | "Private";
 
-export type Project = {
+export interface Project {
   id: string;
   name: string;
-  color: string;
+  description?: string;
   tags: string[];
-  startDate: string;
-  dueDate: string;
-  visibility: Visibility;
-  aiTasks: boolean;
-  projectType: ProjectType;
-  priority: ProjectPriority;
-  status: ProjectStatus;
-  completion: number;
-  team: TeamMember[];
-  nextAction: string;
-};
+  color: string;
+  status: "active" | "completed" | "archived";
+  visibility: "private" | "public";
+  ai_tasks: boolean;
+  start_date?: string;
+  end_date?: string;
+  created_by?: string;
+  organization_id?: string;
+  created_at?: string;
+  updated_at?: string;
+
+  // Optional UI metadata
+  completion?: number;
+  priority?: "Low" | "Medium" | "High" | "Urgent";
+  projectType?: string;
+  team?: TeamMember[];
+  nextAction?: string;
+}
 
 export type ProjectsListProps = {
   showAIOnly: boolean;

@@ -1,84 +1,82 @@
 "use client";
 
-import { Input, Textarea } from "@heroui/input";
-import { Select, SelectSection, SelectItem } from "@heroui/select";
-import { Checkbox } from "@heroui/checkbox";
-import { Button, addToast } from "@heroui/react";
-import { DatePicker } from "@heroui/date-picker";
+import {
+  Input,
+  Textarea,
+  Checkbox,
+  Select,
+  SelectItem,
+  Button,
+  addToast,
+} from "@heroui/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useTranslations } from "next-intl";
 import { HiInformationCircle } from "react-icons/hi";
-import { format } from "date-fns";
-import type { DateValue } from "@react-types/calendar";
 import { useState } from "react";
+import { useAppDispatch } from "@/store/hooks";
+import { createProject } from "@/store/slices/projectsSlice";
+import { Project } from "@/types";
 
 export default function CreateProject() {
-  const t = useTranslations("CreateProject");
+  const dispatch = useAppDispatch();
   const [submitting, setSubmitting] = useState(false);
 
   const formik = useFormik({
     initialValues: {
       name: "",
       description: "",
-      dueDate: null as DateValue | null,
-      startDate: null as DateValue | null,
-      priority: "Medium",
-      projectType: "Internal",
-      visibility: "Private",
-      tags: "",
       color: "#4f46e5",
-      aiTasks: false,
-      file: null as File | null,
+      status: "active",
+      visibility: "private",
+      ai_tasks: false,
+      start_date: "",
+      end_date: "",
+      tags: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required(t("nameRequired")),
-      description: Yup.string().required(t("descriptionRequired")),
-      dueDate: Yup.mixed<DateValue>().nullable(),
-      startDate: Yup.mixed<DateValue>().nullable(),
-      priority: Yup.string().required(),
-      projectType: Yup.string().required(),
+      name: Yup.string().required("Project name is required"),
+      description: Yup.string().required("Project description is required"),
+      status: Yup.string().required(),
       visibility: Yup.string().required(),
+      color: Yup.string().required(),
+      ai_tasks: Yup.boolean(),
       tags: Yup.string(),
-      color: Yup.string(),
-      aiTasks: Yup.boolean(),
-      file: Yup.mixed<File>().nullable(),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       setSubmitting(true);
       try {
-        const payload = {
-          ...values,
-          startDate: values.startDate
-            ? format(new Date(values.startDate.toString()), "yyyy-MM-dd")
-            : null,
-          dueDate: values.dueDate
-            ? format(new Date(values.dueDate.toString()), "yyyy-MM-dd")
-            : null,
+        const payload: Partial<Project> = {
+          name: values.name.trim(),
+          description: values.description.trim(),
+          color: values.color,
+          status: values.status as "active" | "completed" | "archived",
+          visibility: values.visibility as "private" | "public",
+          ai_tasks: values.ai_tasks,
+          tags: values.tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter((tag) => tag.length > 0),
+          start_date: values.start_date
+            ? new Date(values.start_date).toISOString()
+            : undefined,
+          end_date: values.end_date
+            ? new Date(values.end_date).toISOString()
+            : undefined,
         };
 
-        const formData = new FormData();
-        Object.entries(payload).forEach(([key, val]) => {
-          if (key === "file" && val) formData.append("file", val as File);
-          else formData.append(key, val as string);
-        });
-
-        const res = await fetch("/api/projects", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!res.ok) throw new Error();
+        const res = await dispatch(createProject(payload)).unwrap();
+        console.log(res);
 
         addToast({
-          title: t("createSuccess"),
+          title: "Project created successfully",
           color: "success",
           icon: <HiInformationCircle />,
         });
-        formik.resetForm();
-      } catch (e) {
+
+        resetForm();
+      } catch (err) {
         addToast({
-          title: t("createError"),
+          title: "Failed to create project",
           color: "danger",
           icon: <HiInformationCircle />,
         });
@@ -98,13 +96,13 @@ export default function CreateProject() {
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-6">
       <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
-        {t("createTitle")}
+        Create New Project
       </h1>
       <form onSubmit={formik.handleSubmit} className="space-y-4">
         <Input
           name="name"
-          label={t("nameLabel")}
-          placeholder={t("namePlaceholder")}
+          label="Project Name"
+          placeholder="e.g. AI Strategy Launch"
           value={formik.values.name}
           onChange={formik.handleChange}
           isInvalid={!!(formik.touched.name && formik.errors.name)}
@@ -112,76 +110,50 @@ export default function CreateProject() {
         />
         <Textarea
           name="description"
-          label={t("descriptionLabel")}
-          placeholder={t("descriptionPlaceholder")}
+          label="Description"
+          placeholder="Brief summary of the project goal..."
           value={formik.values.description}
           onChange={formik.handleChange}
+          isInvalid={
+            !!(formik.touched.description && formik.errors.description)
+          }
           errorMessage={formik.touched.description && formik.errors.description}
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <DatePicker
-            name="startDate"
-            label={t("startDateLabel")}
-            value={formik.values.startDate}
-            onChange={(val) => formik.setFieldValue("startDate", val)}
-          />
-          <DatePicker
-            name="dueDate"
-            label={t("dueDateLabel")}
-            value={formik.values.dueDate}
-            onChange={(val) => formik.setFieldValue("dueDate", val)}
-          />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Select
-            name="projectType"
-            label={t("typeLabel")}
-            selectedKeys={[formik.values.projectType]}
+            name="status"
+            label="Status"
+            selectedKeys={[formik.values.status]}
             onSelectionChange={(val) =>
-              formik.setFieldValue("projectType", Array.from(val)[0])
+              formik.setFieldValue("status", Array.from(val)[0])
             }
           >
-            <SelectItem key="Internal">Internal</SelectItem>
-            <SelectItem key="Client">Client</SelectItem>
-            <SelectItem key="Research">Research</SelectItem>
-            <SelectItem key="AI">AI</SelectItem>
+            <SelectItem key="active">Active</SelectItem>
+            <SelectItem key="completed">Completed</SelectItem>
+            <SelectItem key="archived">Archived</SelectItem>
           </Select>
           <Select
-            name="priority"
-            label={t("priorityLabel")}
-            selectedKeys={[formik.values.priority]}
+            name="visibility"
+            label="Visibility"
+            selectedKeys={[formik.values.visibility]}
             onSelectionChange={(val) =>
-              formik.setFieldValue("priority", Array.from(val)[0])
+              formik.setFieldValue("visibility", Array.from(val)[0])
             }
           >
-            <SelectItem key="Low">Low</SelectItem>
-            <SelectItem key="Medium">Medium</SelectItem>
-            <SelectItem key="High">High</SelectItem>
-            <SelectItem key="Urgent">Urgent</SelectItem>
+            <SelectItem key="private">Private</SelectItem>
+            <SelectItem key="public">Public</SelectItem>
           </Select>
         </div>
         <Input
           name="tags"
-          label={t("tagsLabel")}
-          placeholder="ai, onboarding, research"
+          label="Tags (comma-separated)"
+          placeholder="e.g. ai, onboarding, research"
           value={formik.values.tags}
           onChange={formik.handleChange}
         />
-        <Select
-          name="visibility"
-          label={t("visibilityLabel")}
-          selectedKeys={[formik.values.visibility]}
-          onSelectionChange={(val) =>
-            formik.setFieldValue("visibility", Array.from(val)[0])
-          }
-        >
-          <SelectItem key="Public">Org</SelectItem>
-          <SelectItem key="Private">Private</SelectItem>
-          <SelectItem key="Public">Public</SelectItem>
-        </Select>
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
-            {t("colorLabel")}
+            Project Color
           </label>
           <div className="flex items-center gap-2">
             <Input
@@ -197,28 +169,19 @@ export default function CreateProject() {
               className="w-1/5"
               onPress={generateRandomColor}
             >
-              {t("randomColor")}
+              Random
             </Button>
           </div>
         </div>
-
         <Checkbox
-          name="aiTasks"
-          isSelected={formik.values.aiTasks}
-          onChange={(e) => formik.setFieldValue("aiTasks", e.target.checked)}
+          name="ai_tasks"
+          isSelected={formik.values.ai_tasks}
+          onChange={(e) => formik.setFieldValue("ai_tasks", e.target.checked)}
         >
-          {t("aiTasksLabel")}
+          Enable AI to auto-generate tasks
         </Checkbox>
-        <Input
-          name="file"
-          type="file"
-          label={t("attachmentLabel")}
-          onChange={(e) =>
-            formik.setFieldValue("file", e.target.files?.[0] ?? null)
-          }
-        />
         <Button type="submit" variant="solid" isLoading={submitting}>
-          {t("createButton")}
+          Create Project
         </Button>
       </form>
     </div>

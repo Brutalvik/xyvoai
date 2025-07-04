@@ -3,10 +3,12 @@
 const API_BASE = process.env.NEXT_PUBLIC_USER_AUTH_URL;
 
 export async function fetchWithAuth(path: string, options: RequestInit = {}) {
+  const isFormData = options.body instanceof FormData;
+
   const res = await fetch(`${API_BASE}${path}`, {
-    credentials: "include", // sends cookies
+    credentials: "include",
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...options.headers,
     },
     ...options,
