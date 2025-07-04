@@ -1,12 +1,24 @@
 "use client";
 
-import { Badge } from "@heroui/badge";
-import { Button } from "@heroui/button";
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
-import { Tooltip, Chip, Avatar, AvatarGroup, Progress } from "@heroui/react";
+import {
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Tooltip,
+  Chip,
+  Avatar,
+  AvatarGroup,
+  Progress,
+} from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { format } from "date-fns";
-import { HiEye, HiTrash } from "react-icons/hi";
+import { HiEye, HiTrash, HiPencil } from "react-icons/hi";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/store/hooks";
+import { deleteProject } from "@/store/slices/projectsSlice";
 import { getBgColor, getInitial } from "@/utils";
 import { ProjectsListProps } from "@/types";
 
@@ -17,6 +29,8 @@ export default function ProjectsList({
   projects,
 }: ProjectsListProps) {
   const t = useTranslations("ProjectList");
+  const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const filteredProjects = (projects ?? []).filter((project) => {
     const matchesAI = !showAIOnly || project.ai_tasks === true;
@@ -36,19 +50,19 @@ export default function ProjectsList({
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
       {filteredProjects.map((project) => (
         <Card
           key={project.id}
-          className="relative border-l-4"
+          className="relative border-l-4 shadow-lg rounded-2xl dark:bg-gray-900 bg-white hover:shadow-xl transition-shadow duration-300"
           style={{ borderColor: project.color }}
         >
-          <CardHeader>
-            <div className="flex items-center justify-between gap-4">
+          <CardHeader className="pb-0">
+            <div className="flex items-start justify-between gap-4">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <div
-                    className="w-4 h-4 rounded-full"
+                    className="w-3 h-3 rounded-full mt-1"
                     style={{ backgroundColor: project.color }}
                   />
                   {project.ai_tasks ? (
@@ -59,20 +73,23 @@ export default function ProjectsList({
                         size="sm"
                         className="hover:cursor-pointer"
                       >
-                        <h2 className="text-lg font-semibold">
+                        <h2 className="text-lg font-bold text-gray-800 dark:text-white">
                           {project.name}
                         </h2>
                       </Badge>
                     </Tooltip>
                   ) : (
-                    <h2 className="text-lg font-semibold">{project.name}</h2>
+                    <h2 className="text-lg font-bold text-gray-800 dark:text-white">
+                      {project.name}
+                    </h2>
                   )}
                 </div>
-                <h4 className="text-sm text-gray-500 dark:text-gray-400">{`${t("projectId")}: ${project.id}`}</h4>
+                <span className="text-xs text-gray-400">
+                  {t("projectId")}: {project.id.slice(0, 8)}
+                </span>
               </div>
-
               {project.tags && project.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1 max-w-[50%] justify-end">
                   {project.tags.map((tag) => (
                     <Chip
                       key={tag.trim()}
@@ -89,9 +106,9 @@ export default function ProjectsList({
             </div>
           </CardHeader>
 
-          <CardBody className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
+          <CardBody className="text-sm text-gray-600 dark:text-gray-300 space-y-2 py-2">
             <div className="flex items-center justify-between">
-              <strong>{t("status")}:</strong>
+              <strong>{t("status")}</strong>
               <Chip
                 size="sm"
                 color={
@@ -107,21 +124,23 @@ export default function ProjectsList({
             </div>
 
             {typeof project.completion === "number" && (
-              <Progress
-                value={project.completion}
-                className="my-2 h-2 rounded-full"
-                color={project.completion === 100 ? "success" : "primary"}
-              />
+              <div className="pt-1">
+                <Progress
+                  value={project.completion}
+                  className="h-2 rounded-full"
+                  color={project.completion === 100 ? "success" : "primary"}
+                />
+              </div>
             )}
 
             <div>
-              <strong>{t("startDate")}: </strong>
+              <strong>{t("startDate")}</strong>:{" "}
               {project.start_date
                 ? format(new Date(project.start_date), "PPP")
                 : t("na")}
             </div>
             <div>
-              <strong>{t("dueDate")}: </strong>
+              <strong>{t("dueDate")}</strong>:{" "}
               {project.end_date
                 ? format(new Date(project.end_date), "PPP")
                 : t("na")}
@@ -129,14 +148,13 @@ export default function ProjectsList({
 
             {project.projectType && (
               <div>
-                <strong>{t("type")}: </strong>
-                {project.projectType}
+                <strong>{t("type")}</strong>: {project.projectType}
               </div>
             )}
 
             {project.priority && (
               <div className="flex items-center gap-1">
-                <strong>{t("priority")}: </strong>
+                <strong>{t("priority")}</strong>:
                 <Chip
                   size="sm"
                   color={
@@ -148,7 +166,6 @@ export default function ProjectsList({
                           ? "primary"
                           : "default"
                   }
-                  className="hover:cursor-pointer"
                 >
                   {project.priority}
                 </Chip>
@@ -156,13 +173,12 @@ export default function ProjectsList({
             )}
 
             <div>
-              <strong>{t("visibility")}: </strong>
-              {project.visibility}
+              <strong>{t("visibility")}</strong>: {project.visibility}
             </div>
 
             {project.team && project.team.length > 0 && (
               <div>
-                <strong>{t("team")}: </strong>
+                <strong>{t("team")}</strong>:
                 <AvatarGroup className="mt-1" max={5} size="sm">
                   {project.team.map((member) => (
                     <Tooltip key={member.name} content={member.name}>
@@ -190,20 +206,38 @@ export default function ProjectsList({
 
             {project.nextAction && (
               <div>
-                <strong>{t("nextAction")}: </strong>
-                {project.nextAction}
+                <strong>{t("nextAction")}</strong>: {project.nextAction}
               </div>
             )}
           </CardBody>
 
-          <CardFooter className="flex justify-end gap-2">
+          <CardFooter className="flex justify-end gap-2 pt-2">
             <Tooltip content={t("view")}>
               <Button variant="light" size="sm">
                 <HiEye className="w-4 h-4" />
               </Button>
             </Tooltip>
+            <Tooltip content={t("edit")}>
+              <Button
+                variant="flat"
+                color="secondary"
+                size="sm"
+                onPress={() =>
+                  router.push(
+                    `/dashboard/projects/create?projectId=${project.id}`
+                  )
+                }
+              >
+                <HiPencil className="w-4 h-4" />
+              </Button>
+            </Tooltip>
             <Tooltip content={t("delete")}>
-              <Button variant="flat" color="danger" size="sm">
+              <Button
+                variant="flat"
+                color="danger"
+                size="sm"
+                onPress={() => dispatch(deleteProject(project.id))}
+              >
                 <HiTrash className="w-4 h-4" />
               </Button>
             </Tooltip>

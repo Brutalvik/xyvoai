@@ -15,35 +15,44 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { HiInformationCircle } from "react-icons/hi";
 import { useEffect, useState } from "react";
-import { useAppDispatch } from "@/store/hooks";
-import { createProject } from "@/store/slices/projectsSlice";
-import { Project } from "@/types";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
-  parseDate,
-  today,
-  DateValue,
-  CalendarDate,
-} from "@internationalized/date";
+  createProject,
+  updateProject,
+  fetchProjects,
+} from "@/store/slices/projectsSlice";
+import { Project } from "@/types";
+import { today, CalendarDate, parseDate } from "@internationalized/date";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function CreateProject() {
+  const router = useRouter();
+  const params = useSearchParams();
+  const projectId = params.get("projectId");
   const dispatch = useAppDispatch();
   const [submitting, setSubmitting] = useState(false);
   const [startDate, setStartDate] = useState<CalendarDate | null>(null);
   const [endDate, setEndDate] = useState<CalendarDate | null>(null);
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [editMode, setEditMode] = useState(false);
+
+  const project = useAppSelector((state) =>
+    state.projects.items.find((p) => p.id === projectId)
+  );
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      name: "",
-      description: "",
-      color: "#4f46e5",
-      status: "active",
-      visibility: "private",
-      ai_tasks: false,
-      priority: "",
-      projectType: "",
-      teamId: "",
+      name: project?.name || "",
+      description: project?.description || "",
+      color: project?.color || "#4f46e5",
+      status: project?.status || "active",
+      visibility: project?.visibility || "private",
+      ai_tasks: project?.ai_tasks || false,
+      // priority: project?.priority || "",
+      // projectType: project?.projectType || "",
+      teamId: project?.team?.[0]?.id || "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Project name is required"),
@@ -60,8 +69,8 @@ export default function CreateProject() {
           visibility: values.visibility as Project["visibility"],
           ai_tasks: values.ai_tasks,
           tags,
-          priority: values.priority as Project["priority"],
-          projectType: values.projectType || undefined,
+          // priority: values.priority as Project["priority"],
+          // projectType: values.projectType || undefined,
           start_date: startDate
             ? startDate.toDate("UTC").toISOString()
             : undefined,
@@ -69,25 +78,36 @@ export default function CreateProject() {
         };
 
         if (values.teamId) {
-          payload.team = [{ id: values.teamId }]; // Should match your TeamMember interface
+          payload.team = [{ id: values.teamId }];
         }
 
-        await dispatch(createProject(payload)).unwrap();
-
-        addToast({
-          title: "Project created successfully",
-          color: "success",
-          icon: <HiInformationCircle />,
-        });
+        if (editMode && projectId) {
+          await dispatch(
+            updateProject({ id: projectId, updates: payload })
+          ).unwrap();
+          addToast({
+            title: "Project updated successfully",
+            color: "success",
+            icon: <HiInformationCircle />,
+          });
+        } else {
+          await dispatch(createProject(payload)).unwrap();
+          addToast({
+            title: "Project created successfully",
+            color: "success",
+            icon: <HiInformationCircle />,
+          });
+        }
 
         resetForm();
         setTags([]);
         setStartDate(null);
         setEndDate(null);
         setTagInput("");
+        router.push("/dashboard/projects");
       } catch (err) {
         addToast({
-          title: "Failed to create project",
+          title: "Failed to save project",
           color: "danger",
           icon: <HiInformationCircle />,
         });
@@ -120,13 +140,28 @@ export default function CreateProject() {
   };
 
   useEffect(() => {
-    generateRandomColor();
-  }, []);
+    if (projectId && project) {
+      setEditMode(true);
+      setTags(project.tags || []);
+      if (project.start_date)
+        setStartDate(parseDate(project.start_date.slice(0, 10)));
+      if (project.end_date)
+        setEndDate(parseDate(project.end_date.slice(0, 10)));
+    } else {
+      generateRandomColor();
+    }
+  }, [projectId, project]);
+
+  useEffect(() => {
+    if (projectId && !project) {
+      dispatch(fetchProjects());
+    }
+  }, [projectId]);
 
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-6">
       <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
-        Create New Project
+        {editMode ? "Edit Project" : "Create New Project"}
       </h1>
       <form onSubmit={formik.handleSubmit} className="space-y-4">
         <Input
@@ -168,7 +203,7 @@ export default function CreateProject() {
           </Select>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Select
             name="priority"
             label="Priority"
@@ -195,7 +230,7 @@ export default function CreateProject() {
             <SelectItem key="Design">Design</SelectItem>
             <SelectItem key="Research">Research</SelectItem>
           </Select>
-        </div>
+        </div> */}
 
         <Select
           name="teamId"
@@ -286,8 +321,10 @@ export default function CreateProject() {
             variant="solid"
             isLoading={submitting}
             className="w-full"
+            isDisabled={formik.isSubmitting}
+            color="primary"
           >
-            Create Project
+            {editMode ? "Update Project" : "Create Project"}
           </Button>
         </div>
       </form>
