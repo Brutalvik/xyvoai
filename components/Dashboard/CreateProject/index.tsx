@@ -10,6 +10,7 @@ import {
   DatePicker,
   Chip,
   addToast,
+  Tooltip,
 } from "@heroui/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -273,14 +274,16 @@ export default function CreateProject() {
           {/* Color Picker + Random Button */}
           <div className="flex-1">
             <div className="flex items-center gap-2 mt-1">
-              <Input
-                name="color"
-                type="color"
-                className="w-3/4"
-                size="lg"
-                value={formik.values.color}
-                onChange={formik.handleChange}
-              />
+              <Tooltip content="Pick a color">
+                <Input
+                  name="color"
+                  type="color"
+                  className="w-3/4 hover:cursor-pointer"
+                  size="lg"
+                  value={formik.values.color}
+                  onChange={formik.handleChange}
+                />
+              </Tooltip>
               <Button
                 type="button"
                 variant="flat"
