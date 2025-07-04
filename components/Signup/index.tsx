@@ -88,14 +88,12 @@ export default function Signup() {
 
   useEffect(() => {
     const saved = sessionStorage.getItem("signup-form");
-
     if (prevLocale !== locale && saved) {
       const parsed = JSON.parse(saved);
       formik.setValues(parsed);
     } else {
       sessionStorage.removeItem("signup-form");
     }
-
     setPrevLocale(locale);
   }, [locale]);
 
@@ -114,7 +112,6 @@ export default function Signup() {
     if (!saved) return;
 
     const values = JSON.parse(saved);
-
     try {
       await dispatch(signupWithUsageTypeThunk({ values, usageType })).unwrap();
       sessionStorage.removeItem("signup-form");
@@ -137,12 +134,10 @@ export default function Signup() {
 
   const handlePlanContinue = async () => {
     setProcessingSignup(true);
-
     const saved = sessionStorage.getItem("signup-form");
     if (!saved || !selectedPlan) return;
 
     const values = JSON.parse(saved);
-
     try {
       await dispatch(
         signupWithUsageTypeThunk({
@@ -150,7 +145,6 @@ export default function Signup() {
           usageType: usageType as "personal" | "team",
         })
       ).unwrap();
-
       sessionStorage.removeItem("signup-form");
       addToast({
         title: t("successTitle"),
@@ -168,6 +162,24 @@ export default function Signup() {
       setProcessingSignup(false);
     }
   };
+
+  if (step === "plan") {
+    return (
+      <motion.div
+        key="plan-step"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <PlanSelector
+          selected={selectedPlan}
+          onSelect={setSelectedPlan}
+          onContinue={handlePlanContinue}
+          submitting={processingSignup}
+        />
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -213,20 +225,6 @@ export default function Signup() {
                 >
                   {t("continue")}
                 </Button>
-              </motion.div>
-            ) : step === "plan" ? (
-              <motion.div
-                key="plan-step"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.3 }}
-              >
-                <PlanSelector
-                  selected={selectedPlan}
-                  onSelect={setSelectedPlan}
-                  onContinue={handlePlanContinue}
-                />
               </motion.div>
             ) : (
               <motion.form

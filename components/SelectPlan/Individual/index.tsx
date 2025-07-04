@@ -17,12 +17,14 @@ interface PlanSelectorProps {
   selected: string | null;
   onSelect: (id: string) => void;
   onContinue: () => void;
+  submitting: boolean;
 }
 
 export default function PlanSelector({
   selected,
   onSelect,
   onContinue,
+  submitting,
 }: PlanSelectorProps) {
   return (
     <motion.div
@@ -30,34 +32,36 @@ export default function PlanSelector({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.4 }}
-      className="min-h-screen py-10 px-4 sm:px-8 bg-white dark:bg-black"
+      className="min-h-screen py-5 px-4 sm:px-8"
     >
-      <h1 className="text-3xl font-bold text-center text-gray-800 dark:text-white mb-8">
+      <h1 className="text-3xl font-bold text-center text-default-800 dark:text-white mb-10">
         Choose Your Plan
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
+      <div className="flex flex-wrap justify-center gap-6 xl:gap-8 max-w-full mx-auto">
         {individualPlans.map((plan) => (
           <Card
             key={plan.id}
             className={clsx(
-              "transition-all border shadow-lg hover:shadow-xl cursor-pointer",
+              "flex flex-col w-full sm:w-[300px] max-w-full min-h-[420px] transition-all border shadow-lg hover:shadow-xl cursor-pointer",
               selected === plan.id
                 ? "border-primary ring-2 ring-primary"
                 : "border-gray-200 dark:border-gray-700"
             )}
             onClick={() => onSelect(plan.id)}
           >
-            <CardHeader className="pb-1">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {plan.name}
-              </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {plan.description}
-              </p>
+            <CardHeader className="pb-2">
+              <div className="flex flex-col">
+                <h2 className="text-xl font-semibold text-default-900 dark:text-white">
+                  {plan.name}
+                </h2>
+                <p className="text-sm text-default-500 dark:text-default-400 mt-1">
+                  {plan.description}
+                </p>
+              </div>
             </CardHeader>
 
-            <CardBody className="space-y-3">
+            <CardBody className="space-y-3 flex-grow">
               <div className="text-2xl font-bold text-primary">
                 {plan.price}
               </div>
@@ -65,7 +69,7 @@ export default function PlanSelector({
                 {plan.features.map((f, idx) => (
                   <li
                     key={idx}
-                    className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300"
+                    className="flex items-center gap-2 text-sm text-default-600 dark:text-default-300"
                   >
                     <HiCheckCircle className="text-success w-4 h-4" />
                     {f}
@@ -107,6 +111,7 @@ export default function PlanSelector({
           size="lg"
           onPress={onContinue}
           isDisabled={!selected}
+          isLoading={submitting}
         >
           Continue
         </Button>
