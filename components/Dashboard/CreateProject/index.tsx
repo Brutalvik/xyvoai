@@ -14,7 +14,7 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { HiInformationCircle } from "react-icons/hi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/store/hooks";
 import { createProject } from "@/store/slices/projectsSlice";
 import { Project } from "@/types";
@@ -119,6 +119,10 @@ export default function CreateProject() {
     formik.setFieldValue("color", randomColor);
   };
 
+  useEffect(() => {
+    generateRandomColor();
+  }, []);
+
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-6">
       <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
@@ -206,25 +210,52 @@ export default function CreateProject() {
           <SelectItem key="team-2">Beta Team</SelectItem>
         </Select>
 
-        <Input
-          name="tags"
-          label="Tags"
-          placeholder="Type and press Enter"
-          value={tagInput}
-          onChange={(e) => setTagInput(e.target.value)}
-          onKeyDown={handleTagKeyDown}
-        />
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag, i) => (
-            <Chip
-              key={i}
-              onClose={() => removeTag(tag)}
-              color="primary"
-              variant="flat"
-            >
-              {tag}
-            </Chip>
-          ))}
+        <div className="flex flex-col sm:flex-row gap-4">
+          {/* Tag Input + Chips */}
+          <div className="flex-1">
+            <Input
+              name="tags"
+              label="Tags"
+              placeholder="Type and press Enter"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={handleTagKeyDown}
+            />
+            <div className="flex flex-wrap gap-2 mt-2">
+              {tags.map((tag, i) => (
+                <Chip
+                  key={i}
+                  onClose={() => removeTag(tag)}
+                  color="primary"
+                  variant="flat"
+                >
+                  {tag}
+                </Chip>
+              ))}
+            </div>
+          </div>
+
+          {/* Color Picker + Random Button */}
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mt-1">
+              <Input
+                name="color"
+                type="color"
+                className="w-3/4"
+                size="lg"
+                value={formik.values.color}
+                onChange={formik.handleChange}
+              />
+              <Button
+                type="button"
+                variant="flat"
+                className="w-1/4"
+                onPress={generateRandomColor}
+              >
+                Random
+              </Button>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
