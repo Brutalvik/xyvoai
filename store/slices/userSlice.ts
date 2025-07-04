@@ -1,8 +1,6 @@
-// store/slices/userSlice.ts
-
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { User } from "@/types";
-import { CDN } from "@/config";
+import { User } from "@/types"; // full futureproofed User type
+import { fetchWithAuth } from "@/utils/api";
 
 interface UserState {
   user: User | null;
@@ -20,19 +18,14 @@ const initialState: UserState = {
   hasFetched: false,
 };
 
-// Thunk to fetch the current user from /auth/me
+// 🔄 Thunk to fetch /auth/me with cookies
 export const meThunk = createAsyncThunk<User>(
   "user/me",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${CDN.userAuthUrl}/me`, {
-        credentials: "include",
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || "Failed to fetch user");
-
-      return data.user as User;
+      const res = await fetchWithAuth("/auth/me", { method: "GET" });
+      if (!res.user) throw new Error("Missing user in response");
+      return res.user as User;
     } catch (error: any) {
       return rejectWithValue(error.message || "Unable to fetch user");
     }

@@ -11,16 +11,17 @@ import clsx from "clsx";
 import { ReduxProvider } from "@/store/Provider";
 import { ToastProvider } from "@heroui/toast";
 import PageTransitionLoader from "@/components/ui/PageTransitionLoader";
+import AuthInitializer from "@/components/AuthInitializer"; // ✅ NEW
 
 type Props = {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: { locale: string };
 };
 
 export default async function LocaleLayout({ children, params }: Props) {
-  const { locale } = await params;
-
+  const { locale } = params;
   const messages = await getMessages();
+
   if (!messages) notFound();
 
   return (
@@ -36,6 +37,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           <ReduxProvider>
             <NextIntlClientProvider locale={locale} messages={messages}>
               <ToastProvider />
+              <AuthInitializer /> {/* ✅ Dispatch refreshSession on mount */}
               <div className="relative flex flex-col font-sans antialiased">
                 <Navbar />
                 <main className="w-full max-w-none flex-grow">{children}</main>
