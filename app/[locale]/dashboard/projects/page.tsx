@@ -1,17 +1,20 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchProjects } from "@/store/slices/projectsSlice";
 import GetStarted from "@/components/Dashboard/GetStarted";
 import ProjectsList from "@/components/Dashboard/ProjectList";
+import ProjectOverview from "@/components/Dashboard/ProjectOverview";
 import { Select, SelectItem, Switch, Button, Tooltip } from "@heroui/react";
 import { Project } from "@/types";
 
 const ProjectsPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const projectId = searchParams.get("projectId");
   const { items: projects, loading } = useAppSelector((s) => s.projects);
 
   const [showAIModeOnly, setShowAIModeOnly] = useState(false);
@@ -39,6 +42,27 @@ const ProjectsPage = () => {
     router.push("/dashboard/projects/create");
   };
 
+  const handleBackToProjects = () => {
+    router.push("/dashboard/projects");
+  };
+
+  if (projectId) {
+    return (
+      <div className=" space-y-6">
+        <div className="flex items-center justify-between">
+          <Button
+            variant="light"
+            color="primary"
+            onPress={handleBackToProjects}
+          >
+            ← Back to Projects
+          </Button>
+        </div>
+        <ProjectOverview projectId={projectId} />
+      </div>
+    );
+  }
+
   return (
     <>
       {projects.length === 0 && !loading ? (
@@ -49,6 +73,7 @@ const ProjectsPage = () => {
         />
       ) : (
         <div className="p-4 space-y-4">
+          {/* Filters and Create Button */}
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-4">
               <Select
@@ -97,6 +122,7 @@ const ProjectsPage = () => {
             </div>
           </div>
 
+          {/* ✅ Project List */}
           <ProjectsList
             projects={filteredProjects}
             showAIOnly={showAIModeOnly}

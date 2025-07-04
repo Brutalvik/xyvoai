@@ -176,7 +176,7 @@ export default function ProjectsList({
               <strong>{t("visibility")}</strong>: {project.visibility}
             </div>
 
-            {project.team && project.team.length > 0 && (
+            {/* {project.team && project.team.length > 0 && (
               <div>
                 <strong>{t("team")}</strong>:
                 <AvatarGroup className="mt-1" max={5} size="sm">
@@ -202,7 +202,7 @@ export default function ProjectsList({
                   ))}
                 </AvatarGroup>
               </div>
-            )}
+            )} */}
 
             {project.nextAction && (
               <div>
@@ -214,7 +214,12 @@ export default function ProjectsList({
           <CardFooter className="flex justify-end gap-2 pt-2">
             <Tooltip content={t("view")}>
               <Button variant="light" size="sm">
-                <HiEye className="w-4 h-4" />
+                <HiEye
+                  className="w-4 h-4"
+                  onClick={() =>
+                    router.push(`/dashboard/projects?projectId=${project.id}`)
+                  }
+                />
               </Button>
             </Tooltip>
             <Tooltip content={t("edit")}>

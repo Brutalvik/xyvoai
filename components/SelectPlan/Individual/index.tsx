@@ -47,14 +47,14 @@ export default function PlanSelector({
         <Button
           variant={billingCycle === "monthly" ? "solid" : "ghost"}
           color="primary"
-          onClick={() => setBillingCycle("monthly")}
+          onPress={() => setBillingCycle("monthly")}
         >
           Monthly
         </Button>
         <Button
           variant={billingCycle === "yearly" ? "solid" : "ghost"}
           color="primary"
-          onClick={() => setBillingCycle("yearly")}
+          onPress={() => setBillingCycle("yearly")}
         >
           Yearly
         </Button>
