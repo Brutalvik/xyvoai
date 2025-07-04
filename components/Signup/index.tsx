@@ -20,6 +20,8 @@ import UsageTypeSelector from "@/components/Signup/UsageType";
 import { signupThunk, signupWithUsageTypeThunk } from "@/store/auth/thunks";
 import { HiBan, HiBadgeCheck } from "react-icons/hi";
 
+import PlanSelector from "@/components/SelectPlan/Individual";
+
 export default function Signup() {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -31,7 +33,8 @@ export default function Signup() {
   const [prevLocale, setPrevLocale] = useState(locale);
   const [usageType, setUsageType] = useState<"personal" | "team" | "">("");
   const [hasTriedUsageSubmit, setHasTriedUsageSubmit] = useState(false);
-  const [step, setStep] = useState<"form" | "usagetype">("form");
+  const [step, setStep] = useState<"form" | "usagetype" | "plan">("form");
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [processingSignup, setProcessingSignup] = useState<boolean>(false);
 
   const formik = useFormik({
@@ -101,6 +104,12 @@ export default function Signup() {
     setHasTriedUsageSubmit(true);
     if (!usageType) return;
 
+    if (usageType === "personal") {
+      setStep("plan");
+      setProcessingSignup(false);
+      return;
+    }
+
     const saved = sessionStorage.getItem("signup-form");
     if (!saved) return;
 
@@ -108,6 +117,39 @@ export default function Signup() {
 
     try {
       await dispatch(signupWithUsageTypeThunk({ values, usageType })).unwrap();
+      sessionStorage.removeItem("signup-form");
+      addToast({
+        title: t("successTitle"),
+        description: t("successMessage"),
+        color: "success",
+      });
+      router.push(`/${locale}`);
+    } catch (error: any) {
+      addToast({
+        title: t("errorTitle"),
+        description: error || t("errorMessage"),
+        color: "danger",
+      });
+    } finally {
+      setProcessingSignup(false);
+    }
+  };
+
+  const handlePlanContinue = async () => {
+    setProcessingSignup(true);
+
+    const saved = sessionStorage.getItem("signup-form");
+    if (!saved || !selectedPlan) return;
+
+    const values = JSON.parse(saved);
+
+    try {
+      await dispatch(
+        signupWithUsageTypeThunk({
+          values,
+          usageType: usageType as "personal" | "team",
+        })
+      ).unwrap();
 
       sessionStorage.removeItem("signup-form");
       addToast({
@@ -164,13 +206,27 @@ export default function Signup() {
                   isInvalid={!usageType && hasTriedUsageSubmit}
                 />
                 <Button
-                  onClick={handleUsageContinue}
+                  onPress={handleUsageContinue}
                   variant="solid"
                   color="primary"
                   className="w-full"
                 >
                   {t("continue")}
                 </Button>
+              </motion.div>
+            ) : step === "plan" ? (
+              <motion.div
+                key="plan-step"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.3 }}
+              >
+                <PlanSelector
+                  selected={selectedPlan}
+                  onSelect={setSelectedPlan}
+                  onContinue={handlePlanContinue}
+                />
               </motion.div>
             ) : (
               <motion.form
