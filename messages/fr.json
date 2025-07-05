@@ -264,20 +264,22 @@
     "aiManaged": "Géré par l'IA :"
   },
   "Sidebar": {
-    "projectBoard": "Tableau de Flux",
+    "projectBoard": "Tableau de bord",
     "projectName": "AdventureWorks Mobile",
     "overview": "Aperçu",
     "boards": "Tableaux",
     "workItems": "Éléments de travail",
-    "backlogs": "Retards",
+    "backlogs": "Carnets",
     "sprints": "Sprints",
     "queries": "Requêtes",
     "plans": "Plans",
     "repos": "Dépôts",
     "pipelines": "Pipelines",
     "testPlans": "Plans de test",
-    "artifacts": "Artéfacts",
-    "projectSettings": "Paramètres du projet"
+    "artifacts": "Artefacts",
+    "projectSettings": "Paramètres du projet",
+    "expand": "Développer",
+    "collapse": "Réduire"
   },
   "Header": {
     "boardTitle": "Tableau",

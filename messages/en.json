@@ -272,7 +272,9 @@
     "pipelines": "Pipelines",
     "testPlans": "Test Plans",
     "artifacts": "Artifacts",
-    "projectSettings": "Project settings"
+    "projectSettings": "Project settings",
+    "expand": "Expand",
+    "collapse": "Collapse"
   },
   "Header": {
     "boardTitle": "Board",
