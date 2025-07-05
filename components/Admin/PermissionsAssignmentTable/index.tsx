@@ -20,7 +20,7 @@ import {
   TableRow,
   TableCell,
 } from "@heroui/react";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   assignPermission,
   fetchUserPermissions,
@@ -28,6 +28,7 @@ import {
 } from "@/store/slices/permissionsSlice";
 import { SystemPermission } from "@/types";
 import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { selectUserId } from "@/store/selectors";
 
 type ResourceType = "user" | "team" | "project";
 const resourceTypes: ResourceType[] = ["user", "team", "project"];
@@ -40,6 +41,7 @@ export default function PermissionAssignmentTable({
   systemPermissions,
 }: PermissionsProps) {
   const dispatch = useAppDispatch();
+  const currentUserId = useAppSelector(selectUserId);
   const [resourceType, setResourceType] = useState<ResourceType>("user");
   const [resourceId, setResourceId] = useState("");
   const [selectedPermission, setSelectedPermission] = useState<string>("");
@@ -74,6 +76,7 @@ export default function PermissionAssignmentTable({
         resource_type: resourceType,
         resource_id: resourceId,
         permission: selectedPermission,
+        granted_by: currentUserId as string,
       })
     ).then(() => {
       setSelectedPermission("");
@@ -185,26 +188,25 @@ export default function PermissionAssignmentTable({
           </Button>
         </div>
 
-        <div>
-          <div className="flex flex-row gap-2">
-            <h3 className="text-sm font-medium mb-2">Assigned Permissions :</h3>
-            {noPermissions && (
-              <p className="text-red-500 text-sm">No Permissions Attached</p>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {assignedPermissions.map((perm) => (
-              <Chip
-                key={perm}
-                size="sm"
-                variant="flat"
-                onClose={() => handleRevoke(perm)}
-                className="hover:cursor-pointer"
-              >
-                {perm}
-              </Chip>
-            ))}
-          </div>
+        <div className="flex flex-row gap-2">
+          <h3 className="text-sm font-medium mb-2">Assigned Permissions :</h3>
+          {noPermissions ? (
+            <p className="text-red-500 text-sm">No Permissions Attached</p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {assignedPermissions.map((perm, index) => (
+                <Chip
+                  key={index}
+                  size="md"
+                  variant="flat"
+                  onClose={() => handleRevoke(perm)}
+                  className="hover:cursor-pointer"
+                >
+                  {perm}
+                </Chip>
+              ))}
+            </div>
+          )}
         </div>
 
         {userData && (

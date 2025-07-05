@@ -71,12 +71,13 @@ export const assignPermission = createAsyncThunk<
     resource_type: string;
     resource_id: string;
     permission: string;
+    granted_by: string;
   }
 >("permissions/assignPermission", async (payload, thunkAPI) => {
   try {
     const res = await fetchWithAuth("/user-permissions", {
       method: "POST",
-      body: JSON.stringify({ ...payload, granted_by: "admin" }),
+      body: JSON.stringify({ ...payload }),
     });
     if (!res.ok) throw new Error("Failed to assign permission");
     const data = await res.json();
