@@ -33,12 +33,12 @@ const navItems = [
   {
     labelKey: "overview",
     icon: <LayoutDashboard size={20} />,
-    href: "/dashboard",
+    href: "/overview",
   },
   {
     labelKey: "boards",
     icon: <KanbanSquare size={20} className="text-green-500" />,
-    href: "/boards",
+    href: "overview/boards",
   },
   { labelKey: "workItems", icon: <ListTodo size={20} />, href: "/work-items" },
   { labelKey: "backlogs", icon: <BookText size={20} />, href: "/backlogs" },
