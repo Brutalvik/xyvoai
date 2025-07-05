@@ -231,9 +231,10 @@ export default function PermissionAssignmentEnterprise({
           <Button
             color="primary"
             variant="shadow"
+            size="lg"
             onPress={handleAssign}
             isDisabled={!resourceId || !selectedPermission}
-            className="self-end"
+            className="self-end mb-1"
           >
             Assign
           </Button>
