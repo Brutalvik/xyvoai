@@ -54,7 +54,7 @@ export default function ProjectsList({
       {filteredProjects.map((project) => (
         <Card
           key={project.id}
-          className="relative border-l-4 shadow-lg rounded-2xl dark:bg-gray-900  hover:shadow-xl transition-shadow duration-300"
+          className="relative border-l-4 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300"
           style={{ borderColor: project.color }}
         >
           <CardHeader className="pb-0">
@@ -74,7 +74,7 @@ export default function ProjectsList({
                         className="hover:cursor-pointer"
                       >
                         <Tooltip content={project.name}>
-                          <h2 className="text-lg font-bold text-default-800 dark:text-white max-w-[240px] truncate cursor-default">
+                          <h2 className="text-lg font-bold text-default-800 max-w-[240px] truncate cursor-default">
                             {project.name.split(" ").slice(0, 4).join(" ")}
                             {project.name.split(" ").length > 4 ? "..." : ""}
                           </h2>
@@ -83,7 +83,7 @@ export default function ProjectsList({
                     </Tooltip>
                   ) : (
                     <Tooltip content={project.name}>
-                      <h2 className="text-lg font-bold text-default-800 dark:text-white max-w-[240px] truncate cursor-default">
+                      <h2 className="text-lg font-bold text-default-800 max-w-[240px] truncate cursor-default">
                         {project.name.split(" ").slice(0, 4).join(" ")}
                         {project.name.split(" ").length > 4 ? "..." : ""}
                       </h2>
@@ -113,7 +113,7 @@ export default function ProjectsList({
             </div>
           </CardHeader>
 
-          <CardBody className="text-sm text-default-600 dark:text-default-300 space-y-2 py-2">
+          <CardBody className="text-sm text-default-600 space-y-2 py-2">
             <div className="flex flex-row gap-4 items-center">
               <strong>{t("status")}</strong>:
               <Chip
