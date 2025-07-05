@@ -21,7 +21,7 @@ export default function CreateTeamPage() {
       console.log("Creating team:", values);
       // TODO: Replace with actual API call
       addToast({ title: "Team created successfully", variant: "solid" });
-      router.push("/dashboard/teams");
+      router.push("/overview/teams");
     } catch (error) {
       addToast({ title: "Failed to create team", variant: "flat" });
     }

@@ -40,7 +40,7 @@ export const individualPlans = [
       "Up to 5 projects",
       "2 team members",
       "AI task generation",
-      "Shared project dashboard",
+      "Shared project Overview",
     ],
     prices: {
       monthly: "$7.95/mo",

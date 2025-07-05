@@ -1,6 +1,6 @@
 "use client";
 
-import CreateProject from "@/components/Dashboard/CreateProject";
+import CreateProject from "@/components/Overview/CreateProject";
 
 export default function CreateProjectPage() {
   return (

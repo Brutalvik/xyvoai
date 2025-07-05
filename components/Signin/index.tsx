@@ -53,7 +53,7 @@ export default function Signin() {
           color: "success",
           icon: <HiBadgeCheck />,
         });
-        router.push("/dashboard/projects");
+        router.push("/overview/projects");
       } catch (error: any) {
         addToast({
           title: t("errorTitle"),

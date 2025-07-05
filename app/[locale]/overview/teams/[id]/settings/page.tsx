@@ -41,7 +41,7 @@ export default function TeamSettingsPage() {
       console.log("Updating team:", values);
       // TODO: Replace with actual update API call
       addToast({ title: "Team updated successfully", variant: "solid" });
-      router.push("/dashboard/teams");
+      router.push("/overview/teams");
     } catch (error) {
       addToast({ title: "Failed to update team", variant: "flat" });
     }

@@ -135,7 +135,7 @@ export default function CurrentSprintCard({ sprint }: CurrentSprintCardProps) {
           {t("velocity")}: {velocity}
         </span>
         <Button variant="bordered" size="sm">
-          <a href={`/dashboard/sprints/${id}`}>{t("view")}</a>
+          <a href={`/overview/sprints/${id}`}>{t("view")}</a>
         </Button>
       </div>
     </div>

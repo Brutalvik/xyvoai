@@ -181,7 +181,7 @@
     "passwordLength": "Password must be at least 8 characters.",
     "passwordPattern": "Password must include uppercase, lowercase, number, and symbol."
   },
-  "DashboardProjects": {
+  "OverviewProjects": {
     "getStartedTitle": "Welcome to Xyvo",
     "getStartedDescription": "Create your first project to start managing your work with AI.",
     "projectLimitReached": "You’ve reached the limit of 1 project on the Free plan.",
@@ -382,8 +382,8 @@
     "create": "Create",
     "cancel": "Cancel"
   },
-  "Dashboard": {
-    "title": "Dashboard",
+  "Overview": {
+    "title": "Overview",
     "currentSprint": "Current Sprint",
     "noSprint": "No sprint available",
     "sprintEndsIn": "Ends in",

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { useTranslations } from "next-intl";
-import CurrentSprintCard from "@/components/Dashboard/CurrentSprintCard";
+import CurrentSprintCard from "@/components/Overview/CurrentSprintCard";
 import { SparkleIcon, UsersIcon } from "lucide-react";
 
 // Dummy data
@@ -32,7 +32,7 @@ const currentSprint = {
 };
 
 export default function TeamSprintDashboard() {
-  const t = useTranslations("Dashboard");
+  const t = useTranslations("Overview");
 
   return (
     <div className="p-6 space-y-6">

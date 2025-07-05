@@ -196,7 +196,7 @@ export default function ProjectsList({
                 <HiEye
                   className="w-4 h-4"
                   onClick={() =>
-                    router.push(`/dashboard/projects?projectId=${project.id}`)
+                    router.push(`/overview/projects?projectId=${project.id}`)
                   }
                 />
               </Button>
@@ -208,7 +208,7 @@ export default function ProjectsList({
                 size="sm"
                 onPress={() =>
                   router.push(
-                    `/dashboard/projects/create?projectId=${project.id}`
+                    `/overview/projects/create?projectId=${project.id}`
                   )
                 }
               >

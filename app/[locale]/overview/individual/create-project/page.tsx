@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import CreateProject from "@/components/Dashboard/CreateProject";
+import CreateProject from "@/components/Overview/CreateProject";
 
 const CreateProjectPage = () => {
   return (

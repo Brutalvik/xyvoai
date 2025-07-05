@@ -4,9 +4,9 @@ import { useEffect, useState, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchProjects } from "@/store/slices/projectsSlice";
-import GetStarted from "@/components/Dashboard/GetStarted";
-import ProjectsList from "@/components/Dashboard/ProjectList";
-import ProjectOverview from "@/components/Dashboard/ProjectOverview";
+import GetStarted from "@/components/Overview/GetStarted";
+import ProjectsList from "@/components/Overview/ProjectList";
+import ProjectOverview from "@/components/Overview/ProjectOverview";
 import { Select, SelectItem, Switch, Button, Tooltip } from "@heroui/react";
 import { Project } from "@/types";
 import XLoader from "@/components/ui/XLoader";
@@ -42,11 +42,11 @@ const ProjectsPage = () => {
   }, [projects, statusFilter, visibilityFilter, showAIModeOnly]);
 
   const handleCreateProject = () => {
-    router.push("/dashboard/projects/create");
+    router.push("/overview/projects/create");
   };
 
   const handleBackToProjects = () => {
-    router.push("/dashboard/projects");
+    router.push("/overview/projects");
   };
 
   if (projectId) {

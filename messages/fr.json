@@ -187,7 +187,7 @@
     "passwordLength": "Le mot de passe doit contenir au moins 8 caractères.",
     "passwordPattern": "Le mot de passe doit inclure une majuscule, une minuscule, un chiffre et un symbole."
   },
-  "DashboardProjects": {
+  "OverviewProjects": {
     "getStartedTitle": "Bienvenue sur Xyvo",
     "getStartedDescription": "Veuillez créer votre premier projet afin de commencer à gérer votre travail avec l’intelligence artificielle.",
     "projectLimitReached": "Vous avez atteint la limite d’un projet avec le forfait gratuit.",
@@ -386,7 +386,7 @@
     "create": "Créer",
     "cancel": "Annuler"
   },
-  "Dashboard": {
+  "Overview": {
     "title": "Tableau de bord",
     "currentSprint": "Sprint actuel",
     "noSprint": "Aucun sprint disponible",
