@@ -251,7 +251,17 @@
     "team": "Équipe",
     "nextAction": "Prochaine action",
     "managedByAI": "Géré par l'IA",
-    "na": "N/D"
+    "na": "N/D",
+    "projectListBack": "Retour aux projets",
+    "loadingProjects": "Chargement des projets...",
+    "all": "Tous",
+    "active": "Actif",
+    "completed": "Terminé",
+    "archived": "Archivé",
+    "private": "Privé",
+    "public": "Public",
+    "createTooltip": "Créer un nouveau projet",
+    "aiManaged": "Géré par l'IA :"
   },
   "Sidebar": {
     "projectBoard": "Tableau de Flux",

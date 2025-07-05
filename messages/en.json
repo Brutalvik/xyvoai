@@ -246,7 +246,17 @@
     "team": "Team",
     "nextAction": "Next Action",
     "managedByAI": "Managed by AI",
-    "na": "N/A"
+    "na": "N/A",
+    "projectListBack": "Back to Projects",
+    "loadingProjects": "Loading projects...",
+    "all": "All",
+    "active": "Active",
+    "completed": "Completed",
+    "archived": "Archived",
+    "private": "Private",
+    "public": "Public",
+    "createTooltip": "Create new project",
+    "aiManaged": "AI-Managed:"
   },
   "Sidebar": {
     "projectBoard": "Flow Deck",

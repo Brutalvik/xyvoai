@@ -10,7 +10,7 @@ interface ProjectsState {
 
 const initialState: ProjectsState = {
   items: [],
-  loading: false,
+  loading: true,
   error: null,
 };
 

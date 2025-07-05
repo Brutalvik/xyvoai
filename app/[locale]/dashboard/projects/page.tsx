@@ -10,8 +10,10 @@ import ProjectOverview from "@/components/Dashboard/ProjectOverview";
 import { Select, SelectItem, Switch, Button, Tooltip } from "@heroui/react";
 import { Project } from "@/types";
 import XLoader from "@/components/ui/XLoader";
+import { useTranslations } from "next-intl";
 
 const ProjectsPage = () => {
+  const t = useTranslations("ProjectList");
   const router = useRouter();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
@@ -56,7 +58,7 @@ const ProjectsPage = () => {
             color="primary"
             onPress={handleBackToProjects}
           >
-            ← Back to Projects
+            ← {t("projectListBack")}
           </Button>
         </div>
         <ProjectOverview projectId={projectId} />
@@ -68,7 +70,7 @@ const ProjectsPage = () => {
     return (
       <div className="flex flex-col items-center justify-center py-10 text-gray-500 dark:text-gray-400">
         <XLoader />
-        <p className="mt-4 text-sm font-medium">Loading projects...</p>
+        <p className="mt-4 text-sm font-medium">{t("loadingProjects")}</p>
       </div>
     );
   }
@@ -89,43 +91,44 @@ const ProjectsPage = () => {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-4">
           <Select
-            label="Status"
+            label={t("status")}
             size="sm"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="w-48"
           >
-            <SelectItem key="">All</SelectItem>
-            <SelectItem key="active">Active</SelectItem>
-            <SelectItem key="completed">Completed</SelectItem>
-            <SelectItem key="archived">Archived</SelectItem>
+            <SelectItem key="">{t("all")}</SelectItem>
+            <SelectItem key="active">{t("active")}</SelectItem>
+            <SelectItem key="completed">{t("completed")}</SelectItem>
+            <SelectItem key="archived">{t("archived")}</SelectItem>
           </Select>
 
           <Select
-            label="Visibility"
+            label={t("visibility")}
             size="sm"
             value={visibilityFilter}
             onChange={(e) => setVisibilityFilter(e.target.value)}
             className="w-48"
           >
-            <SelectItem key="">All</SelectItem>
-            <SelectItem key="private">Private</SelectItem>
-            <SelectItem key="public">Public</SelectItem>
+            <SelectItem key="">{t("all")}</SelectItem>
+            <SelectItem key="private">{t("private")}</SelectItem>
+            <SelectItem key="public">{t("public")}</SelectItem>
           </Select>
         </div>
 
         <div className="flex items-center gap-2">
-          <Tooltip content="Create new project">
+          <Tooltip content={t("createTooltip")}>
+            {/* Create new project */}
             <Button
               variant="flat"
               color="primary"
               onPress={handleCreateProject}
             >
-              + Project
+              + {t("createButton")}
             </Button>
           </Tooltip>
           <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-            AI-Managed:
+            {t("aiManaged")}
             <Switch
               size="sm"
               isSelected={showAIModeOnly}
