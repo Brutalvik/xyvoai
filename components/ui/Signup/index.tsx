@@ -164,7 +164,7 @@ export default function Signup() {
                   isInvalid={!usageType && hasTriedUsageSubmit}
                 />
                 <Button
-                  onClick={handleUsageContinue}
+                  onPress={handleUsageContinue}
                   variant="solid"
                   color="primary"
                   className="w-full"
