@@ -1,3 +1,4 @@
+// components/PermissionAssignmentEnterprise.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,19 +8,18 @@ import {
   Input,
   Button,
   Chip,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
   Table,
   TableHeader,
   TableColumn,
   TableBody,
   TableRow,
   TableCell,
-  user,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from "@heroui/react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
@@ -38,26 +38,24 @@ interface PermissionsProps {
   systemPermissions: SystemPermission[];
 }
 
-export default function PermissionAssignmentTable({
+export default function PermissionAssignmentEnterprise({
   systemPermissions,
 }: PermissionsProps) {
   const dispatch = useAppDispatch();
   const currentUserId = useAppSelector(selectUserId);
   const [resourceType, setResourceType] = useState<ResourceType>("user");
   const [resourceId, setResourceId] = useState("");
-  const [selectedPermission, setSelectedPermission] = useState<string>("");
+  const [selectedPermission, setSelectedPermission] = useState("");
+  const [userData, setUserData] = useState<any>(null);
   const [assignedPermissions, setAssignedPermissions] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [userData, setUserData] = useState<any>(null);
   const [sortColumn, setSortColumn] =
     useState<keyof SystemPermission>("category");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   useEffect(() => {
     if (!resourceId) return;
-
     dispatch(fetchUserPermissions(resourceId)).then((res: any) => {
       if (res.payload) {
         setUserData(res.payload);
@@ -75,7 +73,6 @@ export default function PermissionAssignmentTable({
 
   const handleAssign = () => {
     if (!selectedPermission || !resourceId) return;
-
     dispatch(
       assignPermission({
         user_id: resourceType === "user" ? resourceId : "",
@@ -87,10 +84,12 @@ export default function PermissionAssignmentTable({
     ).then(() => {
       setSelectedPermission("");
       dispatch(fetchUserPermissions(resourceId)).then((res: any) => {
+        setUserData(res.payload);
         setAssignedPermissions(
-          res.payload?.map((p: { permission: string }) => p.permission) || []
+          res.payload.permissions.map(
+            (p: { permission: string }) => p.permission
+          )
         );
-        setUserData(res.payload?.[0]?.user || null);
       });
     });
   };
@@ -125,33 +124,24 @@ export default function PermissionAssignmentTable({
         : valB.localeCompare(valA);
     });
 
-  const noPermissions = assignedPermissions.length === 0;
-
   return (
-    <div className="space-y-10">
-      {/* Header */}
+    <div className="space-y-10 text-sm">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
-          <span role="img" aria-label="lock">
-            🔒
-          </span>{" "}
-          Manage User Permissions
-        </h2>
-        <Button variant="ghost" size="sm" onPress={onOpen}>
-          Show Permission Details
+        <h2 className="text-2xl font-bold tracking-tight">User Permissions</h2>
+        <Button size="sm" variant="ghost" onPress={onOpen}>
+          View Permission Registry
         </Button>
       </div>
 
-      {/* Assign Form */}
-      <div className="bg-content2/30 border border-content3 rounded-xl p-6 space-y-6 shadow-sm">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+      {/* Assignment Form */}
+      <div className="bg-background shadow-md border border-border rounded-2xl p-6 space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Select
             label="Resource Type"
-            selectedKeys={new Set<string>([resourceType])}
-            onSelectionChange={(keys) => {
-              const value = Array.from(keys as Set<string>)[0] as ResourceType;
-              setResourceType(value);
-            }}
+            selectedKeys={new Set([resourceType])}
+            onSelectionChange={(keys) =>
+              setResourceType(Array.from(keys)[0] as ResourceType)
+            }
           >
             {resourceTypes.map((type) => (
               <SelectItem key={type}>{type}</SelectItem>
@@ -165,46 +155,42 @@ export default function PermissionAssignmentTable({
           />
 
           <Select
-            label="Assign Permission"
+            label="Permission"
             items={systemPermissions}
             selectedKeys={[selectedPermission]}
-            onSelectionChange={(keys) => {
-              const value = Array.from(keys as Set<string>)[0];
-              setSelectedPermission(value);
-            }}
+            onSelectionChange={(keys) =>
+              setSelectedPermission(String(Array.from(keys)[0]))
+            }
           >
-            {(permission) => (
-              <SelectItem key={permission.key}>{permission.label}</SelectItem>
-            )}
+            {(perm) => <SelectItem key={perm.key}>{perm.label}</SelectItem>}
           </Select>
 
           <Button
             color="primary"
-            size="lg"
             variant="shadow"
             onPress={handleAssign}
             isDisabled={!resourceId || !selectedPermission}
+            className="self-end"
           >
             Assign
           </Button>
         </div>
       </div>
 
-      {/* Assigned Permissions */}
+      {/* Permission Chips */}
       <div className="space-y-2">
-        <h3 className="text-lg font-medium">Assigned Permissions</h3>
-        {noPermissions ? (
-          <p className="text-danger text-sm italic">No permissions assigned.</p>
+        <h3 className="text-lg font-semibold">Assigned Permissions</h3>
+        {assignedPermissions.length === 0 ? (
+          <p className="text-foreground-400 italic">None assigned.</p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {assignedPermissions.map((perm, index) => (
               <Chip
                 key={index}
                 size="md"
-                variant="faded"
+                variant="flat"
                 color="primary"
                 onClose={() => handleRevoke(perm)}
-                className="text-xs font-medium uppercase tracking-tight"
               >
                 {perm}
               </Chip>
@@ -215,53 +201,61 @@ export default function PermissionAssignmentTable({
 
       {/* User Info */}
       {userData && (
-        <div className="rounded-xl border border-content3 bg-content2/40 p-6 shadow-sm max-w-4xl">
+        <div className="bg-muted p-6 rounded-xl border border-border shadow-sm max-w-5xl">
           <h3 className="text-lg font-semibold mb-4">User Profile</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <span className="font-medium text-foreground-500">Name:</span>{" "}
-              {userData.name || "-"}
+              <div className="text-xs font-semibold text-foreground-400">
+                Name
+              </div>
+              <div>{userData.name}</div>
             </div>
             <div>
-              <span className="font-medium text-foreground-500">Email:</span>{" "}
-              {userData.email || "-"}
+              <div className="text-xs font-semibold text-foreground-400">
+                Email
+              </div>
+              <div>{userData.email}</div>
             </div>
             <div>
-              <span className="font-medium text-foreground-500">Phone:</span>{" "}
-              {userData.phone || "-"}
+              <div className="text-xs font-semibold text-foreground-400">
+                Phone
+              </div>
+              <div>{userData.phone}</div>
             </div>
             <div>
-              <span className="font-medium text-foreground-500">Role:</span>{" "}
-              {userData.role || "-"}
+              <div className="text-xs font-semibold text-foreground-400">
+                Role
+              </div>
+              <div>{userData.role}</div>
             </div>
             <div>
-              <span className="font-medium text-foreground-500">Plan:</span>{" "}
-              {userData.plan || "-"}
+              <div className="text-xs font-semibold text-foreground-400">
+                Plan
+              </div>
+              <div>{userData.plan}</div>
             </div>
             <div>
-              <span className="font-medium text-foreground-500">Org ID:</span>{" "}
-              {userData.organization_id || "-"}
+              <div className="text-xs font-semibold text-foreground-400">
+                Organization
+              </div>
+              <div className="break-all text-xs text-foreground-600">
+                {userData.organization_id}
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Permissions Modal */}
+      {/* Permission Modal */}
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         scrollBehavior="inside"
-        backdrop="opaque"
-        classNames={{
-          backdrop: "bg-black/70",
-        }}
       >
-        <ModalContent className="max-w-screen-xl w-full">
+        <ModalContent className="max-w-6xl">
           {(onClose) => (
             <>
-              <ModalHeader className="text-xl font-semibold">
-                All System Permissions
-              </ModalHeader>
+              <ModalHeader>All System Permissions</ModalHeader>
               <ModalBody>
                 <Input
                   placeholder="Search permissions..."
@@ -270,11 +264,7 @@ export default function PermissionAssignmentTable({
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="mb-4"
                 />
-                <Table
-                  isStriped
-                  aria-label="System Permissions Table"
-                  removeWrapper
-                >
+                <Table isStriped removeWrapper>
                   <TableHeader>
                     {["label", "key", "description", "category"].map((key) => (
                       <TableColumn key={key}>
@@ -282,7 +272,7 @@ export default function PermissionAssignmentTable({
                           onClick={() =>
                             handleSort(key as keyof SystemPermission)
                           }
-                          className="flex items-center gap-1 text-sm font-medium w-full justify-start"
+                          className="flex items-center gap-1 text-sm font-semibold"
                         >
                           {key.charAt(0).toUpperCase() + key.slice(1)}
                           {sortColumn === key ? (
@@ -311,7 +301,7 @@ export default function PermissionAssignmentTable({
                 </Table>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onClose}>
+                <Button variant="flat" color="danger" onPress={onClose}>
                   Close
                 </Button>
               </ModalFooter>
