@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
+import { NavigationBreadcrumbs } from "@/components/KanbanBoard/NavigationBreadcrumbs";
 
 const Header = () => {
   const t = useTranslations("Header");
@@ -12,10 +13,8 @@ const Header = () => {
   return (
     <header className="px-6 py-4 shadow-sm flex items-center justify-between border-b">
       <div className="flex flex-col">
-        <nav className="text-xs text-gray-500 mb-1">
-          Contoso / AdventureWorks Mobile / Boards /
-          <span className="text-black font-semibold"> FabrikamFiber</span>
-        </nav>
+        <NavigationBreadcrumbs />
+
         <h1 className="text-xl font-bold">{t("boardTitle")}</h1>
       </div>
 
