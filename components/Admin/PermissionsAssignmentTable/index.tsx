@@ -128,30 +128,30 @@ export default function PermissionAssignmentTable({
   const noPermissions = assignedPermissions.length === 0;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-5">
-        <h2 className="text-xl font-semibold flex items-center gap-2">
+    <div className="space-y-10">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
           <span role="img" aria-label="lock">
             🔒
           </span>{" "}
           Manage User Permissions
         </h2>
-        <Button size="sm" variant="ghost" onPress={onOpen}>
+        <Button variant="ghost" size="sm" onPress={onOpen}>
           Show Permission Details
         </Button>
       </div>
 
-      <div className="space-y-10 rounded-xl p-4">
-        <div className="flex flex-wrap gap-4 items-end">
+      {/* Assign Form */}
+      <div className="bg-content2/30 border border-content3 rounded-xl p-6 space-y-6 shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
           <Select
             label="Resource Type"
-            size="sm"
             selectedKeys={new Set<string>([resourceType])}
             onSelectionChange={(keys) => {
               const value = Array.from(keys as Set<string>)[0] as ResourceType;
               setResourceType(value);
             }}
-            className="w-52"
           >
             {resourceTypes.map((type) => (
               <SelectItem key={type}>{type}</SelectItem>
@@ -160,17 +160,13 @@ export default function PermissionAssignmentTable({
 
           <Input
             label="Resource ID"
-            size="sm"
             value={resourceId}
             onChange={(e) => setResourceId(e.target.value)}
-            className="w-52"
           />
 
           <Select
-            className="w-52"
-            items={systemPermissions}
             label="Assign Permission"
-            size="sm"
+            items={systemPermissions}
             selectedKeys={[selectedPermission]}
             onSelectionChange={(keys) => {
               const value = Array.from(keys as Set<string>)[0];
@@ -184,74 +180,86 @@ export default function PermissionAssignmentTable({
 
           <Button
             color="primary"
-            variant="shadow"
             size="lg"
+            variant="shadow"
             onPress={handleAssign}
             isDisabled={!resourceId || !selectedPermission}
-            className="w-52"
           >
             Assign
           </Button>
         </div>
+      </div>
 
-        <div className="flex flex-row gap-2">
-          <h3 className="text-sm font-medium mb-2">Assigned Permissions :</h3>
-          {noPermissions ? (
-            <p className="text-red-500 text-sm">No Permissions Attached</p>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {assignedPermissions.map((perm, index) => (
-                <Chip
-                  key={index}
-                  size="md"
-                  variant="flat"
-                  onClose={() => handleRevoke(perm)}
-                  className="hover:cursor-pointer"
-                >
-                  {perm}
-                </Chip>
-              ))}
-            </div>
-          )}
-        </div>
-        {userData && (
-          <Table removeWrapper aria-label="Full User Info" isStriped>
-            <TableHeader>
-              <TableColumn>Name</TableColumn>
-              <TableColumn>Email</TableColumn>
-              <TableColumn>Phone</TableColumn>
-              <TableColumn>Role</TableColumn>
-              <TableColumn>Plan</TableColumn>
-              <TableColumn>Org ID</TableColumn>
-            </TableHeader>
-            <TableBody>
-              <TableRow key={userData.id}>
-                <TableCell>{userData.name || "-"}</TableCell>
-                <TableCell>{userData.email || "-"}</TableCell>
-                <TableCell>{userData.phone || "-"}</TableCell>
-                <TableCell>{userData.role || "-"}</TableCell>
-                <TableCell>{userData.plan || "-"}</TableCell>
-                <TableCell>{userData.organization_id || "-"}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+      {/* Assigned Permissions */}
+      <div className="space-y-2">
+        <h3 className="text-lg font-medium">Assigned Permissions</h3>
+        {noPermissions ? (
+          <p className="text-danger text-sm italic">No permissions assigned.</p>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {assignedPermissions.map((perm, index) => (
+              <Chip
+                key={index}
+                size="md"
+                variant="faded"
+                color="primary"
+                onClose={() => handleRevoke(perm)}
+                className="text-xs font-medium uppercase tracking-tight"
+              >
+                {perm}
+              </Chip>
+            ))}
+          </div>
         )}
       </div>
 
+      {/* User Info */}
+      {userData && (
+        <div className="rounded-xl border border-content3 bg-content2/40 p-6 shadow-sm max-w-4xl">
+          <h3 className="text-lg font-semibold mb-4">User Profile</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+            <div>
+              <span className="font-medium text-foreground-500">Name:</span>{" "}
+              {userData.name || "-"}
+            </div>
+            <div>
+              <span className="font-medium text-foreground-500">Email:</span>{" "}
+              {userData.email || "-"}
+            </div>
+            <div>
+              <span className="font-medium text-foreground-500">Phone:</span>{" "}
+              {userData.phone || "-"}
+            </div>
+            <div>
+              <span className="font-medium text-foreground-500">Role:</span>{" "}
+              {userData.role || "-"}
+            </div>
+            <div>
+              <span className="font-medium text-foreground-500">Plan:</span>{" "}
+              {userData.plan || "-"}
+            </div>
+            <div>
+              <span className="font-medium text-foreground-500">Org ID:</span>{" "}
+              {userData.organization_id || "-"}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Permissions Modal */}
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         scrollBehavior="inside"
         backdrop="opaque"
         classNames={{
-          backdrop:
-            "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
+          backdrop: "bg-black/70",
         }}
       >
         <ModalContent className="max-w-screen-xl w-full">
           {(onClose) => (
             <>
-              <ModalHeader className="text-lg font-semibold">
+              <ModalHeader className="text-xl font-semibold">
                 All System Permissions
               </ModalHeader>
               <ModalBody>
@@ -262,7 +270,6 @@ export default function PermissionAssignmentTable({
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="mb-4"
                 />
-
                 <Table
                   isStriped
                   aria-label="System Permissions Table"
