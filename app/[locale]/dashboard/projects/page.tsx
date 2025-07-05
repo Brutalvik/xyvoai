@@ -67,13 +67,13 @@ const ProjectsPage = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-10 text-gray-500 dark:text-gray-400">
-        <XLoader size="md" />
+        <XLoader />
         <p className="mt-4 text-sm font-medium">Loading projects...</p>
       </div>
     );
   }
 
-  if (projects.length === 0) {
+  if (!loading && projects.length === 0) {
     return (
       <GetStarted
         onCreateProject={handleCreateProject}

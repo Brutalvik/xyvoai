@@ -6,6 +6,7 @@ export const selectProjects = (state: RootState): Project[] =>
 
 export const isProjectsLoading = (state: RootState) => state.projects.loading;
 export const projectsError = (state: RootState) => state.projects.error;
+export const projectsLoaded = (state: RootState) => state.projects;
 
 export const selectProjectById = (id: string) => (state: RootState) =>
   state.projects.items.find((project) => project.id === id);
