@@ -6,4 +6,3 @@ export const selectPermissions = (state: RootState): SystemPermission[] =>
 export const isPermissionsLoading = (state: RootState) =>
   state.permissions.loading;
 export const permissionsError = (state: RootState) => state.permissions.error;
-export const permissionsLoaded = (state: RootState) => state.permissions;

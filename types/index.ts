@@ -77,3 +77,13 @@ export type ProjectsListProps = {
   visibilityFilter: string;
   projects?: Project[];
 };
+
+export interface SystemPermission {
+  id: string;
+  key?: string;
+  label?: string;
+  description?: string;
+  category?: string;
+  system?: boolean;
+  created_at?: string;
+}
