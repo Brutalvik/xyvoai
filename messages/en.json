@@ -438,6 +438,7 @@
     "failedToRevoke": "Failed to revoke",
     "user": "User",
     "team": "Team",
-    "project": "Project"
+    "project": "Project",
+    "getUser": "Get User"
   }
 }

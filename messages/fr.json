@@ -441,6 +441,7 @@
     "failedToRevoke": "Échec de la révocation",
     "user": "Utilisateur",
     "team": "Équipe",
-    "project": "Projet"
+    "project": "Projet",
+    "getUser": "Voir l’utilisateur"
   }
 }

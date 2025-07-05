@@ -63,6 +63,7 @@ export default function PermissionAssignmentEnterprise({
     id: string;
     permission: string;
   } | null>(null);
+  const [isResourceFetched, setIsResourceFetched] = useState<boolean>(false);
 
   const getResourceTypeLabel = (type: ResourceType) => {
     switch (type) {
@@ -76,9 +77,7 @@ export default function PermissionAssignmentEnterprise({
         return type;
     }
   };
-
-  useEffect(() => {
-    if (!resourceId) return;
+  const handleFetchResource = () => {
     dispatch(fetchUserPermissions(resourceId)).then((res: any) => {
       if (res.payload) {
         setUserData(res.payload);
@@ -90,12 +89,17 @@ export default function PermissionAssignmentEnterprise({
             })
           )
         );
+        setIsResourceFetched(true);
       } else {
         setUserData(null);
         setAssignedPermissions([]);
       }
     });
-  }, [resourceType, resourceId, dispatch]);
+  };
+
+  // useEffect(() => {
+  //   if (!resourceId) return;
+  // }, [resourceType, resourceId, dispatch]);
 
   const handleAssign = () => {
     if (!selectedPermission || !resourceId) return;
@@ -234,30 +238,44 @@ export default function PermissionAssignmentEnterprise({
             onChange={(e) => setResourceId(e.target.value)}
           />
 
-          <Select
-            label={t("permission")}
-            items={systemPermissions.filter(
-              (perm) =>
-                !assignedPermissions.some((p) => p.permission === perm.key)
-            )}
-            selectedKeys={[selectedPermission]}
-            onSelectionChange={(keys) =>
-              setSelectedPermission(String(Array.from(keys)[0]))
-            }
-          >
-            {(perm) => <SelectItem key={perm.key}>{perm.label}</SelectItem>}
-          </Select>
-
-          <Button
-            color="primary"
-            variant="shadow"
-            size="lg"
-            onPress={handleAssign}
-            isDisabled={!resourceId || !selectedPermission}
-            className="self-end mb-1"
-          >
-            {t("assign")}
-          </Button>
+          {isResourceFetched ? (
+            <>
+              <Select
+                label={t("permission")}
+                items={systemPermissions.filter(
+                  (perm) =>
+                    !assignedPermissions.some((p) => p.permission === perm.key)
+                )}
+                selectedKeys={[selectedPermission]}
+                onSelectionChange={(keys) =>
+                  setSelectedPermission(String(Array.from(keys)[0]))
+                }
+              >
+                {(perm) => <SelectItem key={perm.key}>{perm.label}</SelectItem>}
+              </Select>
+              <Button
+                color="primary"
+                variant="shadow"
+                size="lg"
+                onPress={handleAssign}
+                isDisabled={!resourceId || !selectedPermission}
+                className="self-end mb-1"
+              >
+                {t("assign")}
+              </Button>
+            </>
+          ) : (
+            <Button
+              color="primary"
+              variant="shadow"
+              size="lg"
+              onPress={handleFetchResource}
+              isDisabled={!resourceId}
+              className="self-end mb-1"
+            >
+              {t("getUser")}
+            </Button>
+          )}
         </div>
       </div>
 
