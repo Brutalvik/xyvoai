@@ -236,7 +236,10 @@ export default function PermissionAssignmentEnterprise({
 
           <Select
             label={t("permission")}
-            items={systemPermissions}
+            items={systemPermissions.filter(
+              (perm) =>
+                !assignedPermissions.some((p) => p.permission === perm.key)
+            )}
             selectedKeys={[selectedPermission]}
             onSelectionChange={(keys) =>
               setSelectedPermission(String(Array.from(keys)[0]))
