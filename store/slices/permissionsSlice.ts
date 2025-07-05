@@ -44,18 +44,18 @@ export const fetchSystemPermissions = createAsyncThunk<
 });
 
 export const fetchUserPermissions = createAsyncThunk<
-  any[], // update with real type if needed
+  any, // Ideally: `UserWithPermissions`, define a proper type later
   string,
   { state: RootState }
 >("permissions/fetchUserPermissions", async (userId, thunkAPI) => {
   try {
     const data = await fetchWithAuth(`/user-permissions/user/${userId}`);
 
-    if (!data.success || !Array.isArray(data.user_permissions)) {
-      throw new Error("Invalid response: permissions not found");
+    if (!data.success || !data.user || !Array.isArray(data.user.permissions)) {
+      throw new Error("Invalid response: user or permissions not found");
     }
 
-    return data.user_permissions;
+    return data.user;
   } catch (err: any) {
     console.error("❌ fetchUserPermissions error:", err);
     return thunkAPI.rejectWithValue(
@@ -79,6 +79,7 @@ export const assignPermission = createAsyncThunk<
       method: "POST",
       body: JSON.stringify({ ...payload }),
     });
+    console.log(res);
     if (!res.ok) throw new Error("Failed to assign permission");
     const data = await res.json();
     return data.user_permission;

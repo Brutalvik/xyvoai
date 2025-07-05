@@ -19,6 +19,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  user,
 } from "@heroui/react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
@@ -58,12 +59,17 @@ export default function PermissionAssignmentTable({
     if (!resourceId) return;
 
     dispatch(fetchUserPermissions(resourceId)).then((res: any) => {
-      const permissions = Array.isArray(res.payload)
-        ? res.payload.map((p: { permission: string }) => p.permission)
-        : [];
-
-      setAssignedPermissions(permissions);
-      setUserData(res.payload?.[0]?.user || null);
+      if (res.payload) {
+        setUserData(res.payload);
+        setAssignedPermissions(
+          res.payload.permissions.map(
+            (p: { permission: string }) => p.permission
+          )
+        );
+      } else {
+        setUserData(null);
+        setAssignedPermissions([]);
+      }
     });
   }, [resourceType, resourceId, dispatch]);
 
@@ -208,25 +214,27 @@ export default function PermissionAssignmentTable({
             </div>
           )}
         </div>
-
         {userData && (
-          <div>
-            <h3 className="text-sm font-medium mb-2">User Info:</h3>
-            <Table removeWrapper aria-label="User Data Table">
-              <TableHeader>
-                <TableColumn>Name</TableColumn>
-                <TableColumn>Email</TableColumn>
-                <TableColumn>Role</TableColumn>
-              </TableHeader>
-              <TableBody>
-                <TableRow key={userData.id}>
-                  <TableCell>{userData.name || "-"}</TableCell>
-                  <TableCell>{userData.email || "-"}</TableCell>
-                  <TableCell>{userData.role || "-"}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
+          <Table removeWrapper aria-label="Full User Info" isStriped>
+            <TableHeader>
+              <TableColumn>Name</TableColumn>
+              <TableColumn>Email</TableColumn>
+              <TableColumn>Phone</TableColumn>
+              <TableColumn>Role</TableColumn>
+              <TableColumn>Plan</TableColumn>
+              <TableColumn>Org ID</TableColumn>
+            </TableHeader>
+            <TableBody>
+              <TableRow key={userData.id}>
+                <TableCell>{userData.name || "-"}</TableCell>
+                <TableCell>{userData.email || "-"}</TableCell>
+                <TableCell>{userData.phone || "-"}</TableCell>
+                <TableCell>{userData.role || "-"}</TableCell>
+                <TableCell>{userData.plan || "-"}</TableCell>
+                <TableCell>{userData.organization_id || "-"}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         )}
       </div>
 
