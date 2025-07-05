@@ -210,6 +210,7 @@
     "attachmentLabel": "Upload Attachment",
     "randomColor": "Random"
   },
+
   "ProjectList": {
     "projectId": "Project ID",
     "createTitle": "Create New Project",
@@ -239,11 +240,13 @@
     "visibility": "Visibility",
     "view": "View",
     "delete": "Delete",
+    "edit": "Edit",
     "empty": "No projects available.",
     "status": "Status",
     "team": "Team",
     "nextAction": "Next Action",
-    "managedByAI": "Managed by AI"
+    "managedByAI": "Managed by AI",
+    "na": "N/A"
   },
   "Sidebar": {
     "projectBoard": "Flow Deck",

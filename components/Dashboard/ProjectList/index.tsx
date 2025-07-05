@@ -73,21 +73,28 @@ export default function ProjectsList({
                         size="sm"
                         className="hover:cursor-pointer"
                       >
-                        <h2 className="text-lg font-bold text-gray-800 dark:text-white">
-                          {project.name}
-                        </h2>
+                        <Tooltip content={project.name}>
+                          <h2 className="text-lg font-bold text-gray-800 dark:text-white max-w-[240px] truncate cursor-default">
+                            {project.name.split(" ").slice(0, 4).join(" ")}
+                            {project.name.split(" ").length > 4 ? "..." : ""}
+                          </h2>
+                        </Tooltip>
                       </Badge>
                     </Tooltip>
                   ) : (
-                    <h2 className="text-lg font-bold text-gray-800 dark:text-white">
-                      {project.name}
-                    </h2>
+                    <Tooltip content={project.name}>
+                      <h2 className="text-lg font-bold text-gray-800 dark:text-white max-w-[240px] truncate cursor-default">
+                        {project.name.split(" ").slice(0, 4).join(" ")}
+                        {project.name.split(" ").length > 4 ? "..." : ""}
+                      </h2>
+                    </Tooltip>
                   )}
                 </div>
                 <span className="text-xs text-gray-400">
-                  {t("projectId")}: {project.id.slice(0, 8)}
+                  {t("projectId")}: {project.id.slice(0, 8).toUpperCase()}
                 </span>
               </div>
+
               {project.tags && project.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1 max-w-[50%] justify-end">
                   {project.tags.map((tag) => (
@@ -107,8 +114,8 @@ export default function ProjectsList({
           </CardHeader>
 
           <CardBody className="text-sm text-gray-600 dark:text-gray-300 space-y-2 py-2">
-            <div className="flex items-center justify-between">
-              <strong>{t("status")}</strong>
+            <div className="flex flex-row gap-4 items-center">
+              <strong>{t("status")}</strong>:
               <Chip
                 size="sm"
                 color={
@@ -176,34 +183,6 @@ export default function ProjectsList({
               <strong>{t("visibility")}</strong>: {project.visibility}
             </div>
 
-            {/* {project.team && project.team.length > 0 && (
-              <div>
-                <strong>{t("team")}</strong>:
-                <AvatarGroup className="mt-1" max={5} size="sm">
-                  {project.team.map((member) => (
-                    <Tooltip key={member.name} content={member.name}>
-                      <Avatar
-                        src={member.src || undefined}
-                        alt={member.name}
-                        name={getInitial(member.name)}
-                        size="sm"
-                        style={
-                          !member.src
-                            ? {
-                                backgroundColor: getBgColor(member.name, true),
-                                color: "text-default-700",
-                                fontWeight: "bold",
-                              }
-                            : {}
-                        }
-                        className="hover:cursor-pointer"
-                      />
-                    </Tooltip>
-                  ))}
-                </AvatarGroup>
-              </div>
-            )} */}
-
             {project.nextAction && (
               <div>
                 <strong>{t("nextAction")}</strong>: {project.nextAction}
@@ -213,7 +192,7 @@ export default function ProjectsList({
 
           <CardFooter className="flex justify-end gap-2 pt-2">
             <Tooltip content={t("view")}>
-              <Button variant="light" size="sm">
+              <Button variant="flat" color="primary" size="sm">
                 <HiEye
                   className="w-4 h-4"
                   onClick={() =>
@@ -225,7 +204,7 @@ export default function ProjectsList({
             <Tooltip content={t("edit")}>
               <Button
                 variant="flat"
-                color="secondary"
+                color="default"
                 size="sm"
                 onPress={() =>
                   router.push(
