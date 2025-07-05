@@ -63,7 +63,6 @@ export const updateProject = createAsyncThunk<
 export const deleteProject = createAsyncThunk<string, string>(
   "projects/deleteProject",
   async (id, { rejectWithValue }) => {
-    console.log("Deleting project with ID:", id);
     try {
       await fetchWithAuth(`/projects/${id}`, { method: "DELETE" });
       return id;

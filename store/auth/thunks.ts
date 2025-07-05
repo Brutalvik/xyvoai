@@ -100,7 +100,6 @@ export const signInThunk = createAsyncThunk(
       });
 
       const data = await res.json();
-      console.log("DATA : ", data);
 
       if (!res.ok || !data?.isLoggedIn) {
         throw new Error(data?.message || "Sign in failed");

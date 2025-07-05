@@ -20,6 +20,7 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  addToast,
 } from "@heroui/react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
@@ -47,12 +48,19 @@ export default function PermissionAssignmentEnterprise({
   const [resourceId, setResourceId] = useState("");
   const [selectedPermission, setSelectedPermission] = useState("");
   const [userData, setUserData] = useState<any>(null);
-  const [assignedPermissions, setAssignedPermissions] = useState<string[]>([]);
+  const [assignedPermissions, setAssignedPermissions] = useState<
+    { id: string; permission: string }[]
+  >([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortColumn, setSortColumn] =
     useState<keyof SystemPermission>("category");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const confirmModal = useDisclosure();
+  const [pendingDelete, setPendingDelete] = useState<{
+    id: string;
+    permission: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!resourceId) return;
@@ -61,7 +69,10 @@ export default function PermissionAssignmentEnterprise({
         setUserData(res.payload);
         setAssignedPermissions(
           res.payload.permissions.map(
-            (p: { permission: string }) => p.permission
+            (p: { id: string; permission: string }) => ({
+              id: p.id,
+              permission: p.permission,
+            })
           )
         );
       } else {
@@ -87,17 +98,69 @@ export default function PermissionAssignmentEnterprise({
         setUserData(res.payload);
         setAssignedPermissions(
           res.payload.permissions.map(
-            (p: { permission: string }) => p.permission
+            (p: { id: string; permission: string }) => ({
+              id: p.id,
+              permission: p.permission,
+            })
           )
         );
+      });
+      addToast({
+        title: "Permission Assigned",
+        description: `'${selectedPermission}' has been granted.`,
+        color: "success",
       });
     });
   };
 
-  const handleRevoke = (perm: string) => {
-    dispatch(removePermission(perm)).then(() => {
-      setAssignedPermissions((prev) => prev.filter((p) => p !== perm));
+  const confirmRevoke = (id: string, permission: string) => {
+    setPendingDelete({ id, permission });
+    confirmModal.onOpen();
+  };
+
+  const handleRevoke = () => {
+    if (!pendingDelete) return;
+    const { id, permission } = pendingDelete;
+
+    setAssignedPermissions((prev) => prev.filter((p) => p.id !== id));
+
+    let undo = false;
+    const timeout = setTimeout(() => {
+      if (!undo) {
+        dispatch(removePermission(id)).catch(() => {
+          addToast({
+            title: "Error",
+            description: `Failed to revoke '${permission}'.`,
+            color: "danger",
+          });
+        });
+      }
+    }, 3000);
+
+    addToast({
+      title: "Permission Revoked",
+      description: `'${permission}' was removed.`,
+      color: "warning",
+      endContent: (
+        <div className="flex gap-2 mt-2">
+          <Button
+            size="sm"
+            variant="bordered"
+            color="primary"
+            onPress={() => {
+              undo = true;
+              clearTimeout(timeout);
+              setAssignedPermissions((prev) => [...prev, { id, permission }]);
+            }}
+          >
+            Undo
+          </Button>
+        </div>
+      ),
     });
+
+    confirmModal.onClose();
+    setPendingDelete(null);
   };
 
   const handleSort = (column: keyof SystemPermission) => {
@@ -184,15 +247,15 @@ export default function PermissionAssignmentEnterprise({
           <p className="text-foreground-400 italic">None assigned.</p>
         ) : (
           <div className="flex flex-wrap gap-2">
-            {assignedPermissions.map((perm, index) => (
+            {assignedPermissions.map(({ id, permission }, index) => (
               <Chip
                 key={index}
                 size="md"
                 variant="flat"
                 color="primary"
-                onClose={() => handleRevoke(perm)}
+                onClose={() => confirmRevoke(id, permission)}
               >
-                {perm}
+                {permission}
               </Chip>
             ))}
           </div>
@@ -232,7 +295,20 @@ export default function PermissionAssignmentEnterprise({
               <div className="text-xs font-semibold text-foreground-400">
                 Plan
               </div>
-              <div>{userData.plan}</div>
+              <Chip
+                size="sm"
+                variant="flat"
+                color={
+                  userData.plan === "free"
+                    ? "default"
+                    : userData.plan === "solo_plus"
+                      ? "secondary"
+                      : "primary"
+                }
+                className="mt-1"
+              >
+                {userData.plan}
+              </Chip>
             </div>
             <div>
               <div className="text-xs font-semibold text-foreground-400">
@@ -303,6 +379,37 @@ export default function PermissionAssignmentEnterprise({
               <ModalFooter>
                 <Button variant="flat" color="danger" onPress={onClose}>
                   Close
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Confirm Revoke Modal */}
+      <Modal
+        isOpen={confirmModal.isOpen}
+        onOpenChange={confirmModal.onOpenChange}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>Confirm Revoke</ModalHeader>
+              <ModalBody className="flex flex-row">
+                <p>
+                  Are you sure you want to revoke{" "}
+                  <span className="font-semibold text-red-500">
+                    {pendingDelete?.permission}
+                  </span>{" "}
+                  permission?
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  Cancel
+                </Button>
+                <Button className="bg-red-500" onPress={handleRevoke}>
+                  Revoke
                 </Button>
               </ModalFooter>
             </>

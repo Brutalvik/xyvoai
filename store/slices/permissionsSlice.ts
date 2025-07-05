@@ -50,7 +50,6 @@ export const fetchUserPermissions = createAsyncThunk<
 >("permissions/fetchUserPermissions", async (userId, thunkAPI) => {
   try {
     const data = await fetchWithAuth(`/user-permissions/user/${userId}`);
-
     if (!data.success || !data.user || !Array.isArray(data.user.permissions)) {
       throw new Error("Invalid response: user or permissions not found");
     }
@@ -79,7 +78,6 @@ export const assignPermission = createAsyncThunk<
       method: "POST",
       body: JSON.stringify({ ...payload }),
     });
-    console.log(res);
     if (!res.ok) throw new Error("Failed to assign permission");
     const data = await res.json();
     return data.user_permission;
