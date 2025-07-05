@@ -22,6 +22,7 @@ import {
   useDisclosure,
   addToast,
 } from "@heroui/react";
+import { useTranslations } from "next-intl";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   assignPermission,
@@ -42,6 +43,7 @@ interface PermissionsProps {
 export default function PermissionAssignmentEnterprise({
   systemPermissions,
 }: PermissionsProps) {
+  const t = useTranslations("PermissionAssignment");
   const dispatch = useAppDispatch();
   const currentUserId = useAppSelector(selectUserId);
   const [resourceType, setResourceType] = useState<ResourceType>("user");
@@ -61,6 +63,19 @@ export default function PermissionAssignmentEnterprise({
     id: string;
     permission: string;
   } | null>(null);
+
+  const getResourceTypeLabel = (type: ResourceType) => {
+    switch (type) {
+      case "user":
+        return t("user");
+      case "team":
+        return t("team");
+      case "project":
+        return t("project");
+      default:
+        return type;
+    }
+  };
 
   useEffect(() => {
     if (!resourceId) return;
@@ -106,8 +121,8 @@ export default function PermissionAssignmentEnterprise({
         );
       });
       addToast({
-        title: "Permission Assigned",
-        description: `'${selectedPermission}' has been granted.`,
+        title: t("permissionAssigned"),
+        description: `'${selectedPermission}' ${t("permissionGranted")}`,
         color: "success",
       });
     });
@@ -129,8 +144,8 @@ export default function PermissionAssignmentEnterprise({
       if (!undo) {
         dispatch(removePermission(id)).catch(() => {
           addToast({
-            title: "Error",
-            description: `Failed to revoke '${permission}'.`,
+            title: t("error"),
+            description: `${t("failedToRevoke")} '${permission}'.`,
             color: "danger",
           });
         });
@@ -138,8 +153,8 @@ export default function PermissionAssignmentEnterprise({
     }, 3000);
 
     addToast({
-      title: "Permission Revoked",
-      description: `'${permission}' was removed.`,
+      title: t("permissionRevoked"),
+      description: `'${permission}' ${t("permissionRemoved")}`,
       color: "warning",
       endContent: (
         <div className="flex gap-2 mt-2">
@@ -153,7 +168,7 @@ export default function PermissionAssignmentEnterprise({
               setAssignedPermissions((prev) => [...prev, { id, permission }]);
             }}
           >
-            Undo
+            {t("undo")}
           </Button>
         </div>
       ),
@@ -190,9 +205,11 @@ export default function PermissionAssignmentEnterprise({
   return (
     <div className="space-y-10 text-sm">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold tracking-tight">User Permissions</h2>
+        <h2 className="text-2xl font-bold tracking-tight">
+          {t("userPermissions")}
+        </h2>
         <Button size="sm" variant="ghost" onPress={onOpen}>
-          View Permission Registry
+          {t("viewPermissionRegistry")}
         </Button>
       </div>
 
@@ -200,25 +217,25 @@ export default function PermissionAssignmentEnterprise({
       <div className="bg-background shadow-md border border-border rounded-2xl p-6 space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Select
-            label="Resource Type"
+            label={t("resourceType")}
             selectedKeys={new Set([resourceType])}
             onSelectionChange={(keys) =>
               setResourceType(Array.from(keys)[0] as ResourceType)
             }
           >
             {resourceTypes.map((type) => (
-              <SelectItem key={type}>{type}</SelectItem>
+              <SelectItem key={type}>{getResourceTypeLabel(type)}</SelectItem>
             ))}
           </Select>
 
           <Input
-            label="Resource ID"
+            label={t("resourceId")}
             value={resourceId}
             onChange={(e) => setResourceId(e.target.value)}
           />
 
           <Select
-            label="Permission"
+            label={t("permission")}
             items={systemPermissions}
             selectedKeys={[selectedPermission]}
             onSelectionChange={(keys) =>
@@ -236,16 +253,16 @@ export default function PermissionAssignmentEnterprise({
             isDisabled={!resourceId || !selectedPermission}
             className="self-end mb-1"
           >
-            Assign
+            {t("assign")}
           </Button>
         </div>
       </div>
 
       {/* Permission Chips */}
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold">Assigned Permissions</h3>
+        <h3 className="text-lg font-semibold">{t("assignedPermissions")}</h3>
         {assignedPermissions.length === 0 ? (
-          <p className="text-foreground-400 italic">None assigned.</p>
+          <p className="text-foreground-400 italic">{t("noneAssigned")}</p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {assignedPermissions.map(({ id, permission }, index) => (
@@ -266,35 +283,35 @@ export default function PermissionAssignmentEnterprise({
       {/* User Info */}
       {userData && (
         <div className="bg-muted p-6 rounded-xl border border-border shadow-sm max-w-5xl">
-          <h3 className="text-lg font-semibold mb-4">User Profile</h3>
+          <h3 className="text-lg font-semibold mb-4">{t("userProfile")}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <div className="text-xs font-semibold text-foreground-400">
-                Name
+                {t("name")}
               </div>
               <div>{userData.name}</div>
             </div>
             <div>
               <div className="text-xs font-semibold text-foreground-400">
-                Email
+                {t("email")}
               </div>
               <div>{userData.email}</div>
             </div>
             <div>
               <div className="text-xs font-semibold text-foreground-400">
-                Phone
+                {t("phone")}
               </div>
               <div>{userData.phone}</div>
             </div>
             <div>
               <div className="text-xs font-semibold text-foreground-400">
-                Role
+                {t("role")}
               </div>
               <div>{userData.role}</div>
             </div>
             <div>
               <div className="text-xs font-semibold text-foreground-400">
-                Plan
+                {t("plan")}
               </div>
               <Chip
                 size="sm"
@@ -313,7 +330,7 @@ export default function PermissionAssignmentEnterprise({
             </div>
             <div>
               <div className="text-xs font-semibold text-foreground-400">
-                Organization
+                {t("organization")}
               </div>
               <div className="break-all text-xs text-foreground-600">
                 {userData.organization_id}
@@ -332,10 +349,10 @@ export default function PermissionAssignmentEnterprise({
         <ModalContent className="max-w-6xl">
           {(onClose) => (
             <>
-              <ModalHeader>All System Permissions</ModalHeader>
+              <ModalHeader>{t("allSystemPermissions")}</ModalHeader>
               <ModalBody>
                 <Input
-                  placeholder="Search permissions..."
+                  placeholder={t("searchPermissions")}
                   size="sm"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -351,7 +368,9 @@ export default function PermissionAssignmentEnterprise({
                           }
                           className="flex items-center gap-1 text-sm font-semibold"
                         >
-                          {key.charAt(0).toUpperCase() + key.slice(1)}
+                          {t(
+                            key as "label" | "key" | "description" | "category"
+                          )}
                           {sortColumn === key ? (
                             sortDirection === "asc" ? (
                               <ChevronUp className="w-4 h-4" />
@@ -379,7 +398,7 @@ export default function PermissionAssignmentEnterprise({
               </ModalBody>
               <ModalFooter>
                 <Button variant="flat" color="danger" onPress={onClose}>
-                  Close
+                  {t("close")}
                 </Button>
               </ModalFooter>
             </>
@@ -395,22 +414,22 @@ export default function PermissionAssignmentEnterprise({
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader>Confirm Revoke</ModalHeader>
+              <ModalHeader>{t("confirmRevoke")}</ModalHeader>
               <ModalBody className="flex flex-row">
                 <p>
-                  Are you sure you want to revoke{" "}
+                  {t("confirmRevokeMessage")}{" "}
                   <span className="font-semibold text-red-500">
                     {pendingDelete?.permission}
                   </span>{" "}
-                  permission?
+                  {t("permissionText")}
                 </p>
               </ModalBody>
               <ModalFooter>
                 <Button variant="light" onPress={onClose}>
-                  Cancel
+                  {t("cancel")}
                 </Button>
                 <Button className="bg-red-500" onPress={handleRevoke}>
-                  Revoke
+                  {t("revoke")}
                 </Button>
               </ModalFooter>
             </>
