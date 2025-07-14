@@ -24,7 +24,7 @@ export default function ProjectOverview({ projectId }: Props) {
   const { items: projects } = useAppSelector((s) => s.projects);
 
   const project: Project | undefined = useMemo(() => {
-    return projects.find((p) => p.id === projectId);
+    return projects.find((p: Project) => p.id === projectId);
   }, [projectId, projects]);
 
   if (!project) {
