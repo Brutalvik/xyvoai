@@ -1,15 +1,6 @@
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { User } from "@/types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { User, UserState } from "@/types";
 import { signInThunk } from "../auth/thunks";
-
-interface UserState {
-  user: User | null;
-  isLoggedIn: boolean;
-  loading: boolean;
-  error: string | null;
-  hasFetched: boolean;
-  message: string;
-}
 
 const initialState: UserState = {
   user: null,
@@ -18,6 +9,7 @@ const initialState: UserState = {
   error: null,
   hasFetched: false,
   message: "",
+  tokenExpiresAt: null,
 };
 
 const userSlice = createSlice({
@@ -28,11 +20,13 @@ const userSlice = createSlice({
       state.user = action.payload;
       state.isLoggedIn = true;
       state.error = null;
+      state.tokenExpiresAt = action.payload.tokenExpiresAt ?? null;
     },
     clearUser(state) {
       state.user = null;
       state.isLoggedIn = false;
       state.error = null;
+      state.tokenExpiresAt = null;
     },
   },
   extraReducers: (builder) => {
@@ -42,10 +36,12 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(signInThunk.fulfilled, (state, action) => {
-        state.user = action.payload.user;
-        state.isLoggedIn = action.payload.isLoggedIn ?? true;
+        const { user, tokenExpiresAt, isLoggedIn } = action.payload;
+        state.user = user;
+        state.isLoggedIn = isLoggedIn ?? true;
         state.loading = false;
         state.hasFetched = true;
+        state.tokenExpiresAt = tokenExpiresAt ?? null;
       })
       .addCase(signInThunk.rejected, (state, action) => {
         state.user = null;
@@ -53,6 +49,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.hasFetched = true;
         state.error = action.payload as string;
+        state.tokenExpiresAt = null;
       });
   },
 });

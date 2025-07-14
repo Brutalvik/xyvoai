@@ -28,7 +28,6 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectUser, isLoggedIn } from "@/store/selectors";
 import { signoutThunk } from "@/store/auth/thunks";
 import { SearchInput } from "@/components/SearchInput";
-import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Logo } from "@/components/icons";
 import LanguageSwitch from "@/components/LanguageSwitch";
@@ -37,16 +36,18 @@ import { addToast } from "@heroui/react";
 import { HiInformationCircle } from "react-icons/hi";
 import _ from "lodash";
 import { getBgColor, getInitial } from "@/utils";
+import { UserState } from "@/types";
 
 export default function Navbar() {
   const t = useTranslations("Navbar");
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
-  const user = useAppSelector(selectUser);
+  const activeUser: any = useAppSelector(selectUser);
   const loggedIn = useAppSelector(isLoggedIn);
   const dispatch = useAppDispatch();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { user } = activeUser;
 
   const avatarBg = useMemo(() => {
     return user?.id ? getBgColor(user.id) : "bg-gray-400";

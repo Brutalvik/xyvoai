@@ -104,7 +104,11 @@ export const signInThunk = createAsyncThunk(
       if (!res.ok || !data?.isLoggedIn) {
         throw new Error(data?.message || "Sign in failed");
       }
-      return { isLoggedIn: true, user: data };
+      return {
+        isLoggedIn: true,
+        user: data,
+        tokenExpiresAt: data.tokenExpiresAt,
+      };
     } catch (error: any) {
       return rejectWithValue(error?.message || "Sign in failed");
     }

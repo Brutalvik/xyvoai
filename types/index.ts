@@ -3,6 +3,17 @@ import { SVGProps } from "react";
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
 };
+
+export interface UserState {
+  user: User | null;
+  isLoggedIn: boolean;
+  loading: boolean;
+  error: string | null;
+  hasFetched: boolean;
+  message: string;
+  tokenExpiresAt: number | null;
+}
+
 export interface User {
   id: string;
   sub: string;
@@ -21,6 +32,7 @@ export interface User {
   status: string;
   permissions: string[];
   attributes: Record<string, string>;
+  tokenExpiresAt?: number;
 }
 
 export interface TeamMember {
