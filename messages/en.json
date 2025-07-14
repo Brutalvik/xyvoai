@@ -31,10 +31,16 @@
     "placeholder": "Search...",
     "ariaLabel": "Search"
   },
-  "footer": {
+  "footer": {},
+  "Header": {
+    "kanbanViewTooltip": "Kanban View",
+    "listViewTooltip": "List View",
+    "ganttViewTooltip": "Gantt Chart View",
     "plain": "© 2025 Xyvo — All rights reserved.",
     "privacy": "Privacy Policy",
-    "conditions": "Conditions of Use"
+    "conditions": "Conditions of Use",
+    "boardTitle": "Board",
+    "searchPlaceholder": "Search..."
   },
   "auth": {
     "password": {
@@ -47,6 +53,12 @@
     }
   },
   "password": {
+    "instructionsLabel": "Password instructions",
+    "minCharacters": "Min 8 characters",
+    "specialCharacter": "1 special character",
+    "uppercase": "1 uppercase",
+    "lowercase": "1 lowercase",
+    "number": "1 number",
     "label": "Password",
     "placeholder": "At least 8 characters",
     "error": "Please enter a valid password"
@@ -276,10 +288,7 @@
     "expand": "Expand",
     "collapse": "Collapse"
   },
-  "Header": {
-    "boardTitle": "Board",
-    "searchPlaceholder": "Search..."
-  },
+
   "Board": {
     "new": "New",
     "active": "Active",

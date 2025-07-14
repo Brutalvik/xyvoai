@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Sortable from "sortablejs";
 import Sidebar from "@/components/KanbanBoard/Sidebar";
 import Header from "@/components/KanbanBoard/Header";
@@ -138,46 +138,87 @@ const dummyCards: Record<ColumnKey, CardType[]> = {
   ],
 };
 
+type BoardView = "kanban" | "list" | "gantt";
+
 export default function MainBoard() {
+  const [view, setView] = useState<BoardView>("kanban");
+
   useEffect(() => {
-    columns.forEach((col) => {
-      const el = document.getElementById(col.id);
-      if (el) {
-        Sortable.create(el, {
-          group: "kanban",
-          animation: 150,
-          ghostClass: "bg-yellow-100",
-        });
-      }
-    });
-  }, []);
+    if (view === "kanban") {
+      columns.forEach((col) => {
+        const el = document.getElementById(col.id);
+        if (el) {
+          Sortable.create(el, {
+            group: "kanban",
+            animation: 150,
+            ghostClass: "bg-yellow-100",
+          });
+        }
+      });
+    }
+    // Optionally, clean up Sortable instances if switching away from Kanban
+  }, [view]);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <Header />
+        {/* Header with View Switcher */}
+        <Header view={view} onViewChange={setView} />
 
-        {/* Kanban Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6 overflow-auto">
-          {columns.map((col) => (
-            <Column
-              key={col.id}
-              id={col.id}
-              title={col.title}
-              countLabel={col.countLabel}
-              countColor={col.countColor}
-            >
-              {dummyCards[col.id].map((card, i) => (
-                <Card key={i} {...card} />
-              ))}
-            </Column>
-          ))}
-        </div>
+        {/* Board Views */}
+        {view === "kanban" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-8 overflow-auto transition-all duration-300">
+            {columns.map((col) => (
+              <Column
+                key={col.id}
+                id={col.id}
+                title={col.title}
+                countLabel={col.countLabel}
+                countColor={col.countColor}
+              >
+                {dummyCards[col.id].map((card, i) => (
+                  <Card key={i} {...card} />
+                ))}
+              </Column>
+            ))}
+          </div>
+        )}
+        {view === "list" && (
+          <div className="p-8">
+            <div className="bg-white rounded-xl shadow p-8 flex flex-col items-center justify-center min-h-[400px] border border-gray-200">
+              <span className="material-icons text-5xl text-blue-400 mb-4">
+                view_list
+              </span>
+              <h2 className="text-xl font-bold mb-2">
+                List View (Coming Soon)
+              </h2>
+              <p className="text-gray-500">
+                A professional, sortable list of all your tasks will appear
+                here.
+              </p>
+            </div>
+          </div>
+        )}
+        {view === "gantt" && (
+          <div className="p-8">
+            <div className="bg-white rounded-xl shadow p-8 flex flex-col items-center justify-center min-h-[400px] border border-gray-200">
+              <span className="material-icons text-5xl text-green-400 mb-4">
+                timeline
+              </span>
+              <h2 className="text-xl font-bold mb-2">
+                Gantt Chart View (Coming Soon)
+              </h2>
+              <p className="text-gray-500">
+                A modern Gantt chart for project planning will be available
+                here.
+              </p>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

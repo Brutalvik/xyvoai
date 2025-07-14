@@ -42,6 +42,13 @@
     "privacy": "Politique de confidentialité",
     "conditions": "Conditions d'utilisation"
   },
+  "Header": {
+    "kanbanViewTooltip": "Vue Kanban",
+    "listViewTooltip": "Vue Liste",
+    "ganttViewTooltip": "Vue Diagramme de Gantt",
+    "boardTitle": "Tableau",
+    "searchPlaceholder": "Rechercher..."
+  },
   "auth": {
     "password": {
       "instructionsLabel": "Instructions de mot de passe",
@@ -281,10 +288,7 @@
     "expand": "Développer",
     "collapse": "Réduire"
   },
-  "Header": {
-    "boardTitle": "Tableau",
-    "searchPlaceholder": "Rechercher..."
-  },
+
   "Board": {
     "new": "Nouveau",
     "active": "Actif",

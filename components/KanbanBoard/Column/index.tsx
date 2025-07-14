@@ -21,12 +21,20 @@ const Column = ({
   const t = useTranslations("Board");
 
   return (
-    <div className="flex flex-col min-h-[500px]">
-      <div className="flex justify-between items-center mb-2">
-        <h2 className="font-semibold text-lg">{t(title)}</h2>
-        <span className={`text-sm ${countColor}`}>{countLabel}</span>
+    <div className="flex flex-col min-h-[500px] bg-white/90 rounded-2xl shadow-lg border border-gray-100 px-4 pt-4 pb-6 transition-all duration-200 hover:shadow-2xl hover:border-blue-200">
+      {/* Column Header */}
+      <div className="flex justify-between items-center mb-4 px-1">
+        <h2 className="font-semibold text-lg text-gray-800 tracking-tight capitalize">
+          {t(title)}
+        </h2>
+        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${countColor} bg-gray-50 border border-gray-200`}>{countLabel}</span>
       </div>
-      <div id={id} className="rounded shadow p-3 space-y-3 flex-1" data-column>
+      {/* Card Drop Area */}
+      <div
+        id={id}
+        className="rounded-xl bg-gray-50 border border-dashed border-gray-200 p-2 space-y-4 flex-1 min-h-[300px] transition-all duration-200"
+        data-column
+      >
         {children}
       </div>
     </div>

@@ -3,8 +3,16 @@
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import { NavigationBreadcrumbs } from "@/components/KanbanBoard/NavigationBreadcrumbs";
+import { Tooltip } from "@heroui/react";
 
-const Header = () => {
+type BoardView = "kanban" | "list" | "gantt";
+
+interface HeaderProps {
+  view: BoardView;
+  onViewChange: (view: BoardView) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ view, onViewChange }) => {
   const t = useTranslations("Header");
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -46,12 +54,42 @@ const Header = () => {
         >
           filter_list
         </span>
-        <span
-          className="material-icons cursor-pointer"
-          onClick={() => alert("View toggled")}
-        >
-          view_agenda
-        </span>
+        {/* View Switcher */}
+        <div className="flex items-center gap-2 bg-gray-100 rounded px-2 py-1 shadow-sm">
+          {[
+            {
+              key: "kanban",
+              icon: "view_kanban",
+              tooltip: t("kanbanViewTooltip", { default: "Kanban View" }),
+            },
+            {
+              key: "list",
+              icon: "view_list",
+              tooltip: t("listViewTooltip", { default: "List View" }),
+            },
+            {
+              key: "gantt",
+              icon: "timeline",
+              tooltip: t("ganttViewTooltip", { default: "Gantt Chart View" }),
+            },
+          ].map(({ key, icon, tooltip }) => (
+            <Tooltip key={key} content={tooltip} placement="bottom">
+              <button
+                className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-200 focus:outline-none ${
+                  view === key
+                    ? "bg-white shadow text-blue-600"
+                    : "text-gray-600 hover:bg-gray-200"
+                }`}
+                onClick={() => onViewChange(key as BoardView)}
+                aria-pressed={view === key}
+                aria-label={tooltip}
+                type="button"
+              >
+                <span className="material-icons text-2xl">{icon}</span>
+              </button>
+            </Tooltip>
+          ))}
+        </div>
         <span
           className="material-icons cursor-pointer"
           onClick={() => alert("Delete clicked")}

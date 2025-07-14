@@ -100,72 +100,76 @@ export default function Card({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
       className={clsx(
-        "relative rounded-xl border-l-4 p-4 shadow-sm transition-all cursor-move hover:shadow-md hover:ring-1",
-        statusBorderMap[status] ?? "border-gray-300"
+        // Modern, minimal, professional card styling
+        "relative bg-white rounded-2xl border border-gray-100 shadow-md px-6 py-5 cursor-move transition-all duration-200",
+        "hover:shadow-xl hover:border-blue-200 active:scale-[0.98]",
+        statusBorderMap[status] ? statusBorderMap[status].replace("border-", "border-l-4 border-") : "border-l-4 border-gray-200"
       )}
+      style={{ minHeight: 140 }}
       data-card
     >
-      <div className="flex justify-between items-start">
-        <h3 className="font-semibold text-base text-gray-900 leading-snug line-clamp-2">
+      {/* Card Header */}
+      <div className="flex justify-between items-start mb-2">
+        <h3 className="font-semibold text-lg text-gray-900 leading-snug line-clamp-2">
           {title}
         </h3>
         <span className={getStatusBadge(status)}>{t(`status.${status}`)}</span>
       </div>
 
+      {/* Priority Indicator */}
       <div
-        className="flex items-center gap-1 text-xs font-medium text-gray-700 mt-1"
+        className="flex items-center gap-2 text-xs font-medium text-gray-700 mb-2"
         title={priorityTooltipMap[priority]}
       >
         <span
           className={clsx(
-            "w-2.5 h-2.5 rounded-full",
+            "w-2.5 h-2.5 rounded-full border border-white shadow-sm",
             priorityDotColor[priority] ?? "bg-gray-300"
           )}
         />
-        {priorityLabelMap[priority]}
+        <span className="font-semibold text-gray-500">{priorityLabelMap[priority]}</span>
       </div>
 
-      <div className="flex items-center gap-2 mt-3">
+      {/* Assignee & Effort */}
+      <div className="flex items-center gap-3 mt-2 mb-3">
         <div
           className={clsx(
-            "w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold",
+            "w-10 h-10 rounded-full flex items-center justify-center text-white text-base font-bold border-2 border-white shadow-sm",
             getAvatarColor(assignee)
           )}
           title={assignee}
         >
           {getInitials(assignee)}
         </div>
-        <span className="text-sm text-gray-700 truncate" title={assignee}>
+        <span className="text-sm text-gray-700 truncate font-medium" title={assignee}>
           {assignee}
         </span>
-      </div>
-
-      <div className="flex items-center justify-between text-xs text-gray-600 mt-3">
-        <div className="flex items-center gap-1">
-          <BookOpenText size={14} className="text-gray-400" />
-          <span>
-            {t("effort")}: {effort}
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <LinkIcon size={14} className="text-blue-400" />
-          <a
-            href={issueUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:underline truncate max-w-[120px]"
-          >
-            #{issueUrl.split("/").pop()}
-          </a>
+        <div className="flex items-center gap-1 ml-auto text-xs text-gray-500">
+          <BookOpenText size={15} className="text-gray-300" />
+          <span>{t("effort")}: {effort}</span>
         </div>
       </div>
 
-      <div className="mt-3">
-        <div className="flex justify-between items-center text-xs text-gray-500 mb-1">
+      {/* Issue Link */}
+      <div className="flex items-center gap-1 text-xs mb-2">
+        <LinkIcon size={15} className="text-blue-300" />
+        <a
+          href={issueUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:underline truncate max-w-[120px] font-mono"
+        >
+          #{issueUrl.split("/").pop()}
+        </a>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="mt-2">
+        <div className="flex justify-between items-center text-xs text-gray-400 mb-1">
           <span>{t("progress")}</span>
           <span>{progress}%</span>
         </div>
-        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
           <div
             className={clsx(
               "h-2 rounded-full transition-all duration-300 ease-in-out",
@@ -178,3 +182,4 @@ export default function Card({
     </motion.div>
   );
 }
+
