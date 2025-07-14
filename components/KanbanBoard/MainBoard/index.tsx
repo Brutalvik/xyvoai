@@ -2,14 +2,26 @@
 
 import React, { useEffect, useState } from "react";
 import Sortable from "sortablejs";
-import { useAppSelector } from "@/store/hooks";
-import { selectProjects } from "@/store/selectors/projectSelector";
+
 import EmptyProjects from "./EmptyProjects";
 
+import { useAppSelector, useAppDispatch } from "@/store/hooks";
+import {
+  selectProjects,
+  isProjectsLoading,
+} from "@/store/selectors/projectSelector";
+import { fetchProjects } from "@/store/slices/projectsSlice";
+import { fetchTasks } from "@/store/slices/tasksSlice";
+import {
+  selectTasksByProject,
+  selectTasksLoading,
+  selectTasksError,
+} from "@/store/selectors/taskSelector";
 import Sidebar from "@/components/KanbanBoard/Sidebar";
 import Header from "@/components/KanbanBoard/Header";
 import Column from "@/components/KanbanBoard/Column";
 import Card from "@/components/KanbanBoard/Card";
+import NavigationBreadcrumbs from "@/components/KanbanBoard/NavigationBreadcrumbs";
 
 type ColumnKey = "new" | "active" | "staging" | "deployed";
 
@@ -51,102 +63,30 @@ type CardType = {
   priority: "low" | "medium" | "high" | "critical";
 };
 
-const dummyCards: Record<ColumnKey, CardType[]> = {
-  new: [
-    {
-      title: "Create login endpoint",
-      assignee: "Alice",
-      effort: 3,
-      issueUrl: "https://example.com/issues/101",
-      progress: 40,
-      color: "blue",
-      status: "inProgress",
-      priority: "high",
-    },
-    {
-      title: "Design onboarding flow",
-      assignee: "Victor",
-      effort: 2,
-      issueUrl: "https://example.com/issues/105",
-      progress: 10,
-      color: "yellow",
-      status: "review",
-      priority: "medium",
-    },
-  ],
-  active: [
-    {
-      title: "Fix header bug",
-      assignee: "Bob",
-      effort: 2,
-      issueUrl: "https://example.com/issues/102",
-      progress: 75,
-      color: "green",
-      status: "blocked",
-      priority: "critical",
-    },
-    {
-      title: "Implement dark mode",
-      assignee: "Diana",
-      effort: 3,
-      issueUrl: "https://example.com/issues/106",
-      progress: 50,
-      color: "indigo",
-      status: "review",
-      priority: "medium",
-    },
-  ],
-  staging: [
-    {
-      title: "Prepare release",
-      assignee: "Charlie",
-      effort: 1,
-      issueUrl: "https://example.com/issues/103",
-      progress: 100,
-      color: "yellow",
-      status: "done",
-      priority: "high",
-    },
-    {
-      title: "Fix mobile layout",
-      assignee: "Eva",
-      effort: 2,
-      issueUrl: "https://example.com/issues/107",
-      progress: 100,
-      color: "blue",
-      status: "done",
-      priority: "low",
-    },
-  ],
-  deployed: [
-    {
-      title: "Deploy initial version",
-      assignee: "Team",
-      effort: 5,
-      issueUrl: "https://example.com/issues/104",
-      progress: 100,
-      color: "indigo",
-      status: "done",
-      priority: "medium",
-    },
-    {
-      title: "Monitor analytics",
-      assignee: "Frank",
-      effort: 2,
-      issueUrl: "https://example.com/issues/108",
-      progress: 100,
-      color: "green",
-      status: "done",
-      priority: "low",
-    },
-  ],
-};
-
 type BoardView = "kanban" | "list" | "gantt";
 
 export default function MainBoard() {
+  const dispatch = useAppDispatch();
   const projects = useAppSelector(selectProjects);
+  const loading = useAppSelector(isProjectsLoading);
   const [view, setView] = useState<BoardView>("kanban");
+
+  // Filters and project selection state
+  const [selectedProjectId, setSelectedProjectId] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [visibilityFilter, setVisibilityFilter] = useState("");
+  const [showAIModeOnly, setShowAIModeOnly] = useState(false);
+
+  // Set default selected project when projects load
+  useEffect(() => {
+    if (projects.length > 0 && !selectedProjectId) {
+      setSelectedProjectId(projects[0].id);
+    }
+  }, [projects, selectedProjectId]);
+
+  useEffect(() => {
+    dispatch(fetchProjects());
+  }, []);
 
   useEffect(() => {
     if (view === "kanban") {
@@ -162,74 +102,139 @@ export default function MainBoard() {
         }
       });
     }
-    // Optionally, clean up Sortable instances if switching away from Kanban
   }, [view]);
+
+  const tasks = useAppSelector(selectTasksByProject(selectedProjectId));
+  const tasksLoading = useAppSelector(selectTasksLoading);
+  const tasksError = useAppSelector(selectTasksError);
+
+  useEffect(() => {
+    if (selectedProjectId) {
+      dispatch(fetchTasks(selectedProjectId));
+    }
+  }, [dispatch, selectedProjectId]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <span className="text-lg text-gray-500">Loading projects...</span>
+      </div>
+    );
+  }
 
   if (!projects || projects.length === 0) {
     return <EmptyProjects />;
   }
 
+  // Find selected project
+  const selectedProject =
+    projects.find((p) => p.id === selectedProjectId) || projects[0];
+
+  // Apply filters to tasks
+  const filteredTasks = tasks.filter(
+    (task) =>
+      (!statusFilter || task.status === statusFilter) &&
+      (!visibilityFilter || task.visibility === visibilityFilter) &&
+      (!showAIModeOnly || task.ai_tasks === true)
+  );
+
+  // Group tasks by column/status
+  const tasksByColumn = columns.reduce(
+    (acc, col) => {
+      acc[col.id] = filteredTasks.filter((task) => task.status === col.id);
+
+      return acc;
+    },
+    {} as Record<string, typeof filteredTasks>
+  );
+
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <Sidebar />
+    <div className="flex flex-col h-screen bg-gray-50">
+      <div className="flex flex-1">
+        {/* Sidebar */}
+        <Sidebar
+          projects={projects}
+          selectedProjectId={selectedProjectId}
+          setSelectedProjectId={setSelectedProjectId}
+        />
+        {/* Main Content */}
+        <main className="flex-1 flex flex-col overflow-hidden">
+          {/* Filters Bar */}
+          <div className="flex items-center gap-4 px-8 pt-4"></div>
+          {/* Header with View Switcher */}
+          <Header view={view} onViewChange={setView} />
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Header with View Switcher */}
-        <Header view={view} onViewChange={setView} />
-
-        {/* Board Views */}
-        {view === "kanban" && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-8 overflow-auto transition-all duration-300">
-            {columns.map((col) => (
-              <Column
-                key={col.id}
-                countColor={col.countColor}
-                countLabel={col.countLabel}
-                id={col.id}
-                title={col.title}
-              >
-                {dummyCards[col.id].map((card, i) => (
-                  <Card key={i} {...card} />
-                ))}
-              </Column>
-            ))}
-          </div>
-        )}
-        {view === "list" && (
-          <div className="p-8">
-            <div className="bg-white rounded-xl shadow p-8 flex flex-col items-center justify-center min-h-[400px] border border-gray-200">
-              <span className="material-icons text-5xl text-blue-400 mb-4">
-                view_list
-              </span>
-              <h2 className="text-xl font-bold mb-2">
-                List View (Coming Soon)
-              </h2>
-              <p className="text-gray-500">
-                A professional, sortable list of all your tasks will appear
-                here.
-              </p>
+          {/* Board Views */}
+          {view === "kanban" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-8 overflow-auto transition-all duration-300">
+              {columns.map((col) => (
+                <Column
+                  key={col.id}
+                  countColor={col.countColor}
+                  countLabel={`${tasksByColumn[col.id]?.length ?? 0}`}
+                  id={col.id}
+                  title={col.title}
+                >
+                  {tasksLoading ? (
+                    <div className="text-gray-400 text-sm">Loading...</div>
+                  ) : tasksError ? (
+                    <div className="text-red-400 text-sm">{tasksError}</div>
+                  ) : tasksByColumn[col.id]?.length ? (
+                    tasksByColumn[col.id].map((card, idx) => (
+                      <Card
+                        key={card.id || card.title + idx}
+                        assignee={card.assignee || "Unassigned"}
+                        effort={card.effort ?? 0}
+                        issueUrl={card.issueUrl || ""}
+                        priority={card.priority || "medium"}
+                        progress={card.progress ?? 0}
+                        status={card.status as any}
+                        title={card.title}
+                      />
+                    ))
+                  ) : (
+                    <div className="text-gray-300 text-sm text-center py-4">
+                      No tasks
+                    </div>
+                  )}
+                </Column>
+              ))}
             </div>
-          </div>
-        )}
-        {view === "gantt" && (
-          <div className="p-8">
-            <div className="bg-white rounded-xl shadow p-8 flex flex-col items-center justify-center min-h-[400px] border border-gray-200">
-              <span className="material-icons text-5xl text-green-400 mb-4">
-                timeline
-              </span>
-              <h2 className="text-xl font-bold mb-2">
-                Gantt Chart View (Coming Soon)
-              </h2>
-              <p className="text-gray-500">
-                A modern Gantt chart for project planning will be available
-                here.
-              </p>
+          )}
+          {view === "list" && (
+            <div className="p-8">
+              <div className="bg-white rounded-xl shadow p-8 flex flex-col items-center justify-center min-h-[400px] border border-gray-200">
+                <span className="material-icons text-5xl text-blue-400 mb-4">
+                  view_list
+                </span>
+                <h2 className="text-xl font-bold mb-2">
+                  List View (Coming Soon)
+                </h2>
+                <p className="text-gray-500">
+                  A professional, sortable list of all your tasks will appear
+                  here.
+                </p>
+              </div>
             </div>
-          </div>
-        )}
-      </main>
+          )}
+          {view === "gantt" && (
+            <div className="p-8">
+              <div className="bg-white rounded-xl shadow p-8 flex flex-col items-center justify-center min-h-[400px] border border-gray-200">
+                <span className="material-icons text-5xl text-green-400 mb-4">
+                  timeline
+                </span>
+                <h2 className="text-xl font-bold mb-2">
+                  Gantt Chart View (Coming Soon)
+                </h2>
+                <p className="text-gray-500">
+                  A modern Gantt chart for project planning will be available
+                  here.
+                </p>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

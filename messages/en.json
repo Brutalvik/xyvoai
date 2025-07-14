@@ -308,6 +308,7 @@
   },
 
   "ProjectList": {
+    "project": "Project",
     "projectId": "Project ID",
     "createTitle": "Create New Project",
     "nameLabel": "Project Name",

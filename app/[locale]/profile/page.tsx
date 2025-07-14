@@ -30,10 +30,10 @@ import {
   HiOutlineCalendarDays,
 } from "react-icons/hi2";
 import { LogOut, Settings2 } from "lucide-react";
+
 import { selectUser } from "@/store/selectors";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { signoutThunk } from "@/store/auth/thunks";
-import { User } from "@/types";
 
 export default function ProfilePage() {
   const t = useTranslations("Profile");
@@ -53,7 +53,7 @@ export default function ProfilePage() {
 
   const groupedPermissions = _.groupBy(
     user.permissions,
-    (perm) => perm.split(".")[0]
+    (perm) => perm.split(".")[0],
   );
 
   return (
@@ -192,21 +192,24 @@ export default function ProfilePage() {
                 {(() => {
                   const uniquePerms = [...new Set(user.permissions)];
                   const maxVisible = 6;
+
                   if (uniquePerms.length === 0) {
                     return (
                       <p className="text-gray-400">{t("noPermissions")}</p>
                     );
                   }
+
                   return (
                     <>
                       <ul className="space-y-2">
                         {uniquePerms.slice(0, maxVisible).map((perm) => {
                           const permStr = String(perm);
                           const permKey = permStr.replace(/[:.]/g, "_");
+
                           return (
                             <li
-                              className="flex items-center gap-2"
                               key={permStr}
+                              className="flex items-center gap-2"
                             >
                               <HiOutlineShieldCheck className="text-green-500" />
                               <span>
@@ -243,6 +246,7 @@ export default function ProfilePage() {
                           {[...new Set(user.permissions)].map((perm) => {
                             const permStr = String(perm);
                             const permKey = permStr.replace(/[:.]/g, "_");
+
                             return (
                               <li
                                 key={permStr}

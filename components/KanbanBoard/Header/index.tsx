@@ -23,8 +23,6 @@ const Header: React.FC<HeaderProps> = ({ view, onViewChange }) => {
     <header className="px-6 py-4 shadow-sm flex items-center justify-between border-b">
       <div className="flex flex-col">
         <NavigationBreadcrumbs />
-
-        <h1 className="text-xl font-bold">{t("boardTitle")}</h1>
       </div>
 
       <div className="flex items-center space-x-4">

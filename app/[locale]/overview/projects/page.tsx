@@ -151,4 +151,12 @@ const ProjectsPage = () => {
   );
 };
 
-export default ProjectsPage;
+// This page is deprecated. All project selection and filters are now on the Kanban board main page.
+export default function DeprecatedProjectsPage() {
+  return (
+    <div className="p-8 text-center text-gray-500">
+      This page has been removed. Please use the Kanban board for all project
+      management.
+    </div>
+  );
+}

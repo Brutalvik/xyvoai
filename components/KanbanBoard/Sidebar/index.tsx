@@ -27,6 +27,8 @@ import {
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { Select, SelectItem } from "@heroui/react";
+import { getInitials } from "@/lib/utils";
 
 // Navigation items
 const navItems = [
@@ -58,8 +60,17 @@ const navItems = [
     href: "/artifacts",
   },
 ];
+interface SidebarProps {
+  projects: { id: string; name: string }[];
+  selectedProjectId: string;
+  setSelectedProjectId: (id: string) => void;
+}
 
-const Sidebar = () => {
+const Sidebar: React.FC<SidebarProps> = ({
+  projects,
+  selectedProjectId,
+  setSelectedProjectId,
+}) => {
   const t = useTranslations("Sidebar");
   const pathname = usePathname();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -164,14 +175,32 @@ const Sidebar = () => {
         </Tooltip>
       </div>
 
-      {/* Project Name */}
+      {/* Project Selector */}
       <div className="py-3">
         <Tooltip content={t("projectName")} placement="right">
           <div className="flex items-center gap-2 px-4">
             <div className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-bold">
-              AW
+              {getInitials(
+                projects.find((p) => p.id === selectedProjectId)?.name || ""
+              )}
             </div>
-            {!isCollapsed && <span>{t("projectName")}</span>}
+            {!isCollapsed &&
+              (projects.length > 1 ? (
+                <Select
+                  selectedKeys={new Set([selectedProjectId])}
+                  onSelectionChange={(keys) => {
+                    const key = Array.from(keys)[0];
+                    if (typeof key === "string") setSelectedProjectId(key);
+                  }}
+                  className="min-w-[160px]"
+                >
+                  {projects.map((project) => (
+                    <SelectItem key={project.id}>{project.name}</SelectItem>
+                  ))}
+                </Select>
+              ) : (
+                <span>{projects[0]?.name}</span>
+              ))}
           </div>
         </Tooltip>
       </div>
@@ -190,17 +219,49 @@ const Sidebar = () => {
           ))}
         </ul>
       </nav>
-
-      {/* Footer: Settings */}
-      <div className="p-4 border-t text-xs text-gray-400">
-        {!isCollapsed && (
+      {/* Settings Button: Just below nav links, not in footer */}
+      {!isCollapsed && (
+        <div className="px-4 py-2">
           <NavItem
             href={"#"}
             icon={<Settings />}
             label={t("projectSettings")}
           />
-        )}
-      </div>
+        </div>
+      )}
+      {/* Mobile view */}
+      {!isDesktop && (
+        <>
+          <Button
+            isIconOnly
+            className="fixed top-12 left-2 z-50"
+            onPress={onOpen}
+          >
+            <Menu size={20} />
+          </Button>
+          <Drawer isOpen={isOpen} placement="left" onOpenChange={onOpenChange}>
+            <DrawerContent>
+              {(onClose) => (
+                <>
+                  <DrawerHeader>{t("projectBoard")}</DrawerHeader>
+                  <DrawerBody>
+                    {navItems.map((item) => (
+                      <Link
+                        key={item.href}
+                        className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-zinc-800"
+                        href={item.href}
+                      >
+                        {item.icon}
+                        <span>{t(item.labelKey)}</span>
+                      </Link>
+                    ))}
+                  </DrawerBody>
+                </>
+              )}
+            </DrawerContent>
+          </Drawer>
+        </>
+      )}
     </aside>
   );
 };

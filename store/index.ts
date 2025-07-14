@@ -17,6 +17,7 @@ import userReducer from "@/store/slices/userSlice";
 import authReducer from "@/store/slices/authSlice";
 import projectsReducer from "@/store/slices/projectsSlice";
 import permissionsSlice from "@/store/slices/permissionsSlice";
+import tasksReducer from "@/store/slices/tasksSlice";
 
 // combined reducer
 
@@ -26,13 +27,21 @@ const rootReducer = combineReducers({
   auth: authReducer,
   projects: projectsReducer,
   permissions: permissionsSlice,
+  tasks: tasksReducer,
   // other reducers...
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
 
-const whiteList = ["language", "user", "auth", "projects", "permissions"];
+const whiteList = [
+  "language",
+  "user",
+  "auth",
+  "projects",
+  "permissions",
+  "tasks",
+];
 
 const persistConfig = {
   key: "root",

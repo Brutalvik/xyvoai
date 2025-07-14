@@ -100,3 +100,13 @@ export interface SystemPermission {
   system?: boolean;
   created_at?: string;
 }
+
+export type CardProps = {
+  title: string;
+  assignee: string;
+  effort: number;
+  issueUrl: string;
+  progress: number;
+  status: "inProgress" | "blocked" | "done" | "review";
+  priority: "low" | "medium" | "high" | "critical";
+};
