@@ -105,7 +105,7 @@ export default function CreateProject() {
         setStartDate(null);
         setEndDate(null);
         setTagInput("");
-        router.push("/dashboard/projects");
+        router.push("/overview/projects");
       } catch (err) {
         addToast({
           title: "Failed to save project",

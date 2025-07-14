@@ -50,7 +50,7 @@ export default function TeamSprintDashboard() {
               <p className="text-gray-500 dark:text-gray-400">
                 {t("noSprint")}
               </p>
-              <Link href="/dashboard/sprints/create">
+              <Link href="/overview/sprints/create">
                 <Button className="mt-4" variant="solid">
                   {t("createSprint")}
                 </Button>
@@ -67,7 +67,7 @@ export default function TeamSprintDashboard() {
                 <UsersIcon className="w-5 h-5 text-blue-500" />
                 <h2 className="text-lg font-semibold">{t("teams")}</h2>
               </div>
-              <Link href="/dashboard/teams">
+              <Link href="/overview/teams">
                 <Button size="sm" variant="ghost">
                   {t("viewAll")}
                 </Button>
@@ -77,7 +77,7 @@ export default function TeamSprintDashboard() {
               {teams.map((team) => (
                 <Link
                   key={team.id}
-                  href={`/dashboard/teams/${team.id}`}
+                  href={`/overview/teams/${team.id}`}
                   className="block p-3 rounded-lg border hover:shadow bg-gray-50 dark:bg-gray-900"
                 >
                   <div className="flex items-center gap-3">
@@ -102,7 +102,7 @@ export default function TeamSprintDashboard() {
           <Card className="border border-dashed">
             <CardBody className="text-center py-10">
               <p className="text-gray-500 dark:text-gray-400">{t("noTeams")}</p>
-              <Link href="/dashboard/teams/create">
+              <Link href="/overview/teams/create">
                 <Button className="mt-4" variant="solid">
                   {t("createTeam")}
                 </Button>

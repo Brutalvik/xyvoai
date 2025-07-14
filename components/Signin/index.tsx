@@ -17,7 +17,7 @@ import AuthFormLayout from "@/components/ui/Auth/AuthFormLayout";
 import { PasswordInput } from "@/components/ui/Auth/PasswordInput";
 import { passwordRules } from "@/utils";
 import { useAppDispatch } from "@/store/hooks";
-import { meThunk, signInThunk } from "@/store/auth/thunks";
+import { signInThunk } from "@/store/auth/thunks";
 import { setUser } from "@/store/slices/userSlice";
 
 export default function Signin() {
@@ -44,8 +44,8 @@ export default function Signin() {
     onSubmit: async (values, { setSubmitting }) => {
       setLoading(true);
       try {
-        await dispatch(signInThunk(values)).unwrap();
-        const user = await dispatch(meThunk()).unwrap();
+        const { user } = await dispatch(signInThunk(values)).unwrap();
+        console.log(user);
         dispatch(setUser(user));
         addToast({
           title: t("successTitle"),

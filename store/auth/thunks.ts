@@ -104,33 +104,9 @@ export const signInThunk = createAsyncThunk(
       if (!res.ok || !data?.isLoggedIn) {
         throw new Error(data?.message || "Sign in failed");
       }
-      return { isLoggedIn: true };
+      return { isLoggedIn: true, user: data };
     } catch (error: any) {
       return rejectWithValue(error?.message || "Sign in failed");
-    }
-  }
-);
-
-//fetch user data after successful login
-
-export const meThunk = createAsyncThunk(
-  "auth/me",
-  async (_, { rejectWithValue }) => {
-    try {
-      const res = await fetch(`${CDN.userAuthUrl}/auth/me`, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data?.isLoggedIn || !data?.user) {
-        throw new Error(data?.message || "Failed to fetch user");
-      }
-
-      return data.user as User;
-    } catch (error: any) {
-      return rejectWithValue(error?.message || "Failed to fetch user");
     }
   }
 );

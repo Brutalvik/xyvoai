@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { User } from "@/types"; // full futureproofed User type
-import { fetchWithAuth } from "@/utils/api";
+import { User } from "@/types";
+import { signInThunk } from "../auth/thunks";
 
 interface UserState {
   user: User | null;
@@ -8,6 +8,7 @@ interface UserState {
   loading: boolean;
   error: string | null;
   hasFetched: boolean;
+  message: string;
 }
 
 const initialState: UserState = {
@@ -16,21 +17,8 @@ const initialState: UserState = {
   loading: false,
   error: null,
   hasFetched: false,
+  message: "",
 };
-
-// 🔄 Thunk to fetch /auth/me with cookies
-export const meThunk = createAsyncThunk<User>(
-  "user/me",
-  async (_, { rejectWithValue }) => {
-    try {
-      const res = await fetchWithAuth("/auth/me", { method: "GET" });
-      if (!res.user) throw new Error("Missing user in response");
-      return res.user as User;
-    } catch (error: any) {
-      return rejectWithValue(error.message || "Unable to fetch user");
-    }
-  }
-);
 
 const userSlice = createSlice({
   name: "user",
@@ -49,17 +37,17 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(meThunk.pending, (state) => {
+      .addCase(signInThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(meThunk.fulfilled, (state, action) => {
-        state.user = action.payload;
-        state.isLoggedIn = true;
+      .addCase(signInThunk.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.isLoggedIn = action.payload.isLoggedIn ?? true;
         state.loading = false;
         state.hasFetched = true;
       })
-      .addCase(meThunk.rejected, (state, action) => {
+      .addCase(signInThunk.rejected, (state, action) => {
         state.user = null;
         state.isLoggedIn = false;
         state.loading = false;

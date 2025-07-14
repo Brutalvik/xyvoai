@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchWithAuth } from "@/utils/api";
 
 export const refreshSession = createAsyncThunk(
-  "auth/refreshSession",
+  "auth/refresh",
   async (_, { rejectWithValue }) => {
     try {
       const res = await fetchWithAuth("/auth/refresh", {

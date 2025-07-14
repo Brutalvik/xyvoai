@@ -37,7 +37,8 @@ export default async function LocaleLayout({ children, params }: Props) {
           <ReduxProvider>
             <NextIntlClientProvider locale={locale} messages={messages}>
               <ToastProvider />
-              <AuthInitializer /> {/* ✅ Dispatch refreshSession on mount */}
+              {/* ✅ Dispatch refreshSession on mount */}
+              {/* <AuthInitializer /> */}
               <div className="relative flex flex-col font-sans antialiased">
                 <Navbar />
                 <main className="w-full max-w-none flex-grow">{children}</main>
