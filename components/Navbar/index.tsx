@@ -221,7 +221,21 @@ export default function Navbar() {
                   <SearchInput />
                 </div>
               </DrawerHeader>
-              <DrawerBody></DrawerBody>
+              <DrawerBody>
+                <Button
+                  fullWidth
+                  variant="flat"
+                  color="primary"
+                  startContent={<Avatar size="sm" src={user?.image || undefined} name={avatarInitial} className={clsx("text-white", avatarBg)} />}
+                  className="mb-4 mt-2 text-left justify-start font-semibold text-lg shadow-md hover:scale-[1.02] transition-transform"
+                  onPress={() => {
+                    router.push(`/profile`);
+                    onClose();
+                  }}
+                >
+                  {t("profile")}
+                </Button>
+              </DrawerBody>
               <DrawerFooter className="justify-end">
                 <Button
                   color="danger"

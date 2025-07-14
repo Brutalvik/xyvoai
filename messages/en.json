@@ -16,6 +16,26 @@
   "Navbar": {
     "menu": "Menu",
     "signIn": "Sign In",
+    "signUp": "Sign Up"
+  },
+  "Profile": {
+    "profile": "Profile",
+    "account": "Account",
+    "organization": "Organization",
+    "noOrganization": "No organization",
+    "joined": "Joined",
+    "status": "Status",
+    "active": "Active",
+    "permissions": "Permissions",
+    "noPermissions": "No permissions assigned",
+    "editProfile": "Edit Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "activitySummary": "Activity Summary",
+    "activityComingSoon": "Activity summary coming soon...",
+    "notLoggedIn": "You are not logged in.",
+    "menu": "Menu",
+    "signIn": "Sign In",
     "signUp": "Sign Up",
     "signOut": "Sign Out",
     "welcome": "Welcome",
@@ -24,14 +44,17 @@
     "accountType": "Account Type",
     "signedOutTitle": "Signed Out",
     "signedOutDescription": "You have been signed out successfully.",
-    "individual": "Individual",
-    "organization": "Organization"
+    "individual": "Individual"
   },
   "Search": {
     "placeholder": "Search...",
     "ariaLabel": "Search"
   },
-  "footer": {},
+  "footer": {
+    "plain": "© 2025 Xyvo — All rights reserved.",
+    "privacy": "Privacy Policy",
+    "conditions": "Conditions of Use"
+  },
   "Header": {
     "kanbanViewTooltip": "Kanban View",
     "listViewTooltip": "List View",
