@@ -16,7 +16,11 @@
   "Navbar": {
     "menu": "Menu",
     "signIn": "Sign In",
-    "signUp": "Sign Up"
+    "signUp": "Sign Up",
+    "welcome": "Welcome",
+    "individual": "Individual",
+    "profile": "Profile",
+    "signOut": "Sign Out"
   },
   "Profile": {
     "profile": "Profile",

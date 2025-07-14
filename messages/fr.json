@@ -22,7 +22,11 @@
   "Navbar": {
     "menu": "Menu",
     "signIn": "Connexion",
-    "signUp": "Inscription"
+    "signUp": "Inscription",
+    "welcome": "Bienvenue",
+    "individual": "Individuel",
+    "profile": "Profil",
+    "signOut": "Déconnexion"
   },
   "Profile": {
     "profile": "Profil",
