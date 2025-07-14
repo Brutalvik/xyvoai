@@ -26,8 +26,10 @@ import {
   PackageSearch,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useAppDispatch } from "@/store/hooks";
+import { deleteProject } from "@/store/slices/projectsSlice";
 import Link from "next/link";
-import { Select, SelectItem } from "@heroui/react";
+import { Select, SelectItem, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/react";
 import { getInitials } from "@/lib/utils";
 
 // Navigation items
@@ -71,6 +73,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   selectedProjectId,
   setSelectedProjectId,
 }) => {
+  const noProjects = projects.length === 0;
+  const dispatch = useAppDispatch();
   const t = useTranslations("Sidebar");
   const pathname = usePathname();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -180,12 +184,14 @@ const Sidebar: React.FC<SidebarProps> = ({
         <Tooltip content={t("projectName")} placement="right">
           <div className="flex items-center gap-2 px-4">
             <div className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-bold">
-              {getInitials(
+              {projects.length > 0 ? getInitials(
                 projects.find((p) => p.id === selectedProjectId)?.name || ""
-              )}
+              ) : "--"}
             </div>
-            {!isCollapsed &&
-              (projects.length > 1 ? (
+            {!isCollapsed && (
+              noProjects ? (
+                <span className="text-gray-400">No projects</span>
+              ) : projects.length > 1 ? (
                 <Select
                   selectedKeys={new Set([selectedProjectId])}
                   onSelectionChange={(keys) => {
@@ -200,7 +206,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </Select>
               ) : (
                 <span>{projects[0]?.name}</span>
-              ))}
+              )
+            )}
           </div>
         </Tooltip>
       </div>
@@ -210,11 +217,18 @@ const Sidebar: React.FC<SidebarProps> = ({
         <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.href}>
-              <NavItem
-                href={item.href}
-                icon={item.icon}
-                label={t(item.labelKey)}
-              />
+              {noProjects ? (
+                <span className="flex items-center gap-3 px-4 py-2 text-sm rounded text-gray-400 cursor-not-allowed">
+                  {item.icon}
+                  {!isCollapsed && <span>{t(item.labelKey)}</span>}
+                </span>
+              ) : (
+                <NavItem
+                  href={item.href}
+                  icon={item.icon}
+                  label={t(item.labelKey)}
+                />
+              )}
             </li>
           ))}
         </ul>
@@ -222,11 +236,18 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Settings Button: Just below nav links, not in footer */}
       {!isCollapsed && (
         <div className="px-4 py-2">
-          <NavItem
-            href={"#"}
-            icon={<Settings />}
-            label={t("projectSettings")}
-          />
+          {noProjects ? (
+            <span className="flex items-center gap-3 px-4 py-2 text-sm rounded text-gray-400 cursor-not-allowed">
+              <Settings />
+              <span>{t("projectSettings")}</span>
+            </span>
+          ) : (
+            <NavItem
+              href={"#"}
+              icon={<Settings />}
+              label={t("projectSettings")}
+            />
+          )}
         </div>
       )}
       {/* Mobile view */}

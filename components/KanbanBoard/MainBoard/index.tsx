@@ -162,7 +162,13 @@ export default function MainBoard() {
           {/* Filters Bar */}
           <div className="flex items-center gap-4 px-8 pt-4"></div>
           {/* Header with View Switcher */}
-          <Header view={view} onViewChange={setView} />
+          <Header
+  view={view}
+  onViewChange={setView}
+  selectedProjectId={selectedProjectId}
+  setSelectedProjectId={setSelectedProjectId}
+  projects={projects}
+/>
 
           {/* Board Views */}
           {view === "kanban" && (

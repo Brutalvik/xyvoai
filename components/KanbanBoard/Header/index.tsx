@@ -2,22 +2,54 @@
 
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Tooltip } from "@heroui/react";
+import {
+  Tooltip,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@heroui/react";
 
 import { NavigationBreadcrumbs } from "@/components/KanbanBoard/NavigationBreadcrumbs";
 
 type BoardView = "kanban" | "list" | "gantt";
 
+import { useAppDispatch } from "@/store/hooks";
+import { deleteProject } from "@/store/slices/projectsSlice";
+
 interface HeaderProps {
   view: BoardView;
   onViewChange: (view: BoardView) => void;
+  selectedProjectId: string;
+  setSelectedProjectId: (id: string) => void;
+  projects: { id: string; name: string }[];
 }
 
-const Header: React.FC<HeaderProps> = ({ view, onViewChange }) => {
+const Header: React.FC<HeaderProps> = ({
+  view,
+  onViewChange,
+  selectedProjectId,
+  setSelectedProjectId,
+  projects,
+}) => {
   const t = useTranslations("Header");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const dispatch = useAppDispatch();
+  const projectName =
+    projects.find((p) => p.id === selectedProjectId)?.name || "this project";
 
-  const toggleSearch = () => setSearchOpen((prev) => !prev);
+  const handleDeleteProject = async () => {
+    setShowDeleteModal(false); // Close modal immediately
+    await dispatch(deleteProject(selectedProjectId));
+    // Wait for projects to update before setting selectedProjectId
+    setTimeout(() => {
+      const remaining = projects.filter((p) => p.id !== selectedProjectId);
+      if (remaining.length > 0) setSelectedProjectId(remaining[0].id);
+      // If no projects remain, do nothing; MainBoard will show EmptyProjects
+    }, 100);
+  };
 
   return (
     <header className="px-6 py-4 shadow-sm flex items-center justify-between border-b">
@@ -41,7 +73,7 @@ const Header: React.FC<HeaderProps> = ({ view, onViewChange }) => {
           />
           <span
             className="material-icons cursor-pointer px-2"
-            onClick={toggleSearch}
+            onClick={() => setSearchOpen((prev) => !prev)}
           >
             search
           </span>
@@ -89,12 +121,44 @@ const Header: React.FC<HeaderProps> = ({ view, onViewChange }) => {
             </Tooltip>
           ))}
         </div>
-        <span
-          className="material-icons cursor-pointer"
-          onClick={() => alert("Delete clicked")}
+        {/* Delete Project Button with Modal */}
+        <button
+          className="group flex items-center justify-center p-2 rounded-full transition-colors duration-200 focus:outline-none hover:bg-red-100"
+          style={{ lineHeight: 0 }}
+          onClick={() => setShowDeleteModal(true)}
+          title="Delete Project"
         >
-          delete
-        </span>
+          <span className="material-icons text-gray-500 group-hover:text-red-600 transition-colors duration-200">
+            delete
+          </span>
+        </button>
+        {/* Confirmation Modal */}
+        <Modal isOpen={showDeleteModal} onOpenChange={setShowDeleteModal}>
+          <ModalContent>
+            <ModalHeader>Delete Project</ModalHeader>
+            <ModalBody>
+              <p>
+                Are you sure you want to delete the project '{projectName}'?
+                This action cannot be undone.
+              </p>
+            </ModalBody>
+            <ModalFooter>
+              <button
+                className="px-4 py-2 rounded bg-gray-100 text-gray-700 mr-2"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                onClick={handleDeleteProject}
+                autoFocus
+              >
+                Delete
+              </button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </div>
     </header>
   );
