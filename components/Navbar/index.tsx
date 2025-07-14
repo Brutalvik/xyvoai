@@ -47,7 +47,7 @@ export default function Navbar() {
   const loggedIn = useAppSelector(isLoggedIn);
   const dispatch = useAppDispatch();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { user } = activeUser;
+  const { user } = activeUser ? activeUser : { user: null };
 
   const avatarBg = useMemo(() => {
     return user?.id ? getBgColor(user.id) : "bg-gray-400";
