@@ -50,11 +50,11 @@ export default function AutomationStepsSection() {
     <section className="w-full bg-background py-28 overflow-hidden">
       <div className="max-w-screen-xl mx-auto px-4">
         <motion.h2
+          className="text-4xl sm:text-5xl font-bold text-default-700 mb-16 text-center"
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-4xl sm:text-5xl font-bold text-default-700 mb-16 text-center"
+          whileInView={{ opacity: 1, y: 0 }}
         >
           {t("title")}
         </motion.h2>

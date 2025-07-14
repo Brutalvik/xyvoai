@@ -1,7 +1,7 @@
 // components/PermissionAssignmentEnterprise.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Select,
   SelectItem,
@@ -23,6 +23,8 @@ import {
   addToast,
 } from "@heroui/react";
 import { useTranslations } from "next-intl";
+import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   assignPermission,
@@ -30,7 +32,6 @@ import {
   removePermission,
 } from "@/store/slices/permissionsSlice";
 import { SystemPermission } from "@/types";
-import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 import { selectUserId } from "@/store/selectors";
 
 type ResourceType = "user" | "team" | "project";
@@ -86,8 +87,8 @@ export default function PermissionAssignmentEnterprise({
             (p: { id: string; permission: string }) => ({
               id: p.id,
               permission: p.permission,
-            })
-          )
+            }),
+          ),
         );
         setIsResourceFetched(true);
       } else {
@@ -110,7 +111,7 @@ export default function PermissionAssignmentEnterprise({
         resource_id: resourceId,
         permission: selectedPermission,
         granted_by: currentUserId as string,
-      })
+      }),
     ).then(() => {
       setSelectedPermission("");
       dispatch(fetchUserPermissions(resourceId)).then((res: any) => {
@@ -120,8 +121,8 @@ export default function PermissionAssignmentEnterprise({
             (p: { id: string; permission: string }) => ({
               id: p.id,
               permission: p.permission,
-            })
-          )
+            }),
+          ),
         );
       });
       addToast({
@@ -163,9 +164,9 @@ export default function PermissionAssignmentEnterprise({
       endContent: (
         <div className="flex gap-2 mt-2">
           <Button
+            color="primary"
             size="sm"
             variant="bordered"
-            color="primary"
             onPress={() => {
               undo = true;
               clearTimeout(timeout);
@@ -196,11 +197,12 @@ export default function PermissionAssignmentEnterprise({
       [perm.label, perm.key, perm.category, perm.description]
         .join(" ")
         .toLowerCase()
-        .includes(searchTerm.toLowerCase())
+        .includes(searchTerm.toLowerCase()),
     )
     .sort((a, b) => {
       const valA = (a[sortColumn] || "").toString().toLowerCase();
       const valB = (b[sortColumn] || "").toString().toLowerCase();
+
       return sortDirection === "asc"
         ? valA.localeCompare(valB)
         : valB.localeCompare(valA);
@@ -241,11 +243,11 @@ export default function PermissionAssignmentEnterprise({
           {isResourceFetched ? (
             <>
               <Select
-                label={t("permission")}
                 items={systemPermissions.filter(
                   (perm) =>
-                    !assignedPermissions.some((p) => p.permission === perm.key)
+                    !assignedPermissions.some((p) => p.permission === perm.key),
                 )}
+                label={t("permission")}
                 selectedKeys={[selectedPermission]}
                 onSelectionChange={(keys) =>
                   setSelectedPermission(String(Array.from(keys)[0]))
@@ -254,24 +256,24 @@ export default function PermissionAssignmentEnterprise({
                 {(perm) => <SelectItem key={perm.key}>{perm.label}</SelectItem>}
               </Select>
               <Button
-                color="primary"
-                variant="shadow"
-                size="lg"
-                onPress={handleAssign}
-                isDisabled={!resourceId || !selectedPermission}
                 className="self-end mb-1"
+                color="primary"
+                isDisabled={!resourceId || !selectedPermission}
+                size="lg"
+                variant="shadow"
+                onPress={handleAssign}
               >
                 {t("assign")}
               </Button>
             </>
           ) : (
             <Button
-              color="primary"
-              variant="shadow"
-              size="lg"
-              onPress={handleFetchResource}
-              isDisabled={!resourceId}
               className="self-end mb-1"
+              color="primary"
+              isDisabled={!resourceId}
+              size="lg"
+              variant="shadow"
+              onPress={handleFetchResource}
             >
               {t("getUser")}
             </Button>
@@ -289,9 +291,9 @@ export default function PermissionAssignmentEnterprise({
             {assignedPermissions.map(({ id, permission }, index) => (
               <Chip
                 key={index}
+                color="primary"
                 size="md"
                 variant="flat"
-                color="primary"
                 onClose={() => confirmRevoke(id, permission)}
               >
                 {permission}
@@ -335,8 +337,7 @@ export default function PermissionAssignmentEnterprise({
                 {t("plan")}
               </div>
               <Chip
-                size="sm"
-                variant="flat"
+                className="mt-1"
                 color={
                   userData.plan === "free"
                     ? "default"
@@ -344,7 +345,8 @@ export default function PermissionAssignmentEnterprise({
                       ? "secondary"
                       : "primary"
                 }
-                className="mt-1"
+                size="sm"
+                variant="flat"
               >
                 {userData.plan}
               </Chip>
@@ -364,8 +366,8 @@ export default function PermissionAssignmentEnterprise({
       {/* Permission Modal */}
       <Modal
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
         scrollBehavior="inside"
+        onOpenChange={onOpenChange}
       >
         <ModalContent className="max-w-6xl">
           {(onClose) => (
@@ -373,24 +375,24 @@ export default function PermissionAssignmentEnterprise({
               <ModalHeader>{t("allSystemPermissions")}</ModalHeader>
               <ModalBody>
                 <Input
+                  className="mb-4"
                   placeholder={t("searchPermissions")}
                   size="sm"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="mb-4"
                 />
                 <Table isStriped removeWrapper>
                   <TableHeader>
                     {["label", "key", "description", "category"].map((key) => (
                       <TableColumn key={key}>
                         <button
+                          className="flex items-center gap-1 text-sm font-semibold"
                           onClick={() =>
                             handleSort(key as keyof SystemPermission)
                           }
-                          className="flex items-center gap-1 text-sm font-semibold"
                         >
                           {t(
-                            key as "label" | "key" | "description" | "category"
+                            key as "label" | "key" | "description" | "category",
                           )}
                           {sortColumn === key ? (
                             sortDirection === "asc" ? (
@@ -418,7 +420,7 @@ export default function PermissionAssignmentEnterprise({
                 </Table>
               </ModalBody>
               <ModalFooter>
-                <Button variant="flat" color="danger" onPress={onClose}>
+                <Button color="danger" variant="flat" onPress={onClose}>
                   {t("close")}
                 </Button>
               </ModalFooter>

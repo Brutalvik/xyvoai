@@ -76,10 +76,10 @@ export default function IssueCreateForm({ sprints, users, onSubmit }: Props) {
           <Field name="effort">
             {({ field }: any) => (
               <Input
-                type="number"
                 label={t("effort")}
-                min={1}
                 max={100}
+                min={1}
+                type="number"
                 {...field}
                 error={touched.effort && errors.effort}
               />
@@ -89,12 +89,12 @@ export default function IssueCreateForm({ sprints, users, onSubmit }: Props) {
           <Field name="priority">
             {({ field, form }: any) => (
               <Select
-                label={t("priority")}
                 className="max-w-xs"
+                errorMessage={touched.priority && errors.priority}
+                isInvalid={touched.priority && !!errors.priority}
+                label={t("priority")}
                 selectedKeys={field.value}
                 onSelectionChange={(key) => form.setFieldValue(field.name, key)}
-                isInvalid={touched.priority && !!errors.priority}
-                errorMessage={touched.priority && errors.priority}
               >
                 <SelectItem key="low">{t("priorityLow")}</SelectItem>
                 <SelectItem key="medium">{t("priorityMedium")}</SelectItem>
@@ -107,12 +107,12 @@ export default function IssueCreateForm({ sprints, users, onSubmit }: Props) {
           <Field name="assignee">
             {({ field, form }: any) => (
               <Select
-                label={t("assignee")}
                 className="max-w-xs"
+                errorMessage={touched.assignee && errors.assignee}
+                isInvalid={touched.assignee && !!errors.assignee}
+                label={t("assignee")}
                 selectedKeys={field.value}
                 onSelectionChange={(key) => form.setFieldValue(field.name, key)}
-                isInvalid={touched.assignee && !!errors.assignee}
-                errorMessage={touched.assignee && errors.assignee}
               >
                 {users.map((u) => (
                   <SelectItem key={u.id}>{u.name}</SelectItem>
@@ -124,12 +124,12 @@ export default function IssueCreateForm({ sprints, users, onSubmit }: Props) {
           <Field name="sprintId">
             {({ field, form }: any) => (
               <Select
-                label={t("sprint")}
                 className="max-w-xs"
+                errorMessage={touched.sprintId && errors.sprintId}
+                isInvalid={touched.sprintId && !!errors.sprintId}
+                label={t("sprint")}
                 selectedKeys={field.value}
                 onSelectionChange={(key) => form.setFieldValue(field.name, key)}
-                isInvalid={touched.sprintId && !!errors.sprintId}
-                errorMessage={touched.sprintId && errors.sprintId}
               >
                 {sprints.map((s) => (
                   <SelectItem key={s.id}>{s.name}</SelectItem>
@@ -138,7 +138,7 @@ export default function IssueCreateForm({ sprints, users, onSubmit }: Props) {
             )}
           </Field>
 
-          <Button type="submit" isLoading={isSubmitting} variant="solid">
+          <Button isLoading={isSubmitting} type="submit" variant="solid">
             {t("create")}
           </Button>
         </Form>

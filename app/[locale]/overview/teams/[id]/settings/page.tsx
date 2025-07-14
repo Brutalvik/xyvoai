@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import TeamForm from "@/components/Team/Form";
 import { addToast, Card, CardBody } from "@heroui/react";
+
+import TeamForm from "@/components/Team/Form";
 
 // Dummy API substitute
 const dummyTeam = {
@@ -54,10 +55,10 @@ export default function TeamSettingsPage() {
       <Card>
         <CardBody>
           <TeamForm
-            users={dummyUsers}
-            onSubmit={handleUpdate}
             initialValues={teamData}
             isEdit={true}
+            users={dummyUsers}
+            onSubmit={handleUpdate}
           />
         </CardBody>
       </Card>

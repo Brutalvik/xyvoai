@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
 import { RootState } from "../index";
+
 import { fetchWithAuth } from "@/utils/api";
 
 export interface SystemPermission {
@@ -28,6 +30,7 @@ export const fetchSystemPermissions = createAsyncThunk<
 >("permissions/fetchSystemPermissions", async (_, thunkAPI) => {
   try {
     const data = await fetchWithAuth("/permissions");
+
     if (!data.success) throw new Error("Failed to fetch permissions");
 
     if (!Array.isArray(data.permissions)) {
@@ -37,8 +40,9 @@ export const fetchSystemPermissions = createAsyncThunk<
     return data.permissions;
   } catch (err: any) {
     console.error("❌ Permissions fetch error:", err);
+
     return thunkAPI.rejectWithValue(
-      err.message || "Error fetching permissions"
+      err.message || "Error fetching permissions",
     );
   }
 });
@@ -50,6 +54,7 @@ export const fetchUserPermissions = createAsyncThunk<
 >("permissions/fetchUserPermissions", async (userId, thunkAPI) => {
   try {
     const data = await fetchWithAuth(`/user-permissions/user/${userId}`);
+
     if (!data.success || !data.user || !Array.isArray(data.user.permissions)) {
       throw new Error("Invalid response: user or permissions not found");
     }
@@ -57,8 +62,9 @@ export const fetchUserPermissions = createAsyncThunk<
     return data.user;
   } catch (err: any) {
     console.error("❌ fetchUserPermissions error:", err);
+
     return thunkAPI.rejectWithValue(
-      err.message || "Failed to fetch user permissions"
+      err.message || "Failed to fetch user permissions",
     );
   }
 });
@@ -78,12 +84,14 @@ export const assignPermission = createAsyncThunk<
       method: "POST",
       body: JSON.stringify({ ...payload }),
     });
+
     if (!res.ok) throw new Error("Failed to assign permission");
     const data = await res.json();
+
     return data.user_permission;
   } catch (err: any) {
     return thunkAPI.rejectWithValue(
-      err.message || "Error assigning permission"
+      err.message || "Error assigning permission",
     );
   }
 });
@@ -95,14 +103,16 @@ export const removePermission = createAsyncThunk<any, string>(
       const res = await fetchWithAuth(`/user-permissions/${permissionId}`, {
         method: "DELETE",
       });
+
       if (!res.ok) throw new Error("Failed to remove permission");
+
       return permissionId;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
-        err.message || "Error removing permission"
+        err.message || "Error removing permission",
       );
     }
-  }
+  },
 );
 
 const permissionsSlice = createSlice({

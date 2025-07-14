@@ -97,8 +97,8 @@ export default function TeamForm({
               <Textarea
                 label={t("description")}
                 {...field}
-                rows={3}
                 error={touched.description && errors.description}
+                rows={3}
               />
             )}
           </Field>
@@ -138,8 +138,8 @@ export default function TeamForm({
             {({ field }: any) => (
               <Select
                 label={t("members")}
-                selectionMode="multiple"
                 selectedKeys={field.value}
+                selectionMode="multiple"
                 onSelectionChange={(keys) =>
                   setFieldValue("members", Array.from(keys))
                 }
@@ -174,20 +174,20 @@ export default function TeamForm({
               {teamColors.map((color) => (
                 <button
                   key={color}
-                  type="button"
-                  onClick={() => setFieldValue("color", color)}
                   className={`w-6 h-6 rounded-full border-2 transition-all duration-200 ${
                     values.color === color
                       ? "border-black"
                       : "border-transparent"
                   }`}
                   style={{ backgroundColor: color }}
+                  type="button"
+                  onClick={() => setFieldValue("color", color)}
                 />
               ))}
             </div>
           </div>
 
-          <Button type="submit" isLoading={isSubmitting} variant="solid">
+          <Button isLoading={isSubmitting} type="submit" variant="solid">
             {isEdit ? t("saveChanges") : t("create")}
           </Button>
         </Form>

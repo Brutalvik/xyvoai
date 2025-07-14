@@ -1,5 +1,6 @@
 // store/slices/authSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
 import { fetchWithAuth } from "@/utils/api";
 
 export const refreshSession = createAsyncThunk(
@@ -9,11 +10,12 @@ export const refreshSession = createAsyncThunk(
       const res = await fetchWithAuth("/auth/refresh", {
         method: "POST",
       });
+
       return res.user;
     } catch (err: any) {
       return rejectWithValue("Session expired. Please login again.");
     }
-  }
+  },
 );
 
 const authSlice = createSlice({

@@ -16,6 +16,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { HiInformationCircle } from "react-icons/hi";
 import { useEffect, useState } from "react";
+import { today, CalendarDate, parseDate } from "@internationalized/date";
+import { useRouter, useSearchParams } from "next/navigation";
+
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   createProject,
@@ -23,8 +26,6 @@ import {
   fetchProjects,
 } from "@/store/slices/projectsSlice";
 import { Project } from "@/types";
-import { today, CalendarDate, parseDate } from "@internationalized/date";
-import { useRouter, useSearchParams } from "next/navigation";
 
 export default function CreateProject() {
   const router = useRouter();
@@ -39,7 +40,7 @@ export default function CreateProject() {
   const [editMode, setEditMode] = useState(false);
 
   const project = useAppSelector((state) =>
-    state.projects.items.find((p) => p.id === projectId)
+    state.projects.items.find((p) => p.id === projectId),
   );
 
   const formik = useFormik({
@@ -84,7 +85,7 @@ export default function CreateProject() {
 
         if (editMode && projectId) {
           await dispatch(
-            updateProject({ id: projectId, updates: payload })
+            updateProject({ id: projectId, updates: payload }),
           ).unwrap();
           addToast({
             title: "Project updated successfully",
@@ -122,6 +123,7 @@ export default function CreateProject() {
     if (["Enter", "Tab", ","].includes(e.key)) {
       e.preventDefault();
       const newTag = tagInput.trim();
+
       if (newTag && !tags.includes(newTag)) {
         setTags([...tags, newTag]);
       }
@@ -137,6 +139,7 @@ export default function CreateProject() {
     const randomColor = `#${Math.floor(Math.random() * 16777215)
       .toString(16)
       .padStart(6, "0")}`;
+
     formik.setFieldValue("color", randomColor);
   };
 
@@ -164,24 +167,24 @@ export default function CreateProject() {
       <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
         {editMode ? "Edit Project" : "Create New Project"}
       </h1>
-      <form onSubmit={formik.handleSubmit} className="space-y-4">
+      <form className="space-y-4" onSubmit={formik.handleSubmit}>
         <Input
-          name="name"
           label="Project Name"
+          name="name"
           value={formik.values.name}
           onChange={formik.handleChange}
         />
         <Textarea
-          name="description"
           label="Description"
+          name="description"
           value={formik.values.description}
           onChange={formik.handleChange}
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Select
-            name="status"
             label="Status"
+            name="status"
             selectedKeys={[formik.values.status]}
             onSelectionChange={(val) =>
               formik.setFieldValue("status", Array.from(val)[0])
@@ -192,8 +195,8 @@ export default function CreateProject() {
             <SelectItem key="archived">Archived</SelectItem>
           </Select>
           <Select
-            name="visibility"
             label="Visibility"
+            name="visibility"
             selectedKeys={[formik.values.visibility]}
             onSelectionChange={(val) =>
               formik.setFieldValue("visibility", Array.from(val)[0])
@@ -234,8 +237,8 @@ export default function CreateProject() {
         </div> */}
 
         <Select
-          name="teamId"
           label="Assign Team (Optional)"
+          name="teamId"
           selectedKeys={[formik.values.teamId]}
           onSelectionChange={(val) =>
             formik.setFieldValue("teamId", Array.from(val)[0])
@@ -250,8 +253,8 @@ export default function CreateProject() {
           {/* Tag Input + Chips */}
           <div className="flex-1">
             <Input
-              name="tags"
               label="Tags"
+              name="tags"
               placeholder="Type and press Enter"
               value={tagInput}
               onChange={(e) => setTagInput(e.target.value)}
@@ -261,9 +264,9 @@ export default function CreateProject() {
               {tags.map((tag, i) => (
                 <Chip
                   key={i}
-                  onClose={() => removeTag(tag)}
                   color="primary"
                   variant="flat"
+                  onClose={() => removeTag(tag)}
                 >
                   {tag}
                 </Chip>
@@ -276,18 +279,18 @@ export default function CreateProject() {
             <div className="flex items-center gap-2 mt-1">
               <Tooltip content="Pick a color">
                 <Input
-                  name="color"
-                  type="color"
                   className="w-3/4 hover:cursor-pointer"
+                  name="color"
                   size="lg"
+                  type="color"
                   value={formik.values.color}
                   onChange={formik.handleChange}
                 />
               </Tooltip>
               <Button
+                className="w-1/4"
                 type="button"
                 variant="flat"
-                className="w-1/4"
                 onPress={generateRandomColor}
               >
                 Random
@@ -299,33 +302,33 @@ export default function CreateProject() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <DatePicker
             label="Start Date"
+            minValue={today("UTC")}
             value={startDate}
             onChange={setStartDate}
-            minValue={today("UTC")}
           />
           <DatePicker
             label="End Date"
+            minValue={startDate ? startDate.add({ days: 1 }) : undefined}
             value={endDate}
             onChange={setEndDate}
-            minValue={startDate ? startDate.add({ days: 1 }) : undefined}
           />
         </div>
 
         <div className="space-y-4">
           <Checkbox
-            name="ai_tasks"
             isSelected={formik.values.ai_tasks}
+            name="ai_tasks"
             onChange={(e) => formik.setFieldValue("ai_tasks", e.target.checked)}
           >
             Enable AI to auto-generate tasks
           </Checkbox>
           <Button
+            className="w-full"
+            color="primary"
+            isDisabled={formik.isSubmitting}
+            isLoading={submitting}
             type="submit"
             variant="solid"
-            isLoading={submitting}
-            className="w-full"
-            isDisabled={formik.isSubmitting}
-            color="primary"
           >
             {editMode ? "Update Project" : "Create Project"}
           </Button>

@@ -16,6 +16,7 @@ export async function fetchWithAuth(path: string, options: RequestInit = {}) {
 
   if (!res.ok) {
     const error = await res.json();
+
     throw new Error(error?.error || "API Error");
   }
 

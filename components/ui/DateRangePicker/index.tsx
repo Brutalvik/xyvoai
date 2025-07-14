@@ -14,11 +14,11 @@ export default function SprintDateRangePicker({ value, onChange }: Props) {
 
   return (
     <DateRangePicker
-      label="Sprint Duration"
       className="max-w-md"
-      variant="bordered"
-      value={value}
+      label="Sprint Duration"
       minValue={min}
+      value={value}
+      variant="bordered"
       onChange={(val) => {
         if (val?.start && val?.end) {
           onChange(val);

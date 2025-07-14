@@ -1,8 +1,8 @@
 // store/auth/thunks.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
+
 import { CDN } from "@/config";
 import { clearUser, setUser } from "@/store/slices/userSlice";
-import { User } from "@/types";
 
 type SignupForm = {
   name: string;
@@ -32,13 +32,14 @@ export const signupThunk = createAsyncThunk(
       });
 
       const data = await res.json();
+
       if (!res.ok) throw new Error(data?.message || "Signup failed");
 
       return data;
     } catch (error: any) {
       return rejectWithValue(error.message || "Signup failed");
     }
-  }
+  },
 );
 
 //signup with usage type
@@ -49,7 +50,7 @@ export const signupWithUsageTypeThunk = createAsyncThunk(
       values,
       usageType,
     }: { values: SignupForm; usageType: "personal" | "team" },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const res = await fetch(`${CDN.userAuthUrl}/auth/signup`, {
@@ -68,13 +69,14 @@ export const signupWithUsageTypeThunk = createAsyncThunk(
       });
 
       const data = await res.json();
+
       if (!res.ok) throw new Error(data?.message || "Signup failed");
 
       return data;
     } catch (error: any) {
       return rejectWithValue(error.message || "Signup failed");
     }
-  }
+  },
 );
 
 //Signin thunk
@@ -104,6 +106,7 @@ export const signInThunk = createAsyncThunk(
       if (!res.ok || !data?.isLoggedIn) {
         throw new Error(data?.message || "Sign in failed");
       }
+
       return {
         isLoggedIn: true,
         user: data,
@@ -112,7 +115,7 @@ export const signInThunk = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error?.message || "Sign in failed");
     }
-  }
+  },
 );
 
 //refresh token
@@ -137,13 +140,16 @@ export const refreshTokenThunk = createAsyncThunk(
       if (!res.ok) throw new Error("Refresh token failed");
 
       const data = await res.json();
+
       dispatch(setUser(data.user));
+
       return data.user;
     } catch (err) {
       dispatch(clearUser());
+
       return rejectWithValue("Session expired. Please sign in again.");
     }
-  }
+  },
 );
 
 //signout thunk
@@ -165,5 +171,5 @@ export const signoutThunk = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message || "Sign out failed");
     }
-  }
+  },
 );

@@ -2,6 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import Sortable from "sortablejs";
+import { useAppSelector } from "@/store/hooks";
+import { selectProjects } from "@/store/selectors/projectSelector";
+import EmptyProjects from "./EmptyProjects";
+
 import Sidebar from "@/components/KanbanBoard/Sidebar";
 import Header from "@/components/KanbanBoard/Header";
 import Column from "@/components/KanbanBoard/Column";
@@ -141,12 +145,14 @@ const dummyCards: Record<ColumnKey, CardType[]> = {
 type BoardView = "kanban" | "list" | "gantt";
 
 export default function MainBoard() {
+  const projects = useAppSelector(selectProjects);
   const [view, setView] = useState<BoardView>("kanban");
 
   useEffect(() => {
     if (view === "kanban") {
       columns.forEach((col) => {
         const el = document.getElementById(col.id);
+
         if (el) {
           Sortable.create(el, {
             group: "kanban",
@@ -158,6 +164,10 @@ export default function MainBoard() {
     }
     // Optionally, clean up Sortable instances if switching away from Kanban
   }, [view]);
+
+  if (!projects || projects.length === 0) {
+    return <EmptyProjects />;
+  }
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -175,10 +185,10 @@ export default function MainBoard() {
             {columns.map((col) => (
               <Column
                 key={col.id}
+                countColor={col.countColor}
+                countLabel={col.countLabel}
                 id={col.id}
                 title={col.title}
-                countLabel={col.countLabel}
-                countColor={col.countColor}
               >
                 {dummyCards[col.id].map((card, i) => (
                   <Card key={i} {...card} />

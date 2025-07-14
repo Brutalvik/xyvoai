@@ -11,8 +11,9 @@ import {
 import { HiCheckCircle } from "react-icons/hi";
 import { motion } from "framer-motion";
 import clsx from "clsx";
-import { individualPlans } from "@/plans/individualPlans";
 import { useState } from "react";
+
+import { individualPlans } from "@/plans/individualPlans";
 
 interface PlanSelectorProps {
   selected: string | null;
@@ -28,16 +29,16 @@ export default function PlanSelector({
   submitting,
 }: PlanSelectorProps) {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">(
-    "monthly"
+    "monthly",
   );
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.4 }}
       className="min-h-screen py-5 px-4 sm:px-8"
+      exit={{ opacity: 0, y: -20 }}
+      initial={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.4 }}
     >
       <h1 className="text-3xl font-bold text-center text-default-800 dark:text-white mb-10">
         Choose Your Plan
@@ -45,15 +46,15 @@ export default function PlanSelector({
 
       <div className="flex justify-center mb-6 gap-4">
         <Button
-          variant={billingCycle === "monthly" ? "solid" : "ghost"}
           color="primary"
+          variant={billingCycle === "monthly" ? "solid" : "ghost"}
           onPress={() => setBillingCycle("monthly")}
         >
           Monthly
         </Button>
         <Button
-          variant={billingCycle === "yearly" ? "solid" : "ghost"}
           color="primary"
+          variant={billingCycle === "yearly" ? "solid" : "ghost"}
           onPress={() => setBillingCycle("yearly")}
         >
           Yearly
@@ -68,7 +69,7 @@ export default function PlanSelector({
               "flex flex-col w-full sm:w-[300px] max-w-full min-h-[420px] transition-all border shadow-lg hover:shadow-xl cursor-pointer",
               selected === plan.id
                 ? "border-primary ring-2 ring-primary"
-                : "border-gray-200 dark:border-gray-700"
+                : "border-gray-200 dark:border-gray-700",
             )}
             onClick={() => onSelect(plan.id)}
           >
@@ -83,7 +84,7 @@ export default function PlanSelector({
                 {billingCycle === "yearly" &&
                   plan.id !== "free" &&
                   plan.id !== "solo_plus" && (
-                    <Chip size="sm" color="success">
+                    <Chip color="success" size="sm">
                       Save 15%
                     </Chip>
                   )}
@@ -106,14 +107,14 @@ export default function PlanSelector({
                 ))}
               </ul>
               {plan.highlight && (
-                <Chip size="sm" color="warning">
+                <Chip color="warning" size="sm">
                   {plan.highlight}
                 </Chip>
               )}
               <Chip
-                size="sm"
-                color={plan.audience === "individual" ? "primary" : "secondary"}
                 className="mt-2"
+                color={plan.audience === "individual" ? "primary" : "secondary"}
+                size="sm"
               >
                 {plan.audience === "individual" ? "Individual" : "Team"}
               </Chip>
@@ -121,9 +122,9 @@ export default function PlanSelector({
 
             <CardFooter className="pt-4">
               <Button
-                variant={selected === plan.id ? "solid" : "bordered"}
-                color="primary"
                 className="w-full"
+                color="primary"
+                variant={selected === plan.id ? "solid" : "bordered"}
                 onPress={() => onSelect(plan.id)}
               >
                 {selected === plan.id ? "Selected" : "Choose Plan"}
@@ -135,12 +136,12 @@ export default function PlanSelector({
 
       <div className="mt-10 text-center">
         <Button
-          variant="solid"
           color="primary"
-          size="lg"
-          onPress={onContinue}
           isDisabled={!selected}
           isLoading={submitting}
+          size="lg"
+          variant="solid"
+          onPress={onContinue}
         >
           Continue
         </Button>

@@ -31,11 +31,11 @@ export default function HowItWorksSection() {
     <section className="w-full bg-background py-24">
       <div className="max-w-screen-xl mx-auto px-4 text-center">
         <motion.h2
+          className="text-4xl sm:text-5xl font-bold text-white mb-16 tracking-tight"
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-4xl sm:text-5xl font-bold text-white mb-16 tracking-tight"
+          whileInView={{ opacity: 1, y: 0 }}
         >
           {t("title")}
         </motion.h2>
@@ -43,15 +43,16 @@ export default function HowItWorksSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {features.map((feature, index) => {
             const Icon = feature.icon;
+
             if (!Icon) return null;
 
             return (
               <motion.div
                 key={feature.key}
                 initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.15 }}
                 viewport={{ once: true }}
+                whileInView={{ opacity: 1, y: 0 }}
               >
                 <Card className="h-full border border-muted/40 shadow-xl bg-gradient-to-br from-background/60 to-muted/10 backdrop-blur-sm hover:scale-[1.03] hover:shadow-2xl transition-transform duration-300 ease-out rounded-2xl">
                   <CardBody className="p-8 flex flex-col items-center justify-center text-center gap-4">

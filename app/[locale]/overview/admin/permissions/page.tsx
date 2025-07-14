@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import PermissionAssignmentTable from "@/components/Admin/PermissionsAssignmentTable";
 import XLoader from "@/components/ui/XLoader";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -8,7 +10,6 @@ import {
   selectPermissions,
 } from "@/store/selectors/permissionsSelector";
 import { fetchSystemPermissions } from "@/store/slices/permissionsSlice";
-import { useEffect } from "react";
 
 export default function AdminPermissionsPage() {
   const dispatch = useAppDispatch();

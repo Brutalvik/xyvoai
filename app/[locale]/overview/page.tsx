@@ -5,8 +5,9 @@ import Link from "next/link";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { useTranslations } from "next-intl";
-import CurrentSprintCard from "@/components/Overview/CurrentSprintCard";
 import { SparkleIcon, UsersIcon } from "lucide-react";
+
+import CurrentSprintCard from "@/components/Overview/CurrentSprintCard";
 
 // Dummy data
 const teams = [
@@ -24,7 +25,7 @@ const currentSprint = {
   name: "Q3 Launch Sprint",
   startDate: new Date().toISOString(),
   endDate: new Date(
-    new Date().getTime() + 5 * 24 * 60 * 60 * 1000
+    new Date().getTime() + 5 * 24 * 60 * 60 * 1000,
   ).toISOString(),
   status: "active",
   velocity: 75,
@@ -77,8 +78,8 @@ export default function TeamSprintDashboard() {
               {teams.map((team) => (
                 <Link
                   key={team.id}
-                  href={`/overview/teams/${team.id}`}
                   className="block p-3 rounded-lg border hover:shadow bg-gray-50 dark:bg-gray-900"
+                  href={`/overview/teams/${team.id}`}
                 >
                   <div className="flex items-center gap-3">
                     <span

@@ -13,14 +13,14 @@ export default function Footer() {
       <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
         <span>{t("plain")}</span>
         <Link
-          href={`/${locale}/legal/privacy`}
           className="underline hover:text-primary transition-colors"
+          href={`/${locale}/legal/privacy`}
         >
           {t("privacy")}
         </Link>
         <Link
-          href={`/${locale}/legal/conditions`}
           className="underline hover:text-primary transition-colors"
+          href={`/${locale}/legal/conditions`}
         >
           {t("conditions")}
         </Link>

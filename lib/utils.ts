@@ -9,6 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 export function decodeToken(token: string): any {
   try {
     const decoded = jwt.decode(token);
+
     return decoded;
   } catch {
     return null;

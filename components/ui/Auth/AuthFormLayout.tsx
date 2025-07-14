@@ -33,25 +33,26 @@ export default function AuthFormLayout({
 }: AuthFormLayoutProps) {
   const locale = useLocale();
   const t = useTranslations("signup");
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.4 }}
     >
       <Card className="p-2 w-full max-w-full mx-auto lg:mt-0 shadow-2xl backdrop-blur bg-grey/10 bg-white/10">
         <CardHeader className="flex flex-col items-center justify-center space-y-2">
           <div className="flex items-center gap-4">
             {showKeyIcon ? ( // Conditionally render RiKeyFill
-              <RiKeyFill size={50} className="text-default-500" />
+              <RiKeyFill className="text-default-500" size={50} />
             ) : (
               <div className="flex items-center gap-1">
                 <Image
-                  src="/x.png"
                   alt="XYVO Logo"
                   className="h-10 w-10 object-contain"
-                  width={40}
                   height={40}
+                  src="/x.png"
+                  width={40}
                 />
               </div>
             )}
@@ -69,16 +70,16 @@ export default function AuthFormLayout({
             {t.rich("agreementNotice", {
               terms: (chunks: React.ReactNode): JSX.Element => (
                 <a
-                  href={`/${locale}/legal/conditions`}
                   className="underline text-primary"
+                  href={`/${locale}/legal/conditions`}
                 >
                   {chunks}
                 </a>
               ),
               privacy: (chunks: React.ReactNode): JSX.Element => (
                 <a
-                  href={`/${locale}/legal/privacy`}
                   className="underline text-primary"
+                  href={`/${locale}/legal/privacy`}
                 >
                   {chunks}
                 </a>
@@ -90,8 +91,8 @@ export default function AuthFormLayout({
             <div className="text-xs text-center">
               {alternativeAuthLink.text}{" "}
               <Link
-                href={alternativeAuthLink.href}
                 className="underline hover:text-blue-500"
+                href={alternativeAuthLink.href}
               >
                 {alternativeAuthLink.linkText}
               </Link>
@@ -104,10 +105,10 @@ export default function AuthFormLayout({
                 or continue with
               </div>
               <div className="flex justify-center gap-4 mt-2">
-                <FcGoogle size={30} className="cursor-pointer" />
+                <FcGoogle className="cursor-pointer" size={30} />
                 <FaFacebook
-                  size={26}
                   className="cursor-pointer text-blue-600"
+                  size={26}
                 />
               </div>
             </>

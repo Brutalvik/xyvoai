@@ -28,6 +28,7 @@ export interface User {
   accountType: string;
   socialIdp: string | null;
   createdAt: string | null;
+  updatedAt?: string | null;
   lastLogin: string | null;
   status: string;
   permissions: string[];

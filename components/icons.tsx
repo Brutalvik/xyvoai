@@ -1,15 +1,15 @@
 "use client";
 import * as React from "react";
+import { Image } from "@heroui/react";
 
 import { IconSvgProps } from "@/types";
-import { Image } from "@heroui/react";
 
 export const Logo: React.FC<IconSvgProps> = ({
   size = 36,
   width,
   height,
   ...props
-}) => <Image src="/x.png" alt="logo" className="w-8 h-8" />;
+}) => <Image alt="logo" className="w-8 h-8" src="/x.png" />;
 
 export const DiscordIcon: React.FC<IconSvgProps> = ({
   size = 24,

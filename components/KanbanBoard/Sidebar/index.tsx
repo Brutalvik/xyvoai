@@ -37,7 +37,7 @@ const navItems = [
   },
   {
     labelKey: "boards",
-    icon: <KanbanSquare size={20} className="text-green-500" />,
+    icon: <KanbanSquare className="text-green-500" size={20} />,
     href: "overview/boards",
   },
   { labelKey: "workItems", icon: <ListTodo size={20} />, href: "/work-items" },
@@ -47,7 +47,7 @@ const navItems = [
   { labelKey: "plans", icon: <FileStack size={20} />, href: "/plans" },
   {
     labelKey: "repos",
-    icon: <GitBranch size={20} className="text-red-500" />,
+    icon: <GitBranch className="text-red-500" size={20} />,
     href: "/repos",
   },
   { labelKey: "pipelines", icon: <FileStack size={20} />, href: "/pipelines" },
@@ -71,8 +71,10 @@ const Sidebar = () => {
     const updateMedia = () => {
       setIsDesktop(window.innerWidth >= 1024);
     };
+
     updateMedia();
     window.addEventListener("resize", updateMedia);
+
     return () => window.removeEventListener("resize", updateMedia);
   }, []);
 
@@ -88,8 +90,8 @@ const Sidebar = () => {
   }) => (
     <Tooltip content={isDesktop && isCollapsed ? label : ""} placement="right">
       <Link
-        href={href}
         className={`flex items-center gap-3 px-4 py-2 text-sm rounded hover:bg-gray-100 dark:hover:bg-zinc-800 ${pathname === href ? "bg-gray-200 font-semibold" : ""}`}
+        href={href}
       >
         {icon}
         {!isCollapsed && <span>{label}</span>}
@@ -102,13 +104,13 @@ const Sidebar = () => {
     return (
       <>
         <Button
-          className="fixed top-12 left-2 z-50"
           isIconOnly
+          className="fixed top-12 left-2 z-50"
           onPress={onOpen}
         >
           <Menu size={20} />
         </Button>
-        <Drawer isOpen={isOpen} onOpenChange={onOpenChange} placement="left">
+        <Drawer isOpen={isOpen} placement="left" onOpenChange={onOpenChange}>
           <DrawerContent>
             {(onClose) => (
               <>
@@ -117,8 +119,8 @@ const Sidebar = () => {
                   {navItems.map((item) => (
                     <Link
                       key={item.href}
-                      href={item.href}
                       className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-zinc-800"
+                      href={item.href}
                     >
                       {item.icon}
                       <span>{t(item.labelKey)}</span>
@@ -149,8 +151,8 @@ const Sidebar = () => {
         <Tooltip content={isCollapsed ? t("expand") : t("collapse")}>
           <Button
             isIconOnly
-            variant="light"
             size="sm"
+            variant="light"
             onPress={() => setIsCollapsed((prev) => !prev)}
           >
             {isCollapsed ? (
@@ -180,9 +182,9 @@ const Sidebar = () => {
           {navItems.map((item) => (
             <li key={item.href}>
               <NavItem
+                href={item.href}
                 icon={item.icon}
                 label={t(item.labelKey)}
-                href={item.href}
               />
             </li>
           ))}
@@ -193,9 +195,9 @@ const Sidebar = () => {
       <div className="p-4 border-t text-xs text-gray-400">
         {!isCollapsed && (
           <NavItem
+            href={"#"}
             icon={<Settings />}
             label={t("projectSettings")}
-            href={"#"}
           />
         )}
       </div>

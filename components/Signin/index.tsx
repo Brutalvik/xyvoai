@@ -45,6 +45,7 @@ export default function Signin() {
       setLoading(true);
       try {
         const { user } = await dispatch(signInThunk(values)).unwrap();
+
         console.log(user);
         dispatch(setUser(user));
         addToast({
@@ -78,6 +79,7 @@ export default function Signin() {
       });
 
       const url = new URL(window.location.href);
+
       url.searchParams.delete("redirected");
       window.history.replaceState({}, "", url.toString());
     }
@@ -85,8 +87,8 @@ export default function Signin() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.4 }}
     >
       {loading ? (
@@ -95,49 +97,49 @@ export default function Signin() {
         </div>
       ) : (
         <AuthFormLayout
-          title={t("title")}
-          subtitle=""
           alternativeAuthLink={{
             text: t("noAccount"),
             href: "/auth/signup",
             linkText: t("signup"),
           }}
           showSocials={false}
+          subtitle=""
+          title={t("title")}
         >
-          <form onSubmit={formik.handleSubmit} className="space-y-4">
+          <form className="space-y-4" onSubmit={formik.handleSubmit}>
             <Input
-              id="email"
-              name="email"
-              type="email"
-              label={t("email")}
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              isInvalid={!!(formik.touched.email && formik.errors.email)}
               errorMessage={
                 formik.touched.email ? formik.errors.email : undefined
               }
-              variant="bordered"
+              id="email"
+              isInvalid={!!(formik.touched.email && formik.errors.email)}
+              label={t("email")}
+              name="email"
               size="sm"
+              type="email"
+              value={formik.values.email}
+              variant="bordered"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
             />
             <PasswordInput
-              id="password"
-              name="password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              isInvalid={!!(formik.touched.password && formik.errors.password)}
               errorMessage={
                 formik.touched.password ? formik.errors.password : undefined
               }
+              id="password"
+              isInvalid={!!(formik.touched.password && formik.errors.password)}
+              name="password"
               size="sm"
+              value={formik.values.password}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
             />
             <Button
+              className="w-full"
+              color="primary"
+              isLoading={formik.isSubmitting}
               type="submit"
               variant="solid"
-              color="primary"
-              className="w-full"
-              isLoading={formik.isSubmitting}
             >
               {t("continue")}
             </Button>

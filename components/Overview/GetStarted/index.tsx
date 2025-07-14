@@ -23,10 +23,10 @@ export default function GetStarted({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
       className="max-w-xl mx-auto mt-16"
+      initial={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.4 }}
     >
       <Card className="p-6 border-dashed border-2 border-gray-300 dark:border-gray-600 text-center">
         <CardHeader>
@@ -42,9 +42,9 @@ export default function GetStarted({
               : t("getStartedDescription")}
           </p>
           <Button
+            disabled={hasReachedLimit}
             variant="solid"
             onPress={onCreateProject}
-            disabled={hasReachedLimit}
           >
             {hasReachedLimit ? t("upgradePlan") : t("createProject")}
           </Button>

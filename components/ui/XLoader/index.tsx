@@ -7,38 +7,38 @@ export default function XLoader() {
   return (
     <div className="relative-loader">
       {/* Invisible gradient defs */}
-      <svg height="0" width="0" viewBox="0 0 100 100" className="absolute">
+      <svg className="absolute" height="0" viewBox="0 0 100 100" width="0">
         <defs xmlns="http://www.w3.org/2000/svg">
           <linearGradient
             gradientUnits="userSpaceOnUse"
-            y2="2"
+            id="x-gradient"
+            x1="0"
             x2="0"
             y1="62"
-            x1="0"
-            id="x-gradient"
+            y2="2"
           >
             <stop stopColor="#1780cc" />
-            <stop stopColor="#1780cc" offset="1.5" />
+            <stop offset="1.5" stopColor="#1780cc" />
           </linearGradient>
         </defs>
       </svg>
 
       {/* Animated X */}
       <svg
-        xmlns="http://www.w3.org/2000/svg"
         fill="none"
+        height="100"
         viewBox="0 0 100 100"
         width="100"
-        height="100"
+        xmlns="http://www.w3.org/2000/svg"
       >
         <path
-          strokeLinejoin="round"
-          strokeLinecap="round"
-          strokeWidth="12"
-          stroke="url(#x-gradient)"
-          d="M 20,20 L 80,80 M 80,20 L 20,80"
           className="dash"
+          d="M 20,20 L 80,80 M 80,20 L 20,80"
           pathLength="360"
+          stroke="url(#x-gradient)"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="12"
         />
       </svg>
     </div>

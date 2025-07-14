@@ -9,17 +9,15 @@ import {
   CardHeader,
   Tooltip,
   Chip,
-  Avatar,
-  AvatarGroup,
   Progress,
 } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { format } from "date-fns";
 import { HiEye, HiTrash, HiPencil } from "react-icons/hi";
 import { useRouter } from "next/navigation";
+
 import { useAppDispatch } from "@/store/hooks";
 import { deleteProject } from "@/store/slices/projectsSlice";
-import { getBgColor, getInitial } from "@/utils";
 import { ProjectsListProps } from "@/types";
 
 export default function ProjectsList({
@@ -38,6 +36,7 @@ export default function ProjectsList({
       statusFilter === "" || project.status === statusFilter;
     const matchesVisibility =
       visibilityFilter === "" || project.visibility === visibilityFilter;
+
     return matchesAI && matchesStatus && matchesVisibility;
   });
 
@@ -68,10 +67,10 @@ export default function ProjectsList({
                   {project.ai_tasks ? (
                     <Tooltip content={t("managedByAI")}>
                       <Badge
+                        className="hover:cursor-pointer"
                         color="primary"
                         content="AI"
                         size="sm"
-                        className="hover:cursor-pointer"
                       >
                         <Tooltip content={project.name}>
                           <h2 className="text-lg font-bold text-default-800 max-w-[240px] truncate cursor-default">
@@ -100,10 +99,10 @@ export default function ProjectsList({
                   {project.tags.map((tag) => (
                     <Chip
                       key={tag.trim()}
+                      className="hover:cursor-pointer"
+                      color="primary"
                       size="sm"
                       variant="flat"
-                      color="primary"
-                      className="hover:cursor-pointer"
                     >
                       {tag.trim()}
                     </Chip>
@@ -117,7 +116,6 @@ export default function ProjectsList({
             <div className="flex flex-row gap-4 items-center">
               <strong>{t("status")}</strong>:
               <Chip
-                size="sm"
                 color={
                   project.status === "completed"
                     ? "success"
@@ -125,6 +123,7 @@ export default function ProjectsList({
                       ? "primary"
                       : "default"
                 }
+                size="sm"
               >
                 {project.status}
               </Chip>
@@ -133,9 +132,9 @@ export default function ProjectsList({
             {typeof project.completion === "number" && (
               <div className="pt-1">
                 <Progress
-                  value={project.completion}
                   className="h-2 rounded-full"
                   color={project.completion === 100 ? "success" : "primary"}
+                  value={project.completion}
                 />
               </div>
             )}
@@ -163,7 +162,6 @@ export default function ProjectsList({
               <div className="flex items-center gap-1">
                 <strong>{t("priority")}</strong>:
                 <Chip
-                  size="sm"
                   color={
                     project.priority === "Urgent"
                       ? "danger"
@@ -173,6 +171,7 @@ export default function ProjectsList({
                           ? "primary"
                           : "default"
                   }
+                  size="sm"
                 >
                   {project.priority}
                 </Chip>
@@ -192,7 +191,7 @@ export default function ProjectsList({
 
           <CardFooter className="flex justify-end gap-2 pt-2">
             <Tooltip content={t("view")}>
-              <Button variant="flat" color="primary" size="sm">
+              <Button color="primary" size="sm" variant="flat">
                 <HiEye
                   className="w-4 h-4"
                   onClick={() =>
@@ -203,12 +202,12 @@ export default function ProjectsList({
             </Tooltip>
             <Tooltip content={t("edit")}>
               <Button
-                variant="flat"
                 color="default"
                 size="sm"
+                variant="flat"
                 onPress={() =>
                   router.push(
-                    `/overview/projects/create?projectId=${project.id}`
+                    `/overview/projects/create?projectId=${project.id}`,
                   )
                 }
               >
@@ -217,9 +216,9 @@ export default function ProjectsList({
             </Tooltip>
             <Tooltip content={t("delete")}>
               <Button
-                variant="flat"
                 color="danger"
                 size="sm"
+                variant="flat"
                 onPress={() => dispatch(deleteProject(project.id))}
               >
                 <HiTrash className="w-4 h-4" />

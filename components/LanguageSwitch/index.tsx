@@ -7,11 +7,11 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@heroui/react";
+import { useRouter, usePathname } from "next/navigation";
+
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setLanguage } from "@/store/slices/languageSlice";
-import { useRouter, usePathname } from "next/navigation";
 import { selectLanguage } from "@/store/selectors";
-import clsx from "clsx";
 
 const languages = [
   { code: "en", label: "EN", flag: "🇺🇸" },
@@ -28,15 +28,17 @@ export default function LanguageSwitch() {
 
   const handleSelectionChange = (keys: React.Key[]) => {
     const selected = keys[0] as "en" | "fr";
+
     dispatch(setLanguage(selected));
     const newPath = pathname.replace(/^\/(en|fr)/, `/${selected}`);
+
     router.push(newPath);
   };
 
   const selected = languages.find((l) => l.code === lang)!;
 
   return (
-    <Dropdown type="menu" className="min-w-fit">
+    <Dropdown className="min-w-fit" type="menu">
       <DropdownTrigger>
         <div className="hover:cursor-pointer">
           <span className="text-md">{selected.flag}</span>
@@ -45,10 +47,10 @@ export default function LanguageSwitch() {
       </DropdownTrigger>
       <DropdownMenu
         aria-label="Language Selection"
-        selectionMode="single"
-        selectedKeys={selectedKeys}
-        onSelectionChange={(keys) => handleSelectionChange(Array.from(keys))}
         className="min-w-fit"
+        selectedKeys={selectedKeys}
+        selectionMode="single"
+        onSelectionChange={(keys) => handleSelectionChange(Array.from(keys))}
       >
         {languages
           .filter((l) => l.code !== lang)

@@ -27,13 +27,17 @@ const Column = ({
         <h2 className="font-semibold text-lg text-gray-800 tracking-tight capitalize">
           {t(title)}
         </h2>
-        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${countColor} bg-gray-50 border border-gray-200`}>{countLabel}</span>
+        <span
+          className={`text-xs font-medium px-2 py-0.5 rounded-full ${countColor} bg-gray-50 border border-gray-200`}
+        >
+          {countLabel}
+        </span>
       </div>
       {/* Card Drop Area */}
       <div
-        id={id}
-        className="rounded-xl bg-gray-50 border border-dashed border-gray-200 p-2 space-y-4 flex-1 min-h-[300px] transition-all duration-200"
         data-column
+        className="rounded-xl bg-gray-50 border border-dashed border-gray-200 p-2 space-y-4 flex-1 min-h-[300px] transition-all duration-200"
+        id={id}
       >
         {children}
       </div>

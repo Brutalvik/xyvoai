@@ -4,16 +4,12 @@ import React, { useMemo } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Input, Textarea } from "@heroui/input";
-import { Select, SelectItem, DateRangePicker } from "@heroui/react";
-import {
-  parseDate,
-  today,
-  getLocalTimeZone,
-  CalendarDate,
-} from "@internationalized/date";
+import { Select, SelectItem } from "@heroui/react";
+import { today, getLocalTimeZone, CalendarDate } from "@internationalized/date";
 import { Button } from "@heroui/button";
 import { useTranslations } from "next-intl";
 import { addToast } from "@heroui/react";
+
 import SprintDateRangePicker from "@/components/ui/DateRangePicker";
 
 const SprintSchema = Yup.object().shape({
@@ -54,11 +50,13 @@ type Props = {
 function getNext2WeekRange(): { start: CalendarDate; end: CalendarDate } {
   const start = today(getLocalTimeZone());
   const end = start.add({ days: 13 });
+
   return { start, end };
 }
 
 function getRandomColor(): string {
   const index = Math.floor(Math.random() * sprintColors.length);
+
   return sprintColors[index];
 }
 
@@ -124,9 +122,9 @@ export default function CreateSprintForm({ teams, onSubmit }: Props) {
           <Field name="velocity">
             {({ field }: any) => (
               <Input
-                type="number"
                 label={t("velocity")}
                 min={0}
+                type="number"
                 {...field}
                 error={touched.velocity && errors.velocity}
               />
@@ -136,9 +134,9 @@ export default function CreateSprintForm({ teams, onSubmit }: Props) {
           <Field name="capacity">
             {({ field }: any) => (
               <Input
-                type="number"
                 label={t("capacity")}
                 min={0}
+                type="number"
                 {...field}
                 error={touched.capacity && errors.capacity}
               />
@@ -148,13 +146,13 @@ export default function CreateSprintForm({ teams, onSubmit }: Props) {
           <Field name="state">
             {({ field }: any) => (
               <Select
+                errorMessage={touched.state && errors.state}
+                isInvalid={touched.state && !!errors.state}
                 label={t("state")}
                 selectedKeys={field.value}
                 onSelectionChange={(key) =>
                   setFieldValue("state", key.toString())
                 }
-                isInvalid={touched.state && !!errors.state}
-                errorMessage={touched.state && errors.state}
               >
                 <SelectItem key="planned">{t("planned")}</SelectItem>
                 <SelectItem key="active">{t("active")}</SelectItem>
@@ -169,14 +167,14 @@ export default function CreateSprintForm({ teams, onSubmit }: Props) {
               <Field name="team">
                 {({ field }: any) => (
                   <Select
+                    errorMessage={touched.team && errors.team}
+                    isDisabled={teams.length === 0}
+                    isInvalid={touched.team && !!errors.team}
                     label={t("team")}
                     selectedKeys={field.value}
                     onSelectionChange={(key) =>
                       setFieldValue("team", key.toString())
                     }
-                    isInvalid={touched.team && !!errors.team}
-                    errorMessage={touched.team && errors.team}
-                    isDisabled={teams.length === 0}
                   >
                     {teams.map((team) => (
                       <SelectItem key={team.id}>{team.name}</SelectItem>
@@ -186,8 +184,8 @@ export default function CreateSprintForm({ teams, onSubmit }: Props) {
               </Field>
             </div>
             <Button
-              variant="faded"
               type="button"
+              variant="faded"
               onClick={() => {
                 // Implement navigation or modal trigger here
                 addToast({ title: "Open create team modal", color: "primary" });
@@ -200,11 +198,11 @@ export default function CreateSprintForm({ teams, onSubmit }: Props) {
           <Field name="focusFactor">
             {({ field }: any) => (
               <Input
-                type="number"
                 label={t("focusFactor")}
-                min={0}
                 max={1}
+                min={0}
                 step={0.1}
+                type="number"
                 {...field}
                 error={touched.focusFactor && errors.focusFactor}
               />
@@ -214,13 +212,13 @@ export default function CreateSprintForm({ teams, onSubmit }: Props) {
           <Field name="burndownType">
             {({ field }: any) => (
               <Select
+                errorMessage={touched.burndownType && errors.burndownType}
+                isInvalid={touched.burndownType && !!errors.burndownType}
                 label={t("burndownType")}
                 selectedKeys={field.value}
                 onSelectionChange={(key) =>
                   setFieldValue("burndownType", key.toString())
                 }
-                isInvalid={touched.burndownType && !!errors.burndownType}
-                errorMessage={touched.burndownType && errors.burndownType}
               >
                 <SelectItem key="storyPoints">{t("storyPoints")}</SelectItem>
                 <SelectItem key="tasks">{t("tasks")}</SelectItem>
@@ -239,14 +237,14 @@ export default function CreateSprintForm({ teams, onSubmit }: Props) {
           </Field>
 
           <Input
-            type="checkbox"
-            label={t("autoAssignTasks")}
             disabled
             checked={false}
             className="cursor-not-allowed"
+            label={t("autoAssignTasks")}
+            type="checkbox"
           />
 
-          <Button type="submit" isLoading={isSubmitting} variant="solid">
+          <Button isLoading={isSubmitting} type="submit" variant="solid">
             {t("create")}
           </Button>
         </Form>

@@ -1,10 +1,11 @@
 "use client";
 
-import TeamForm from "@/components/Team/Form";
 import { Card, CardBody } from "@heroui/card";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { addToast } from "@heroui/react";
+
+import TeamForm from "@/components/Team/Form";
 
 const dummyUsers = [
   { id: "1", name: "Alice Johnson" },
@@ -31,7 +32,7 @@ export default function CreateTeamPage() {
     <div className="p-4 max-w-3xl mx-auto">
       <Card>
         <CardBody>
-          <TeamForm users={dummyUsers} onSubmit={handleCreate} isEdit={false} />
+          <TeamForm isEdit={false} users={dummyUsers} onSubmit={handleCreate} />
         </CardBody>
       </Card>
     </div>

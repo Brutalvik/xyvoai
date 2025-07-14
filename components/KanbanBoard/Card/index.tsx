@@ -36,11 +36,13 @@ function getAvatarColor(name: string) {
     "bg-yellow-500",
   ];
   const index = name.charCodeAt(0) % colors.length;
+
   return colors[index];
 }
 
 function getStatusBadge(status: CardProps["status"]) {
   const base = "text-xs font-medium px-2 py-0.5 rounded-full";
+
   switch (status) {
     case "inProgress":
       return clsx(base, "bg-blue-100 text-blue-700");
@@ -96,17 +98,19 @@ export default function Card({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      data-card
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
       className={clsx(
         // Modern, minimal, professional card styling
         "relative bg-white rounded-2xl border border-gray-100 shadow-md px-6 py-5 cursor-move transition-all duration-200",
         "hover:shadow-xl hover:border-blue-200 active:scale-[0.98]",
-        statusBorderMap[status] ? statusBorderMap[status].replace("border-", "border-l-4 border-") : "border-l-4 border-gray-200"
+        statusBorderMap[status]
+          ? statusBorderMap[status].replace("border-", "border-l-4 border-")
+          : "border-l-4 border-gray-200",
       )}
+      initial={{ opacity: 0, y: 10 }}
       style={{ minHeight: 140 }}
-      data-card
+      transition={{ duration: 0.25 }}
     >
       {/* Card Header */}
       <div className="flex justify-between items-start mb-2">
@@ -124,10 +128,12 @@ export default function Card({
         <span
           className={clsx(
             "w-2.5 h-2.5 rounded-full border border-white shadow-sm",
-            priorityDotColor[priority] ?? "bg-gray-300"
+            priorityDotColor[priority] ?? "bg-gray-300",
           )}
         />
-        <span className="font-semibold text-gray-500">{priorityLabelMap[priority]}</span>
+        <span className="font-semibold text-gray-500">
+          {priorityLabelMap[priority]}
+        </span>
       </div>
 
       {/* Assignee & Effort */}
@@ -135,29 +141,34 @@ export default function Card({
         <div
           className={clsx(
             "w-10 h-10 rounded-full flex items-center justify-center text-white text-base font-bold border-2 border-white shadow-sm",
-            getAvatarColor(assignee)
+            getAvatarColor(assignee),
           )}
           title={assignee}
         >
           {getInitials(assignee)}
         </div>
-        <span className="text-sm text-gray-700 truncate font-medium" title={assignee}>
+        <span
+          className="text-sm text-gray-700 truncate font-medium"
+          title={assignee}
+        >
           {assignee}
         </span>
         <div className="flex items-center gap-1 ml-auto text-xs text-gray-500">
-          <BookOpenText size={15} className="text-gray-300" />
-          <span>{t("effort")}: {effort}</span>
+          <BookOpenText className="text-gray-300" size={15} />
+          <span>
+            {t("effort")}: {effort}
+          </span>
         </div>
       </div>
 
       {/* Issue Link */}
       <div className="flex items-center gap-1 text-xs mb-2">
-        <LinkIcon size={15} className="text-blue-300" />
+        <LinkIcon className="text-blue-300" size={15} />
         <a
-          href={issueUrl}
-          target="_blank"
-          rel="noopener noreferrer"
           className="text-blue-600 hover:underline truncate max-w-[120px] font-mono"
+          href={issueUrl}
+          rel="noopener noreferrer"
+          target="_blank"
         >
           #{issueUrl.split("/").pop()}
         </a>
@@ -173,7 +184,7 @@ export default function Card({
           <div
             className={clsx(
               "h-2 rounded-full transition-all duration-300 ease-in-out",
-              statusBorderMap[status]?.replace("border", "bg") ?? "bg-gray-400"
+              statusBorderMap[status]?.replace("border", "bg") ?? "bg-gray-400",
             )}
             style={{ width: `${progress}%` }}
           />
@@ -182,4 +193,3 @@ export default function Card({
     </motion.div>
   );
 }
-

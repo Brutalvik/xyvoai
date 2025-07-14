@@ -2,10 +2,11 @@
 
 import { Input } from "@heroui/input";
 import { Kbd } from "@heroui/kbd";
-import { SearchIcon } from "@/components/icons";
 import React, { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { useTranslations } from "next-intl";
+
+import { SearchIcon } from "@/components/icons";
 
 export const SearchInput = ({ autoFocus = false }: { autoFocus?: boolean }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -28,17 +29,13 @@ export const SearchInput = ({ autoFocus = false }: { autoFocus?: boolean }) => {
         "transition-all duration-300 ease-in-out origin-right",
         "w-full",
         "lg:w-[300px]",
-        shouldExpand && "lg:w-[440px]"
+        shouldExpand && "lg:w-[440px]",
       )}
       style={{ transformOrigin: "right" }}
     >
       <Input
         ref={inputRef}
         aria-label={t("ariaLabel")}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
         classNames={{
           inputWrapper: "bg-default-100",
           input: "text-sm",
@@ -54,6 +51,10 @@ export const SearchInput = ({ autoFocus = false }: { autoFocus?: boolean }) => {
           <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
         }
         type="search"
+        value={value}
+        onBlur={() => setIsFocused(false)}
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setIsFocused(true)}
       />
     </div>
   );

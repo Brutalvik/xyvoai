@@ -8,6 +8,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
 import { addToast } from "@heroui/react";
 import { useEffect, useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
+import { HiBan, HiBadgeCheck } from "react-icons/hi";
+
 import XyvoLoader from "@/components/ui/XyvoLoader";
 import AuthFormLayout from "@/components/ui/Auth/AuthFormLayout";
 import { PhoneInput } from "@/components/ui/Auth/PhoneInput";
@@ -15,10 +18,8 @@ import { PasswordInput } from "@/components/ui/Auth/PasswordInput";
 import PasswordTooltip from "@/components/ui/Auth/PasswordTooltip";
 import { passwordRules } from "@/utils";
 import { useAppDispatch } from "@/store/hooks";
-import { useTranslations, useLocale } from "next-intl";
 import UsageTypeSelector from "@/components/Signup/UsageType";
 import { signupThunk, signupWithUsageTypeThunk } from "@/store/auth/thunks";
-import { HiBan, HiBadgeCheck } from "react-icons/hi";
 
 export default function Signup() {
   const dispatch = useAppDispatch();
@@ -59,6 +60,7 @@ export default function Signup() {
         if (res?.requireUsageType) {
           setStep("usagetype");
           router.replace(`${pathname}?step=usagetype`);
+
           return;
         }
 
@@ -88,6 +90,7 @@ export default function Signup() {
 
     if (prevLocale !== locale && saved) {
       const parsed = JSON.parse(saved);
+
       formik.setValues(parsed);
     } else {
       sessionStorage.removeItem("signup-form");
@@ -102,6 +105,7 @@ export default function Signup() {
     if (!usageType) return;
 
     const saved = sessionStorage.getItem("signup-form");
+
     if (!saved) return;
 
     const values = JSON.parse(saved);
@@ -129,8 +133,8 @@ export default function Signup() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.4 }}
     >
       {formik.isSubmitting ? (
@@ -139,35 +143,35 @@ export default function Signup() {
         </div>
       ) : (
         <AuthFormLayout
-          title={t("title")}
-          subtitle=""
           alternativeAuthLink={{
             text: t("haveAccount"),
             href: "/auth/signin",
             linkText: t("signin"),
           }}
           showSocials={false}
+          subtitle=""
+          title={t("title")}
         >
           <AnimatePresence mode="wait">
             {step === "usagetype" ? (
               <motion.div
                 key="usagetype"
-                initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.3 }}
                 className="space-y-4"
+                exit={{ opacity: 0, x: -50 }}
+                initial={{ opacity: 0, x: 50 }}
+                transition={{ duration: 0.3 }}
               >
                 <UsageTypeSelector
+                  isInvalid={!usageType && hasTriedUsageSubmit}
                   value={usageType}
                   onChange={setUsageType}
-                  isInvalid={!usageType && hasTriedUsageSubmit}
                 />
                 <Button
-                  onPress={handleUsageContinue}
-                  variant="solid"
-                  color="primary"
                   className="w-full"
+                  color="primary"
+                  variant="solid"
+                  onPress={handleUsageContinue}
                 >
                   {t("continue")}
                 </Button>
@@ -175,77 +179,77 @@ export default function Signup() {
             ) : (
               <motion.form
                 key="signup-form"
-                onSubmit={formik.handleSubmit}
-                initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 50 }}
-                transition={{ duration: 0.3 }}
                 className="space-y-4"
+                exit={{ opacity: 0, x: 50 }}
+                initial={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.3 }}
+                onSubmit={formik.handleSubmit}
               >
                 <Input
-                  id="name"
-                  name="name"
-                  label={t("name")}
-                  value={formik.values.name}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  isInvalid={!!(formik.touched.name && formik.errors.name)}
                   errorMessage={
                     formik.touched.name ? formik.errors.name : undefined
                   }
-                  variant="bordered"
+                  id="name"
+                  isInvalid={!!(formik.touched.name && formik.errors.name)}
+                  label={t("name")}
+                  name="name"
                   size="sm"
+                  value={formik.values.name}
+                  variant="bordered"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
                 />
                 <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  label={t("email")}
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  isInvalid={!!(formik.touched.email && formik.errors.email)}
                   errorMessage={
                     formik.touched.email ? formik.errors.email : undefined
                   }
-                  variant="bordered"
+                  id="email"
+                  isInvalid={!!(formik.touched.email && formik.errors.email)}
+                  label={t("email")}
+                  name="email"
                   size="sm"
+                  type="email"
+                  value={formik.values.email}
+                  variant="bordered"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
                 />
                 <PhoneInput
-                  id="phone"
-                  name="phone"
-                  value={formik.values.phone}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  isInvalid={!!(formik.touched.phone && formik.errors.phone)}
                   errorMessage={
                     formik.touched.phone ? formik.errors.phone : undefined
                   }
-                  setFormikFieldValue={formik.setFieldValue}
                   formikCountryCode={formik.values.countryCode}
+                  id="phone"
+                  isInvalid={!!(formik.touched.phone && formik.errors.phone)}
+                  name="phone"
+                  setFormikFieldValue={formik.setFieldValue}
                   size="sm"
+                  value={formik.values.phone}
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
                 />
                 <PasswordInput
-                  id="password"
-                  name="password"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  isInvalid={
-                    !!(formik.touched.password && formik.errors.password)
-                  }
                   errorMessage={
                     formik.touched.password ? formik.errors.password : undefined
                   }
+                  id="password"
+                  isInvalid={
+                    !!(formik.touched.password && formik.errors.password)
+                  }
+                  name="password"
                   size="sm"
+                  value={formik.values.password}
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
                 />
                 <PasswordTooltip />
                 <Button
+                  className="w-full"
+                  color="primary"
+                  isLoading={formik.isSubmitting}
                   type="submit"
                   variant="solid"
-                  color="primary"
-                  className="w-full"
-                  isLoading={formik.isSubmitting}
                 >
                   {t("continue")}
                 </Button>

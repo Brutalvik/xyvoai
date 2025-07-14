@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User, UserState } from "@/types";
+
 import { signInThunk } from "../auth/thunks";
+
+import { User, UserState } from "@/types";
 
 const initialState: UserState = {
   user: null,
@@ -37,6 +39,7 @@ const userSlice = createSlice({
       })
       .addCase(signInThunk.fulfilled, (state, action) => {
         const { user, tokenExpiresAt, isLoggedIn } = action.payload;
+
         state.user = user;
         state.isLoggedIn = isLoggedIn ?? true;
         state.loading = false;

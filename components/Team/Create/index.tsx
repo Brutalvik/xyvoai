@@ -76,8 +76,8 @@ export default function CreateTeamForm({ users, onSubmit }: Props) {
               <Textarea
                 label={t("description")}
                 {...field}
-                rows={3}
                 error={touched.description && errors.description}
+                rows={3}
               />
             )}
           </Field>
@@ -117,8 +117,8 @@ export default function CreateTeamForm({ users, onSubmit }: Props) {
             {({ field }: any) => (
               <Select
                 label={t("members")}
-                selectionMode="multiple"
                 selectedKeys={field.value}
+                selectionMode="multiple"
                 onSelectionChange={(keys) =>
                   setFieldValue("members", Array.from(keys))
                 }
@@ -153,20 +153,20 @@ export default function CreateTeamForm({ users, onSubmit }: Props) {
               {teamColors.map((color) => (
                 <button
                   key={color}
-                  type="button"
-                  onClick={() => setFieldValue("color", color)}
                   className={`w-6 h-6 rounded-full border-2 transition-all duration-200 ${
                     values.color === color
                       ? "border-black"
                       : "border-transparent"
                   }`}
                   style={{ backgroundColor: color }}
+                  type="button"
+                  onClick={() => setFieldValue("color", color)}
                 />
               ))}
             </div>
           </div>
 
-          <Button type="submit" isLoading={isSubmitting} variant="solid">
+          <Button isLoading={isSubmitting} type="submit" variant="solid">
             {t("create")}
           </Button>
         </Form>

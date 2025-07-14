@@ -2,15 +2,16 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Select, SelectItem, Switch, Button, Tooltip } from "@heroui/react";
+import { useTranslations } from "next-intl";
+
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchProjects } from "@/store/slices/projectsSlice";
 import GetStarted from "@/components/Overview/GetStarted";
 import ProjectsList from "@/components/Overview/ProjectList";
 import ProjectOverview from "@/components/Overview/ProjectOverview";
-import { Select, SelectItem, Switch, Button, Tooltip } from "@heroui/react";
 import { Project } from "@/types";
 import XLoader from "@/components/ui/XLoader";
-import { useTranslations } from "next-intl";
 
 const ProjectsPage = () => {
   const t = useTranslations("ProjectList");
@@ -37,6 +38,7 @@ const ProjectsPage = () => {
         !visibilityFilter ||
         project.visibility.toLowerCase() === visibilityFilter.toLowerCase();
       const matchesAI = !showAIModeOnly || project.ai_tasks === true;
+
       return matchesStatus && matchesVisibility && matchesAI;
     });
   }, [projects, statusFilter, visibilityFilter, showAIModeOnly]);
@@ -54,8 +56,8 @@ const ProjectsPage = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <Button
-            variant="light"
             color="primary"
+            variant="light"
             onPress={handleBackToProjects}
           >
             ← {t("projectListBack")}
@@ -78,9 +80,9 @@ const ProjectsPage = () => {
   if (!loading && projects.length === 0) {
     return (
       <GetStarted
-        onCreateProject={handleCreateProject}
-        plan="free"
         currentProjectCount={0}
+        plan="free"
+        onCreateProject={handleCreateProject}
       />
     );
   }
@@ -91,11 +93,11 @@ const ProjectsPage = () => {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-4">
           <Select
+            className="w-48"
             label={t("status")}
             size="sm"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-48"
           >
             <SelectItem key="">{t("all")}</SelectItem>
             <SelectItem key="active">{t("active")}</SelectItem>
@@ -104,11 +106,11 @@ const ProjectsPage = () => {
           </Select>
 
           <Select
+            className="w-48"
             label={t("visibility")}
             size="sm"
             value={visibilityFilter}
             onChange={(e) => setVisibilityFilter(e.target.value)}
-            className="w-48"
           >
             <SelectItem key="">{t("all")}</SelectItem>
             <SelectItem key="private">{t("private")}</SelectItem>
@@ -120,8 +122,8 @@ const ProjectsPage = () => {
           <Tooltip content={t("createTooltip")}>
             {/* Create new project */}
             <Button
-              variant="flat"
               color="primary"
+              variant="flat"
               onPress={handleCreateProject}
             >
               + {t("createButton")}
@@ -130,8 +132,8 @@ const ProjectsPage = () => {
           <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
             {t("aiManaged")}
             <Switch
-              size="sm"
               isSelected={showAIModeOnly}
+              size="sm"
               onChange={(e) => setShowAIModeOnly(e.target.checked)}
             />
           </div>

@@ -19,11 +19,16 @@ import {
   DrawerFooter,
   useDisclosure,
 } from "@heroui/react";
-import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { addToast } from "@heroui/react";
+import { HiInformationCircle } from "react-icons/hi";
+import { Settings2 } from "lucide-react";
+import _ from "lodash";
+
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectUser, isLoggedIn } from "@/store/selectors";
 import { signoutThunk } from "@/store/auth/thunks";
@@ -31,12 +36,7 @@ import { SearchInput } from "@/components/SearchInput";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Logo } from "@/components/icons";
 import LanguageSwitch from "@/components/LanguageSwitch";
-import { useLocale, useTranslations } from "next-intl";
-import { addToast } from "@heroui/react";
-import { HiInformationCircle } from "react-icons/hi";
-import _ from "lodash";
 import { getBgColor, getInitial } from "@/utils";
-import { UserState } from "@/types";
 
 export default function Navbar() {
   const t = useTranslations("Navbar");
@@ -103,14 +103,13 @@ export default function Navbar() {
         {loggedIn && user && (
           <NavbarItem className="hidden sm:flex">
             <Avatar
-              size="sm"
-              src={user?.image || undefined}
-              name={avatarInitial}
-              onClick={onOpen}
               className={clsx(
                 "cursor-pointer text-white",
-                !user?.image && avatarBg // only apply bg class if no image
+                !user?.image && avatarBg, // only apply bg class if no image
               )}
+              name={avatarInitial}
+              size="sm"
+              src={user?.image || undefined}
               style={{
                 ...(user?.image
                   ? {}
@@ -121,6 +120,7 @@ export default function Navbar() {
                       color: "#ffffff",
                     }),
               }}
+              onClick={onOpen}
             />
           </NavbarItem>
         )}
@@ -130,7 +130,7 @@ export default function Navbar() {
             {!isSignUpPage && (
               <NavbarItem>
                 <NextLink href={`/${locale}/auth/signup`}>
-                  <Button size="sm" variant="ghost" color="primary">
+                  <Button color="primary" size="sm" variant="ghost">
                     {t("signUp")}
                   </Button>
                 </NextLink>
@@ -139,7 +139,7 @@ export default function Navbar() {
             {!isSignInPage && (
               <NavbarItem>
                 <NextLink href={`/${locale}/auth/signin`}>
-                  <Button size="sm" variant="flat" color="primary">
+                  <Button color="primary" size="sm" variant="flat">
                     {t("signIn")}
                   </Button>
                 </NextLink>
@@ -152,11 +152,11 @@ export default function Navbar() {
       {loggedIn && user && (
         <NavbarItem className="sm:hidden">
           <Avatar
+            className={clsx("text-white cursor-pointer", avatarBg)}
+            name={!user?.image ? avatarInitial : ""}
             size="sm"
             src={user?.image || undefined}
-            className={clsx("text-white cursor-pointer", avatarBg)}
             onClick={onOpen}
-            name={!user?.image ? avatarInitial : ""}
           >
             {!user?.image && avatarInitial}
           </Avatar>
@@ -179,8 +179,8 @@ export default function Navbar() {
 
           {!isSignInPage && (
             <NavbarMenuItem>
-              <NextLink href={`/${locale}/auth/signin`} passHref>
-                <Button fullWidth variant="solid" color="primary">
+              <NextLink passHref href={`/${locale}/auth/signin`}>
+                <Button fullWidth color="primary" variant="solid">
                   {t("signIn")}
                 </Button>
               </NextLink>
@@ -188,8 +188,8 @@ export default function Navbar() {
           )}
           {!isSignUpPage && (
             <NavbarMenuItem>
-              <NextLink href={`/${locale}/auth/signup`} passHref>
-                <Button fullWidth variant="bordered" color="primary">
+              <NextLink passHref href={`/${locale}/auth/signup`}>
+                <Button fullWidth color="primary" variant="bordered">
                   {t("signUp")}
                 </Button>
               </NextLink>
@@ -198,7 +198,7 @@ export default function Navbar() {
         </div>
       </NavbarMenu>
 
-      <Drawer isOpen={isOpen} onOpenChange={onOpenChange} placement="right">
+      <Drawer isOpen={isOpen} placement="right" onOpenChange={onOpenChange}>
         <DrawerContent>
           {(onClose) => (
             <>
@@ -222,21 +222,22 @@ export default function Navbar() {
                 </div>
               </DrawerHeader>
               <DrawerBody>
-                <Button
-                  fullWidth
-                  variant="flat"
-                  color="primary"
-                  startContent={<Avatar size="sm" src={user?.image || undefined} name={avatarInitial} className={clsx("text-white", avatarBg)} />}
-                  className="mb-4 mt-2 text-left justify-start font-semibold text-lg shadow-md hover:scale-[1.02] transition-transform"
-                  onPress={() => {
-                    router.push(`/profile`);
-                    onClose();
-                  }}
-                >
-                  {t("profile")}
-                </Button>
+                {/* DrawerBody can remain empty or contain other content if needed */}
               </DrawerBody>
-              <DrawerFooter className="justify-end">
+              <DrawerFooter className="flex items-end justify-between">
+                <div className="flex items-center">
+                  <button
+                    className="flex items-center gap-2 text-gray-700 dark:text-gray-100 text-base font-medium hover:underline focus:outline-none"
+                    type="button"
+                    onClick={() => {
+                      router.push(`/profile`);
+                      onClose();
+                    }}
+                  >
+                    <Settings2 className="w-5 h-5" />
+                    {t("profile")}
+                  </button>
+                </div>
                 <Button
                   color="danger"
                   variant="solid"

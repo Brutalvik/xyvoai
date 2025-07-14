@@ -123,9 +123,9 @@ export default function CurrentSprintCard({ sprint }: CurrentSprintCardProps) {
 
       <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mb-4">
         <motion.div
+          animate={{ width: `${percentageLeft}%` }}
           className="h-full bg-green-500"
           initial={{ width: 0 }}
-          animate={{ width: `${percentageLeft}%` }}
           transition={{ ease: "linear", duration: 1 }}
         />
       </div>
@@ -134,7 +134,7 @@ export default function CurrentSprintCard({ sprint }: CurrentSprintCardProps) {
         <span className="text-default-500">
           {t("velocity")}: {velocity}
         </span>
-        <Button variant="bordered" size="sm">
+        <Button size="sm" variant="bordered">
           <a href={`/overview/sprints/${id}`}>{t("view")}</a>
         </Button>
       </div>

@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
-import { NavigationBreadcrumbs } from "@/components/KanbanBoard/NavigationBreadcrumbs";
 import { Tooltip } from "@heroui/react";
+
+import { NavigationBreadcrumbs } from "@/components/KanbanBoard/NavigationBreadcrumbs";
 
 type BoardView = "kanban" | "list" | "gantt";
 
@@ -33,16 +34,16 @@ const Header: React.FC<HeaderProps> = ({ view, onViewChange }) => {
           }`}
         >
           <input
-            type="text"
-            placeholder={t("searchPlaceholder")}
+            autoFocus={searchOpen}
             className={`bg-transparent outline-none px-2 w-full ${
               searchOpen ? "block" : "hidden"
             }`}
-            autoFocus={searchOpen}
+            placeholder={t("searchPlaceholder")}
+            type="text"
           />
           <span
-            onClick={toggleSearch}
             className="material-icons cursor-pointer px-2"
+            onClick={toggleSearch}
           >
             search
           </span>
@@ -75,15 +76,15 @@ const Header: React.FC<HeaderProps> = ({ view, onViewChange }) => {
           ].map(({ key, icon, tooltip }) => (
             <Tooltip key={key} content={tooltip} placement="bottom">
               <button
+                aria-label={tooltip}
+                aria-pressed={view === key}
                 className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-200 focus:outline-none ${
                   view === key
                     ? "bg-white shadow text-blue-600"
                     : "text-gray-600 hover:bg-gray-200"
                 }`}
-                onClick={() => onViewChange(key as BoardView)}
-                aria-pressed={view === key}
-                aria-label={tooltip}
                 type="button"
+                onClick={() => onViewChange(key as BoardView)}
               >
                 <span className="material-icons text-2xl">{icon}</span>
               </button>

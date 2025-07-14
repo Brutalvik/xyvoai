@@ -22,10 +22,10 @@ export default function UsageTypeSelector({
   return (
     <div className="flex flex-col gap-3">
       <RadioGroup
-        label={t("selectUsageTitle")}
         description={t("selectUsageDescription")}
-        isInvalid={isInvalid}
         errorMessage={isInvalid ? t("selectUsageError") : undefined}
+        isInvalid={isInvalid}
+        label={t("selectUsageTitle")}
         value={value}
         onValueChange={(val) => onChange(val as UsageType)}
       >

@@ -2,16 +2,19 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { ToastProvider } from "@heroui/toast";
+
 import { Providers } from "@/app/providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import "@/styles/globals.css";
 import { fontSans } from "@/config/fonts";
+
 import clsx from "clsx";
+
 import { ReduxProvider } from "@/store/Provider";
-import { ToastProvider } from "@heroui/toast";
 import PageTransitionLoader from "@/components/ui/PageTransitionLoader";
-import AuthInitializer from "@/components/AuthInitializer"; // ✅ NEW
+// ✅ NEW
 
 type Props = {
   children: React.ReactNode;
@@ -25,11 +28,11 @@ export default async function LocaleLayout({ children, params }: Props) {
   if (!messages) notFound();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html suppressHydrationWarning lang={locale}>
       <body
         className={clsx(
           "text-foreground bg-background font-sans antialiased",
-          fontSans.variable
+          fontSans.variable,
         )}
       >
         <PageTransitionLoader />

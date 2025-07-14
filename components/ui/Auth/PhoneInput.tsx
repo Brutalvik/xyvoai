@@ -4,8 +4,9 @@ import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/react";
 import { useState, useEffect, ChangeEvent, FocusEvent } from "react";
 import { useTranslations } from "next-intl";
-import countryCodes from "@/chunks/countryCodes.json";
 import { AnimatePresence, motion } from "framer-motion";
+
+import countryCodes from "@/chunks/countryCodes.json";
 import { getFlagFromPhone } from "@/utils";
 
 interface PhoneInputProps {
@@ -22,7 +23,7 @@ interface PhoneInputProps {
   setFormikFieldValue: (
     field: string,
     value: any,
-    shouldValidate?: boolean
+    shouldValidate?: boolean,
   ) => void;
   formikCountryCode: string;
 }
@@ -47,6 +48,7 @@ export function PhoneInput({
 
   useEffect(() => {
     const matched = countryCodes.find((c) => c.dial_code === formikCountryCode);
+
     if (matched) {
       setSelectedId(matched.id);
       setFlag(matched.flag);
@@ -59,6 +61,7 @@ export function PhoneInput({
   const handleCodeChange = (id: string) => {
     setSelectedId(id);
     const selected = countryCodes.find((c) => c.id === id);
+
     if (selected) {
       setFlag(selected.flag);
       setFormikFieldValue("countryCode", selected.dial_code);
@@ -71,8 +74,10 @@ export function PhoneInput({
     onChange(e);
     const digits = e.target.value.replace(/\D/g, "");
     const current = countryCodes.find((c) => c.id === selectedId);
+
     if (current?.dial_code === "+1" && digits.length >= 3) {
       const dynamicFlag = getFlagFromPhone(digits);
+
       if (dynamicFlag && dynamicFlag !== flag) {
         setFlag(dynamicFlag);
       }
@@ -85,29 +90,31 @@ export function PhoneInput({
         <AnimatePresence mode="wait">
           <motion.span
             key={flag}
-            initial={{ scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.6, opacity: 0 }}
-            transition={{ duration: 0.3 }}
             className="text-xl"
+            exit={{ scale: 0.6, opacity: 0 }}
+            initial={{ scale: 0.6, opacity: 0 }}
+            transition={{ duration: 0.3 }}
           >
             {flag}
           </motion.span>
         </AnimatePresence>
         <Select
-          variant="bordered"
-          size="md"
+          aria-label={t("countryCode")}
           className="w-full"
-          selectedKeys={new Set([selectedId])}
-          onSelectionChange={(keys) => {
-            const id = String(Array.from(keys)[0]);
-            handleCodeChange(id);
-          }}
           renderValue={() => {
             const selected = countryCodes.find((c) => c.id === selectedId);
+
             return <span>{selected?.dial_code || ""}</span>;
           }}
-          aria-label={t("countryCode")}
+          selectedKeys={new Set([selectedId])}
+          size="md"
+          variant="bordered"
+          onSelectionChange={(keys) => {
+            const id = String(Array.from(keys)[0]);
+
+            handleCodeChange(id);
+          }}
         >
           {countryCodes.map((country) =>
             country.code === "CA" ? null : (
@@ -117,23 +124,23 @@ export function PhoneInput({
                   <span>{country.dial_code}</span>
                 </div>
               </SelectItem>
-            )
+            ),
           )}
         </Select>
       </div>
       <Input
-        id={id}
-        name={name}
-        label={label || t("label")}
-        placeholder={placeholder || t("placeholder")}
-        variant="bordered"
-        value={value}
-        onChange={handlePhoneChange}
-        onBlur={onBlur}
-        isInvalid={isInvalid}
-        errorMessage={errorMessage}
         className="w-full sm:w-2/3"
+        errorMessage={errorMessage}
+        id={id}
+        isInvalid={isInvalid}
+        label={label || t("label")}
+        name={name}
+        placeholder={placeholder || t("placeholder")}
         size={size}
+        value={value}
+        variant="bordered"
+        onBlur={onBlur}
+        onChange={handlePhoneChange}
       />
     </div>
   );

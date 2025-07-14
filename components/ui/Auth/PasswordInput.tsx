@@ -37,23 +37,11 @@ export function PasswordInput({
 
   return (
     <Input
-      id={id}
-      name={name}
-      type={isPasswordVisible ? "text" : "password"}
-      label={label || t("label")}
-      placeholder={placeholder || t("placeholder")}
-      variant="bordered"
-      value={value}
-      onChange={onChange}
-      onBlur={onBlur}
-      isInvalid={isInvalid}
-      errorMessage={errorMessage || t("error")}
-      size={size}
       endContent={
         <button
+          className="h-full flex items-center pr-2"
           type="button"
           onClick={togglePasswordVisibility}
-          className="h-full flex items-center pr-2"
         >
           {isPasswordVisible ? (
             <FaEyeSlash className="text-lg text-default-400 pointer-events-none" />
@@ -62,6 +50,18 @@ export function PasswordInput({
           )}
         </button>
       }
+      errorMessage={errorMessage || t("error")}
+      id={id}
+      isInvalid={isInvalid}
+      label={label || t("label")}
+      name={name}
+      placeholder={placeholder || t("placeholder")}
+      size={size}
+      type={isPasswordVisible ? "text" : "password"}
+      value={value}
+      variant="bordered"
+      onBlur={onBlur}
+      onChange={onChange}
     />
   );
 }

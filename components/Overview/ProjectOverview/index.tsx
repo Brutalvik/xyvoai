@@ -12,6 +12,7 @@ import {
 } from "@heroui/react";
 import { HiHeart, HiOutlineHeart, HiEye } from "react-icons/hi";
 import { useState, useMemo } from "react";
+
 import { useAppSelector } from "@/store/hooks";
 import { Project } from "@/types";
 
@@ -41,8 +42,8 @@ export default function ProjectOverview({ projectId }: Props) {
             <Avatar name={project.name} radius="md" />
             <h1 className="text-3xl font-bold">{project.name}</h1>
             <Chip
-              size="sm"
               color={project.visibility === "private" ? "secondary" : "success"}
+              size="sm"
             >
               {project.visibility.charAt(0).toUpperCase() +
                 project.visibility.slice(1)}
@@ -53,10 +54,10 @@ export default function ProjectOverview({ projectId }: Props) {
         <div className="flex items-center gap-3">
           <Button
             isIconOnly
+            aria-label="Like project"
             size="sm"
             variant="light"
             onPress={() => setLiked(!liked)}
-            aria-label="Like project"
           >
             {liked ? (
               <HiHeart className="text-danger w-5 h-5" />
@@ -64,7 +65,7 @@ export default function ProjectOverview({ projectId }: Props) {
               <HiOutlineHeart className="text-gray-500 w-5 h-5" />
             )}
           </Button>
-          <Button variant="solid" color="primary" startContent={<HiEye />}>
+          <Button color="primary" startContent={<HiEye />} variant="solid">
             View Live
           </Button>
         </div>
@@ -86,7 +87,7 @@ export default function ProjectOverview({ projectId }: Props) {
             <div className="space-y-1 text-sm">
               <p>
                 <strong>Wiki:</strong>{" "}
-                <a href="#" className="text-primary underline">
+                <a className="text-primary underline" href="#">
                   Home
                 </a>
               </p>
@@ -142,15 +143,15 @@ export default function ProjectOverview({ projectId }: Props) {
               <div className="flex justify-between text-sm">
                 <span>Builds succeeded</span>
                 <Progress
-                  value={100}
-                  size="sm"
-                  color="success"
                   className="w-32"
+                  color="success"
+                  size="sm"
+                  value={100}
                 />
               </div>
               <div className="flex justify-between text-sm">
                 <span>Deployments succeeded</span>
-                <Progress value={0} size="sm" color="danger" className="w-32" />
+                <Progress className="w-32" color="danger" size="sm" value={0} />
               </div>
             </div>
           </CardBody>
@@ -166,12 +167,12 @@ export default function ProjectOverview({ projectId }: Props) {
               {Array.from({ length: 12 }).map((_, idx) => (
                 <Avatar
                   key={idx}
-                  size="sm"
-                  name={`User ${idx + 1}`}
                   className="border"
+                  name={`User ${idx + 1}`}
+                  size="sm"
                 />
               ))}
-              <Chip size="sm" color="default" variant="flat">
+              <Chip color="default" size="sm" variant="flat">
                 +8 more
               </Chip>
             </div>

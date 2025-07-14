@@ -8,9 +8,9 @@ export default function ConditionsOfUse() {
 
   return (
     <motion.div
+      animate={{ opacity: 1, y: 0 }}
       className="max-w-4xl mx-auto px-4 py-10 text-sm sm:text-base leading-relaxed text-foreground"
       initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
       <h1 className="text-3xl font-bold mb-6">{t("title")}</h1>

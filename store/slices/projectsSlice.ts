@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+
 import { fetchWithAuth } from "@/utils/api";
 import { Project } from "@/types";
 
@@ -20,11 +21,12 @@ export const fetchProjects = createAsyncThunk<Project[]>(
   async (_, { rejectWithValue }) => {
     try {
       const res = await fetchWithAuth("/projects");
+
       return res.projects;
     } catch (err: any) {
       return rejectWithValue(err.message || "Failed to fetch projects");
     }
-  }
+  },
 );
 
 // ➕ POST /projects
@@ -36,11 +38,12 @@ export const createProject = createAsyncThunk<Project, Partial<Project>>(
         method: "POST",
         body: JSON.stringify(payload),
       });
+
       return res.project;
     } catch (err: any) {
       return rejectWithValue(err.message || "Failed to create project");
     }
-  }
+  },
 );
 
 // ✏️ PATCH /projects/:id
@@ -53,6 +56,7 @@ export const updateProject = createAsyncThunk<
       method: "PATCH",
       body: JSON.stringify(updates),
     });
+
     return res.project;
   } catch (err: any) {
     return rejectWithValue(err.message || "Failed to update project");
@@ -65,11 +69,12 @@ export const deleteProject = createAsyncThunk<string, string>(
   async (id, { rejectWithValue }) => {
     try {
       await fetchWithAuth(`/projects/${id}`, { method: "DELETE" });
+
       return id;
     } catch (err: any) {
       return rejectWithValue(err.message || "Failed to delete project");
     }
-  }
+  },
 );
 
 const projectsSlice = createSlice({
@@ -88,7 +93,7 @@ const projectsSlice = createSlice({
         (state, action: PayloadAction<Project[]>) => {
           state.items = action.payload;
           state.loading = false;
-        }
+        },
       )
       .addCase(fetchProjects.rejected, (state, action) => {
         state.loading = false;
@@ -100,7 +105,7 @@ const projectsSlice = createSlice({
         createProject.fulfilled,
         (state, action: PayloadAction<Project>) => {
           state.items.unshift(action.payload);
-        }
+        },
       )
 
       // Update
@@ -108,8 +113,9 @@ const projectsSlice = createSlice({
         updateProject.fulfilled,
         (state, action: PayloadAction<Project>) => {
           const idx = state.items.findIndex((p) => p.id === action.payload.id);
+
           if (idx !== -1) state.items[idx] = action.payload;
-        }
+        },
       )
 
       // Delete
@@ -117,7 +123,7 @@ const projectsSlice = createSlice({
         deleteProject.fulfilled,
         (state, action: PayloadAction<string>) => {
           state.items = state.items.filter((p) => p.id !== action.payload);
-        }
+        },
       );
   },
 });

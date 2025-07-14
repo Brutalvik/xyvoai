@@ -1,20 +1,25 @@
-import { canadianAreaCodes } from "@/chunks/areaCodes";
 import { isWeekend } from "date-fns";
 import { CalendarDate } from "@internationalized/date";
+
+import { canadianAreaCodes } from "@/chunks/areaCodes";
 
 export const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/;
 
 export const formatPhoneNumber = (raw?: string): string => {
   const digits = raw?.replace(/\D/g, "") ?? "";
+
   if (digits.length === 11 && digits.startsWith("1")) {
     const parts = digits.slice(1).match(/(\d{3})(\d{3})(\d{4})/);
+
     if (parts) return `+1 (${parts[1]}) ${parts[2]} ${parts[3]}`;
   }
+
   return raw ?? "";
 };
 
 export const getFlagFromPhone = (phone: string): string => {
   const areaCode = phone.replace(/\D/g, "").slice(0, 3);
+
   return canadianAreaCodes.includes(areaCode) ? "🇨🇦" : "🇺🇸";
 };
 
@@ -36,6 +41,7 @@ export const getBgColor = (seed: string, asHex: boolean = false): string => {
   ];
 
   let hash = 0;
+
   for (let i = 0; i < seed.length; i++) {
     hash = seed.charCodeAt(i) + ((hash << 5) - hash);
   }
@@ -56,6 +62,7 @@ export const getBgColor = (seed: string, asHex: boolean = false): string => {
 export const renderWeekendCell = (date: CalendarDate) => {
   const jsDate = new Date(date.year, date.month - 1, date.day);
   const isWeekendDay = isWeekend(jsDate);
+
   return {
     className: isWeekendDay ? "bg-yellow-50 text-yellow-700 font-semibold" : "",
   };
