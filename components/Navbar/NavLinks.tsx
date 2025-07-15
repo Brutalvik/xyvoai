@@ -19,7 +19,7 @@ export function NavLinks() {
         <NavbarItem key={href}>
           <NextLink
             href={href}
-            className="hover:text-[#7c3aed] text-default-700 font-medium hover:text-[#7c3aed] transition-colors focus:outline-none focus:text-[#7c3aed]"
+            className="hover:text-blue-700 text-default-700 font-medium hover:text-blue-700 transition-colors focus:outline-none focus:text-blue-700"
           >
             {label}
           </NextLink>
@@ -44,7 +44,7 @@ export function MobileNavLinks() {
         <NavbarMenuItem key={href}>
           <NextLink
             href={href}
-            className="block py-2 px-4 font-medium focus:outline-none focus:text-[#7c3aed] text-default-700 hover:text-[#7c3aed] transition-colors focus:outline-none focus:text-[#7c3aed]"
+            className="block py-2 px-4 font-medium focus:outline-none focus:text-blue-700 text-default-700 hover:text-blue-700 transition-colors focus:outline-none focus:text-blue-700"
           >
             {label}
           </NextLink>
