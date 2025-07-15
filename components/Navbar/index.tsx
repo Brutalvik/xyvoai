@@ -41,7 +41,7 @@ export default function Navbar() {
         {/* Desktop Left */}
         <NavbarContent className="gap-4 hidden md:flex" justify="start">
           <LogoBrand />
-          <NavLinks />
+          {!loggedIn && <NavLinks />}
         </NavbarContent>
 
         {/* Mobile: Logo + Toggles */}
@@ -108,17 +108,19 @@ export default function Navbar() {
               </Button>
             </div>
           )}
-          <nav className="flex flex-col items-end gap-5 mt-6">
-            <NextLink href="#features" className="text-lg font-semibold">
-              {t("features")}
-            </NextLink>
-            <NextLink href="#pricing" className="text-lg font-semibold">
-              {t("pricing")}
-            </NextLink>
-            <NextLink href="#about" className="text-lg font-semibold">
-              {t("about")}
-            </NextLink>
-          </nav>
+          {!loggedIn && (
+            <nav className="flex flex-col items-end gap-5 mt-6">
+              <NextLink href="#features" className="text-lg font-semibold">
+                {t("features")}
+              </NextLink>
+              <NextLink href="#pricing" className="text-lg font-semibold">
+                {t("pricing")}
+              </NextLink>
+              <NextLink href="#about" className="text-lg font-semibold">
+                {t("about")}
+              </NextLink>
+            </nav>
+          )}
         </NavbarMenu>
       </HeroUINavbar>
 

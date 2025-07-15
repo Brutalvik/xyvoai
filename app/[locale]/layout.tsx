@@ -4,16 +4,16 @@ import { notFound } from "next/navigation";
 import { ToastProvider } from "@heroui/toast";
 import { Providers } from "@/app/providers";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import FooterConditional from "@/components/FooterConditional";
 import "@/styles/globals.css";
-import { fontSans } from "@/config/fonts"; // ✅ your font import
+import { fontSans } from "@/config/fonts";
 import clsx from "clsx";
 import { ReduxProvider } from "@/store/Provider";
-import PageTransitionLoader from "@/components/ui/PageTransitionLoader";
+import { motion } from "framer-motion";
 
 type Props = {
   children: React.ReactNode;
-  modals: React.ReactNode; // ✅ required for modal interception
+  modals: React.ReactNode;
   params: { locale: string };
 };
 
@@ -40,9 +40,14 @@ export default async function LocaleLayout({
               <div className="relative flex flex-col">
                 <Navbar />
                 <main className="flex-grow">{children}</main>
-                <Footer />
+                <FooterConditional />
                 {modals}
               </div>
+              <footer>
+                <div className="w-full text-center text-xs bg-[#0e101a] text-white py-2">
+                  &copy; 2025 Xyvo Inc. All rights reserved.
+                </div>
+              </footer>
             </NextIntlClientProvider>
           </ReduxProvider>
         </Providers>

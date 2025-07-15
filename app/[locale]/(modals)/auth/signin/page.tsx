@@ -10,14 +10,14 @@ export default function SignInInterceptedModal() {
   const [redirecting, setRedirecting] = useState(false);
 
   const handleClose = () => {
-    router.back(); // modal closes on ESC or "X"
+    router.back();
   };
 
   const handleRedirect = () => {
     setRedirecting(true);
     setTimeout(() => {
-      router.push("/overview/boards");
-    }, 600); // loader duration before navigation
+      router.push("/overview");
+    }, 600);
   };
 
   return (
