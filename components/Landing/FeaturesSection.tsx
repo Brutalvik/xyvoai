@@ -10,8 +10,7 @@ export default function FeaturesSection() {
   const cards = [
     {
       icon: "🎤",
-      color: "bg-violet-600",
-      bg: "bg-violet-50",
+      bg: "bg-violet-100",
       title: t("FeaturesSection.aiTitle"),
       desc: t("FeaturesSection.aiDesc"),
       aria: t("FeaturesSection.aiAria"),
@@ -23,7 +22,6 @@ export default function FeaturesSection() {
     },
     {
       icon: "🗂️",
-      color: "bg-green-600",
       bg: "bg-green-50",
       title: t("FeaturesSection.pmTitle"),
       desc: t("FeaturesSection.pmDesc"),
@@ -36,7 +34,6 @@ export default function FeaturesSection() {
     },
     {
       icon: "🔌",
-      color: "bg-orange-500",
       bg: "bg-orange-50",
       title: t("FeaturesSection.integrationsTitle"),
       desc: t("FeaturesSection.integrationsDesc"),
@@ -54,16 +51,16 @@ export default function FeaturesSection() {
       id="features"
       role="region"
       aria-labelledby="features-heading"
-      className="py-20 bg-background"
+      className="py-20 bg-default-50"
     >
       <div className="max-w-6xl mx-auto px-4">
         <h2
           id="features-heading"
-          className="text-3xl md:text-4xl font-bold text-center mb-2 text-foreground"
+          className="text-3xl md:text-4xl font-bold text-center mb-2 text-default-500"
         >
           {t("FeaturesSection.title")}
         </h2>
-        <p className="text-center text-muted mb-12">
+        <p className="text-center text-muted mb-12 text-default-500">
           {t("FeaturesSection.subtitle")}
         </p>
         <div className="grid md:grid-cols-3 gap-8" role="list">
@@ -78,17 +75,17 @@ export default function FeaturesSection() {
               transition={{ duration: 0.5, delay: i * 0.15 }}
             >
               <div
-                className={`${card.color} w-10 h-10 flex items-center justify-center rounded-lg mb-4`}
+                className={`w-10 h-10 flex items-center justify-center rounded-lg mb-4`}
                 aria-hidden="true"
               >
                 <span className="text-default text-2xl">{card.icon}</span>
               </div>
-              <h3 className="font-bold text-lg mb-1 text-foreground">
+              <h3 className="font-bold text-lg mb-1 text-default-500">
                 {card.title}
               </h3>
-              <p className="text-default text-sm mb-3">{card.desc}</p>
+              <p className="text-default-500 text-sm mb-3">{card.desc}</p>
               <ul
-                className="text-sm text-default space-y-1"
+                className="text-sm text-default-500 space-y-1"
                 aria-label={card.aria}
               >
                 {card.items.map((text, j) => (
