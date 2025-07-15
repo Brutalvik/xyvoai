@@ -129,9 +129,19 @@
   },
 
   "footer": {
-    "plain": " 2025 Xyvo — Tous droits réservés.",
-    "privacy": "Politique de confidentialité",
-    "conditions": "Conditions d'utilisation"
+    "tagline": "Système de gestion de projet alimenté par l’IA pour les équipes modernes.",
+    "product": {
+      "title": "Produit",
+      "features": "Fonctionnalités",
+      "pricing": "Tarification",
+      "integrations": "Intégrations",
+      "api": "API"
+    },
+    "legal": {
+      "title": "Entreprise",
+      "privacy": "Politique de confidentialité",
+      "conditions": "Conditions générales"
+    }
   },
   "Header": {
     "kanbanViewTooltip": "Vue Kanban",
@@ -541,8 +551,29 @@
     "team": "Équipe",
     "project": "Projet",
     "getUser": "Voir l’utilisateur"
-  }
-  ,
+  },
+  "FeaturesSection": {
+    "title": "Conçu pour la rapidité et l'intelligence",
+    "subtitle": "Xyvo combine l'élégance de Motion avec la puissance d'Azure Boards, enrichi par une intégration IA avancée",
+    "aiTitle": "Expérience 100% IA",
+    "aiDesc": "GPT-4o et UX Pilot AI génèrent des plans de sprint, rédigent les critères d'acceptation et prédisent les retards en langage naturel.",
+    "aiAria": "Fonctionnalités IA",
+    "aiVoice": "Saisie vocale avec Whisper",
+    "aiSummaries": "Résumés automatiques",
+    "aiPrioritization": "Priorisation intelligente des tâches",
+    "pmTitle": "Gestion de projet complète",
+    "pmDesc": "Gérez projets, sprints, tâches et équipes avec suivi de vélocité et graphiques d'avancement.",
+    "pmAria": "Fonctionnalités gestion projet",
+    "pmKanban": "Tableaux Kanban glisser-déposer",
+    "pmStory": "Points d'histoire & évaluation des risques",
+    "pmTimeline": "Visualisation chronologique",
+    "integrationsTitle": "Intégrations transparentes",
+    "integrationsDesc": "Synchronisez les tâches depuis Slack, Discord, GitHub ou la voix avec des workflows personnalisés.",
+    "integrationsAria": "Fonctionnalités d'intégration",
+    "integrationsSync": "Synchronisation multi-plateforme",
+    "integrationsWorkflows": "Workflows personnalisés",
+    "integrationsPermissions": "Permissions d'équipe"
+  },
   "ViewsSection": {
     "noTasks": "Aucune tâche pour l’instant",
     "backlog": "Backlog",
@@ -583,11 +614,36 @@
     "onLeave": "En congé",
     "day": "Jour",
     "ganttDemo": "Démo diagramme de Gantt",
+    "calendarDemo": "Démo calendrier",
     "timelineDemo": "Démo chronologie",
     "setup": "Configuration",
     "auth": "Authentification",
     "api": "API",
     "ui": "IU",
     "review": "Revue"
+  },
+  "AIThinkingPartnerSection": {
+    "title": "Votre partenaire de réflexion IA",
+    "description": "L'intégration IA de Xyvo va au-delà de l'automatisation – elle devient votre partenaire stratégique pour de meilleurs résultats projets.",
+    "benefitsAria": "Liste des avantages de l'IA",
+    "voiceTitle": "Création de tâches par la voix",
+    "voiceDesc": "Exprimez vos idées et voyez-les devenir des tâches structurées avec estimation et échéance.",
+    "analyticsTitle": "Analytique prédictive",
+    "analyticsDesc": "L'IA prédit les retards, suggère des priorités et répond à 'Que dois-je faire ensuite ?' en langage naturel.",
+    "automationTitle": "Automatisation intelligente",
+    "automationDesc": "Générez automatiquement des plans de sprint, rédigez des critères d'acceptation et étiquetez les tâches intelligemment.",
+    "chat1": "Que dois-je faire ensuite ?",
+    "chat2": "En fonction de vos objectifs de sprint et de la vélocité de l'équipe, je recommande de vous concentrer sur la tâche Authentification Utilisateur (5 points). Elle bloque 2 autres tâches et correspond à la priorité actuelle du sprint.",
+    "chat3": "Créer une tâche pour l'optimisation mobile",
+    "chat4": "✓ Tâche 'Optimisation mobile' créée avec 8 points, assignée à l'équipe Frontend, à rendre pour vendredi prochain. Critères d'acceptation ajoutés et liée au sprint en cours."
+  },
+  "CTASection": {
+    "title": "Prêt à transformer votre gestion de projet ?",
+    "subtitle": "Rejoignez des milliers d’équipes qui utilisent Xyvo pour aller plus vite avec moins de stress.",
+    "cta": "",
+    "freeTrial": "Commencer l’essai gratuit",
+    "bookDemo": "Réserver une démo",
+    "trialDetails": "Aucune carte de crédit requise • Essai gratuit de 14 jours • Configuration en 2 minutes",
+    "ariaSubheading": "Zone de description de l'appel à l'action"
   }
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import LandingHeroSection from "@/components/LandingPage";
+import LandingHero from "@/components/Landing/LandingHero";
 import FeaturesSection from "@/components/Landing/FeaturesSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import ViewsSection from "@/components/Landing/ViewsSection";
@@ -13,7 +13,7 @@ export default function LandingPage() {
       aria-label="Landing Page Content"
       className="min-h-screen flex flex-col"
     >
-      <LandingHeroSection />
+      <LandingHero />
       <FeaturesSection />
       <HowItWorksSection />
       <ViewsSection />

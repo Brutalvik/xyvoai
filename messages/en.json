@@ -124,9 +124,19 @@
   },
 
   "footer": {
-    "plain": " 2025 Xyvo — All rights reserved.",
-    "privacy": "Privacy Policy",
-    "conditions": "Conditions of Use"
+    "tagline": "AI-powered project operating system for modern teams.",
+    "product": {
+      "title": "Product",
+      "features": "Features",
+      "pricing": "Pricing",
+      "integrations": "Integrations",
+      "api": "API"
+    },
+    "legal": {
+      "title": "Company",
+      "privacy": "Privacy Policy",
+      "conditions": "Terms & Conditions"
+    }
   },
   "Header": {
     "kanbanViewTooltip": "Kanban View",
@@ -549,8 +559,29 @@
     "team": "Team",
     "project": "Project",
     "getUser": "Get User"
-  }
-  ,
+  },
+  "FeaturesSection": {
+    "title": "Built for Speed & Intelligence",
+    "subtitle": "Xyvo combines the elegance of Motion with the power of Azure Boards, enhanced by deep AI integration",
+    "aiTitle": "AI-Native Experience",
+    "aiDesc": "GPT-4o and UX Pilot AI generate sprint plans, write acceptance criteria, and predict delays in natural language.",
+    "aiAria": "AI Features",
+    "aiVoice": "Voice input with Whisper",
+    "aiSummaries": "Auto-generated summaries",
+    "aiPrioritization": "Smart task prioritization",
+    "pmTitle": "Complete Project Management",
+    "pmDesc": "Manage Projects, Sprints, Tasks, and Teams with velocity tracking and burn-down charts.",
+    "pmAria": "PM Features",
+    "pmKanban": "Drag-and-drop Kanban boards",
+    "pmStory": "Story points & risk assessment",
+    "pmTimeline": "Timeline visualization",
+    "integrationsTitle": "Seamless Integrations",
+    "integrationsDesc": "Sync tasks from Slack, Discord, GitHub, or voice input with customizable workflows.",
+    "integrationsAria": "Integration Features",
+    "integrationsSync": "Multi-platform sync",
+    "integrationsWorkflows": "Custom workflows",
+    "integrationsPermissions": "Team permissions"
+  },
   "ViewsSection": {
     "noTasks": "No tasks yet",
     "backlog": "Backlog",
@@ -597,5 +628,29 @@
     "api": "API",
     "ui": "UI",
     "review": "Review"
+  },
+  "AIThinkingPartnerSection": {
+    "title": "Your AI Thinking Partner",
+    "description": "Xyvo's AI integration goes beyond automation – it becomes your strategic thinking partner for better project outcomes.",
+    "benefitsAria": "AI Benefits List",
+    "voiceTitle": "Voice-to-Task Creation",
+    "voiceDesc": "Speak your thoughts and watch them become structured backlog items with effort estimates and deadlines.",
+    "analyticsTitle": "Predictive Analytics",
+    "analyticsDesc": "AI predicts delays, suggests priorities, and answers 'What should I work on next?' in natural language.",
+    "automationTitle": "Smart Automation",
+    "automationDesc": "Auto-generate sprint plans, write acceptance criteria, and tag tasks intelligently.",
+    "chat1": "What should I work on next?",
+    "chat2": "Based on your sprint goals and team velocity, I recommend focusing on the User Authentication task (5 points). It's blocking 2 other tasks and aligns with your current sprint priority.",
+    "chat3": "Create a task for mobile optimization",
+    "chat4": "✓ Created task 'Mobile Optimization' with 8 story points, assigned to Frontend team, due next Friday. Added acceptance criteria and linked to current sprint."
+  },
+  "CTASection": {
+    "title": "Ready to Transform Your Project Management?",
+    "subtitle": "Join thousands of teams using Xyvo to move faster with less stress.",
+    "cta": "",
+    "freeTrial": "Start Free Trial",
+    "bookDemo": "Book a Demo",
+    "trialDetails": "No credit card required • 14-day free trial • Setup in 2 minutes",
+    "ariaSubheading": "CTA description area"
   }
 }

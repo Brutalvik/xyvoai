@@ -10,8 +10,6 @@ export default function LandingHeroSection() {
 
   return (
     <section className="relative min-h-[600px] flex flex-col bg-gradient-to-br from-[#18192b] via-[#23243a] to-[#312e81]">
-
-
       {/* Hero Content */}
       <div className="flex flex-col-reverse md:flex-row items-center justify-between flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-12 sm:py-16 gap-6 sm:gap-8 z-0">
         {/* Text Content */}

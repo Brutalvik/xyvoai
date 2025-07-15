@@ -1,23 +1,32 @@
 "use client";
+
 import React from "react";
+import { useTranslations } from "next-intl";
 
 export default function CTASection() {
+  const t = useTranslations();
+
   return (
     <section
       role="region"
       aria-labelledby="cta-heading"
-      className="bg-gradient-to-br from-[#7c3aed] via-[#6366f1] to-[#a5b4fc] py-20 text-center"
+      className="bg-gradient-to-b from-[#0f0c29] via-[#302b63] to-[#24243e] py-20 text-center"
     >
       <h2
         id="cta-heading"
         className="text-3xl md:text-4xl font-bold text-white mb-4"
       >
-        Ready to Transform Your Project Management?
+        {t("CTASection.title")}
       </h2>
-      <p className="text-lg text-white mb-8" aria-label="CTA Subheading">
-        Join thousands of teams using Xyvo to move faster with less stress.
-        Start your free trial today.
+
+      <p
+        className="text-lg text-white mb-8"
+        aria-label={t("CTASection.ariaSubheading")}
+      >
+        {t("CTASection.subtitle")}
+        {t("CTASection.cta")}
       </p>
+
       <div
         className="flex justify-center gap-4 mb-4"
         role="group"
@@ -26,20 +35,21 @@ export default function CTASection() {
         <button
           type="button"
           className="bg-white text-violet-700 font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100 transition"
-          aria-label="Start Free Trial"
+          aria-label={t("CTASection.freeTrial")}
         >
-          Start Free Trial
+          {t("CTASection.freeTrial")}
         </button>
         <button
           type="button"
           className="bg-white/20 text-white font-semibold px-6 py-3 rounded-lg border border-white hover:bg-white/30 transition"
-          aria-label="Book a Demo"
+          aria-label={t("CTASection.bookDemo")}
         >
-          Book a Demo
+          {t("CTASection.bookDemo")}
         </button>
       </div>
+
       <div className="text-xs text-white/80" aria-label="Trial Details">
-        No credit card required • 14-day free trial • Setup in 2 minutes
+        {t("CTASection.trialDetails")}
       </div>
     </section>
   );

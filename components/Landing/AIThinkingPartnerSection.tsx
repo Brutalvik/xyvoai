@@ -1,7 +1,9 @@
 "use client";
 import React from "react";
+import { useTranslations } from "next-intl";
 
 export default function AIThinkingPartnerSection() {
+  const t = useTranslations();
   return (
     <section
       role="region"
@@ -14,13 +16,12 @@ export default function AIThinkingPartnerSection() {
             id="ai-partner-heading"
             className="text-3xl md:text-4xl font-bold mb-4"
           >
-            Your AI Thinking Partner
+            {t("AIThinkingPartnerSection.title")}
           </h2>
           <p className="text-gray-700 mb-8">
-            Xyvo's AI integration goes beyond automation – it becomes your
-            strategic thinking partner for better project outcomes.
+            {t("AIThinkingPartnerSection.description")}
           </p>
-          <ul className="space-y-6" aria-label="AI Benefits List">
+          <ul className="space-y-6" aria-label={t("AIThinkingPartnerSection.benefitsAria")}>
             <li className="flex items-start gap-4">
               <span
                 role="img"
@@ -30,10 +31,9 @@ export default function AIThinkingPartnerSection() {
                 🎤
               </span>
               <div>
-                <div className="font-semibold">Voice-to-Task Creation</div>
+                <div className="font-semibold">{t("AIThinkingPartnerSection.voiceTitle")}</div>
                 <p className="text-gray-600 text-sm">
-                  Speak your thoughts and watch them become structured backlog
-                  items with effort estimates and deadlines.
+                  {t("AIThinkingPartnerSection.voiceDesc")}
                 </p>
               </div>
             </li>
@@ -46,10 +46,9 @@ export default function AIThinkingPartnerSection() {
                 📊
               </span>
               <div>
-                <div className="font-semibold">Predictive Analytics</div>
+                <div className="font-semibold">{t("AIThinkingPartnerSection.analyticsTitle")}</div>
                 <p className="text-gray-600 text-sm">
-                  AI predicts delays, suggests priorities, and answers "What
-                  should I work on next?" in natural language.
+                  {t("AIThinkingPartnerSection.analyticsDesc")}
                 </p>
               </div>
             </li>
@@ -62,10 +61,9 @@ export default function AIThinkingPartnerSection() {
                 🤖
               </span>
               <div>
-                <div className="font-semibold">Smart Automation</div>
+                <div className="font-semibold">{t("AIThinkingPartnerSection.automationTitle")}</div>
                 <p className="text-gray-600 text-sm">
-                  Auto-generate sprint plans, write acceptance criteria, and tag
-                  tasks intelligently.
+                  {t("AIThinkingPartnerSection.automationDesc")}
                 </p>
               </div>
             </li>
@@ -88,20 +86,16 @@ export default function AIThinkingPartnerSection() {
               <span className="font-semibold text-gray-800">AI Assistant</span>
             </div>
             <div className="bg-white rounded p-3 mb-3 text-gray-700 text-sm">
-              "What should I work on next?"
+              {t("AIThinkingPartnerSection.chat1")}
             </div>
             <div className="bg-violet-100 rounded p-3 mb-3 text-gray-700 text-sm">
-              Based on your sprint goals and team velocity, I recommend focusing
-              on the User Authentication task (5 points). It's blocking 2 other
-              tasks and aligns with your current sprint priority.
+              {t("AIThinkingPartnerSection.chat2")}
             </div>
             <div className="bg-white rounded p-3 mb-3 text-gray-700 text-sm">
-              "Create a task for mobile optimization"
+              {t("AIThinkingPartnerSection.chat3")}
             </div>
             <div className="bg-violet-200 rounded p-3 text-violet-800 text-sm">
-              ✓ Created task "Mobile Optimization" with 8 story points, assigned
-              to Frontend team, due next Friday. Added acceptance criteria and
-              linked to current sprint.
+              {t("AIThinkingPartnerSection.chat4")}
             </div>
           </div>
         </div>
