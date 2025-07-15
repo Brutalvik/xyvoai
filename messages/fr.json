@@ -20,6 +20,10 @@
     "cta": "Essayez maintenant →"
   },
   "Navbar": {
+    "mainNavAria": "Navigation principale",
+    "languageToggle": "Changer la langue",
+    "themeToggle": "Changer le thème",
+    "sectionNav": "Liens de navigation",
     "features": "Fonctionnalités",
     "pricing": "Tarifs",
     "about": "À propos",

@@ -51,19 +51,29 @@ export default function Navbar() {
           justify="center"
         >
           <LogoBrand />
-          <div className="flex items-center gap-2 ml-auto">
-            <LanguageSwitch />
-            <ThemeSwitch />
+          <div className="flex items-center ml-auto space-x-3 sm:space-x-4">
+            <LanguageSwitch
+              aria-label={t("languageToggle", { default: "Toggle Language" })}
+            />
+            <ThemeSwitch
+              aria-label={t("themeToggle", { default: "Toggle Theme" })}
+            />
             <NavbarMenuToggle
-              aria-label={t("menuToggleAria", { default: "Toggle menu" })}
+              aria-label={t("menuToggleAria", {
+                default: "Toggle navigation menu",
+              })}
             />
           </div>
         </NavbarContent>
 
         {/* Desktop Right: Controls */}
         <NavbarContent className="gap-4 hidden md:flex" justify="end">
-          <LanguageSwitch />
-          <ThemeSwitch />
+          <LanguageSwitch
+            aria-label={t("languageToggle", { default: "Toggle Language" })}
+          />
+          <ThemeSwitch
+            aria-label={t("themeToggle", { default: "Toggle Theme" })}
+          />
           <AuthControls onAvatarClick={onOpen} />
         </NavbarContent>
 
@@ -107,18 +117,21 @@ export default function Navbar() {
             <NextLink
               href="#features"
               className="text-lg font-semibold hover:text-[#7c3aed] focus:outline-none"
+              aria-label={t("features")}
             >
               {t("features", { default: "Features" })}
             </NextLink>
             <NextLink
               href="#pricing"
               className="text-lg font-semibold hover:text-[#7c3aed] focus:outline-none"
+              aria-label={t("pricing")}
             >
               {t("pricing", { default: "Pricing" })}
             </NextLink>
             <NextLink
               href="#about"
               className="text-lg font-semibold hover:text-[#7c3aed] focus:outline-none"
+              aria-label={t("about")}
             >
               {t("about", { default: "About Us" })}
             </NextLink>
@@ -126,7 +139,7 @@ export default function Navbar() {
         </NavbarMenu>
       </HeroUINavbar>
 
-      {/* Profile drawer */}
+      {/* Drawer */}
       <UserDrawer isOpen={isOpen} onOpenChange={onOpenChange} />
     </>
   );
