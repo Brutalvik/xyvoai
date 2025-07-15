@@ -6,7 +6,7 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
 } from "@heroui/navbar";
-import { useDisclosure } from "@heroui/react";
+import { Button, useDisclosure } from "@heroui/react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import NextLink from "next/link";
@@ -37,7 +37,7 @@ export default function Navbar() {
         position="sticky"
         role="navigation"
         aria-label={t("mainNavAria", { default: "Main Navigation" })}
-        className="py-2 px-4 sm:px-8 bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-lg backdrop-blur sticky top-0 z-50 mb-8 overflow-x-clip"
+        className="py-2 px-4 sm:px-8 bg-white/80 rounded-2xl shadow-lg backdrop-blur sticky top-0 z-50 mb-8 overflow-x-clip"
       >
         {/* Desktop Left: Logo + Nav Links */}
         <NavbarContent className="gap-4 hidden md:flex" justify="start">
@@ -79,7 +79,7 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         <NavbarMenu
-          className="!p-6 space-y-6 bg-white/80 dark:bg-gray-900/80 text-gray-900 dark:text-white backdrop-blur-md border-none shadow-lg"
+          className="!p-6 space-y-6 bg-default-50/80 text-default-500 backdrop-blur-md border-none shadow-lg"
           aria-label={t("menuAria", { default: "Mobile Navigation Menu" })}
         >
           {/* Auth buttons first with spacing */}
@@ -87,22 +87,25 @@ export default function Navbar() {
             <div className="flex flex-col items-end gap-3 w-full mt-4">
               {!isSignUpPage && (
                 <NextLink href={`/${locale}/auth/signup`} className="w-[90%]">
-                  <button
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white text-base font-semibold py-2.5 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    aria-label={t("signUp")}
+                  <Button
+                    variant="solid"
+                    color="primary"
+                    className="w-full"
+                    aria-label={t("signUp", { default: "Sign Up" })}
                   >
                     {t("signUp")}
-                  </button>
+                  </Button>
                 </NextLink>
               )}
               {!isSignInPage && (
                 <NextLink href={`/${locale}/auth/signin`} className="w-[90%]">
-                  <button
-                    className="w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-base font-semibold text-gray-800 dark:text-white py-2.5 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  <Button
+                    variant="ghost"
+                    className="w-full"
                     aria-label={t("signIn")}
                   >
                     {t("signIn")}
-                  </button>
+                  </Button>
                 </NextLink>
               )}
             </div>
