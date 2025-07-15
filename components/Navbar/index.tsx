@@ -8,7 +8,7 @@ import {
 } from "@heroui/navbar";
 import { Button, useDisclosure } from "@heroui/react";
 import { useLocale, useTranslations } from "next-intl";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import NextLink from "next/link";
 import { useAppSelector } from "@/store/hooks";
 import { isLoggedIn } from "@/store/selectors";
@@ -23,7 +23,6 @@ import { ThemeSwitch } from "@/components/theme-switch";
 export default function Navbar() {
   const t = useTranslations("Navbar");
   const locale = useLocale();
-  const pathname = usePathname();
   const router = useRouter();
   const loggedIn = useAppSelector(isLoggedIn);
 
@@ -41,7 +40,7 @@ export default function Navbar() {
         {/* Desktop Left */}
         <NavbarContent className="gap-4 hidden md:flex" justify="start">
           <LogoBrand />
-          {!loggedIn && <NavLinks />}
+          <NavLinks />
         </NavbarContent>
 
         {/* Mobile: Logo + Toggles */}

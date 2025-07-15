@@ -117,6 +117,14 @@ export default function Footer() {
           </ul>
         </motion.div>
       </div>
+
+      <motion.div
+        {...fadeInUp}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="w-full text-center text-xs text-white-500 mt-4"
+      >
+        &copy; 2025 Xyvo Inc. All rights reserved.
+      </motion.div>
     </motion.footer>
   );
 }
