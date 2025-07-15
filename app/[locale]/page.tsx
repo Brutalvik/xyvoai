@@ -1,13 +1,5 @@
-import AutomationStepsSection from "@/components/AutomationStepsSection";
-import HeroSection from "@/components/HeroSection";
-import HowItWorksSection from "@/components/HowItWorksSection";
+import LandingPage from "./LandingPage";
 
 export default function Home() {
-  return (
-    <>
-      <HeroSection />
-      <HowItWorksSection />
-      <AutomationStepsSection />
-    </>
-  );
+  return <LandingPage />;
 }

@@ -20,15 +20,22 @@
     "cta": "Essayez maintenant →"
   },
   "Navbar": {
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "about": "À propos",
+    "brand": "Xyvo",
     "menu": "Menu",
-    "signIn": "Connexion",
-    "signUp": "Inscription",
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
     "welcome": "Bienvenue",
     "individual": "Individuel",
     "profile": "Profil",
     "signOut": "Déconnexion",
     "signedOutTitle": "Déconnecté",
-    "signedOutDescription": "Vous avez été déconnecté avec succès."
+    "signedOutDescription": "Vous avez été déconnecté avec succès.",
+    "logoAria": "Logo Xyvo",
+    "menuToggleAria": "Ouvrir le menu",
+    "menuAria": "Menu principal"
   },
   "Settings": {
     "settings": "Paramètres",
@@ -57,8 +64,8 @@
     "activityComingSoon": "Résumé d'activité à venir...",
     "notLoggedIn": "Vous n'êtes pas connecté.",
     "menu": "Menu",
-    "signIn": "Connexion",
-    "signUp": "Inscription",
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
     "signOut": "Déconnexion",
     "welcome": "Bienvenue",
     "email": "Courriel",
@@ -118,7 +125,7 @@
   },
 
   "footer": {
-    "plain": "© 2025 Xyvo — Tous droits réservés.",
+    "plain": " 2025 Xyvo — Tous droits réservés.",
     "privacy": "Politique de confidentialité",
     "conditions": "Conditions d'utilisation"
   },
