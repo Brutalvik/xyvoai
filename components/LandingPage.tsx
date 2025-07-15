@@ -317,12 +317,6 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <LandingHeroSection />
-      <FeaturesSection />
-      <HowItWorksSection />
-      <ViewsSection />
-      <AIThinkingPartnerSection />
-      <CTASection />
-      <Footer />
     </div>
   );
 }
