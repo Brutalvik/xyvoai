@@ -8,7 +8,7 @@ export default function AIThinkingPartnerSection() {
     <section
       role="region"
       aria-labelledby="ai-partner-heading"
-      className="py-20 bg-white"
+      className="py-20 bg-default-50"
     >
       <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row gap-12 items-center">
         <div className="flex-1">
@@ -21,7 +21,10 @@ export default function AIThinkingPartnerSection() {
           <p className="text-gray-700 mb-8">
             {t("AIThinkingPartnerSection.description")}
           </p>
-          <ul className="space-y-6" aria-label={t("AIThinkingPartnerSection.benefitsAria")}>
+          <ul
+            className="space-y-6"
+            aria-label={t("AIThinkingPartnerSection.benefitsAria")}
+          >
             <li className="flex items-start gap-4">
               <span
                 role="img"
@@ -31,7 +34,9 @@ export default function AIThinkingPartnerSection() {
                 🎤
               </span>
               <div>
-                <div className="font-semibold">{t("AIThinkingPartnerSection.voiceTitle")}</div>
+                <div className="font-semibold">
+                  {t("AIThinkingPartnerSection.voiceTitle")}
+                </div>
                 <p className="text-gray-600 text-sm">
                   {t("AIThinkingPartnerSection.voiceDesc")}
                 </p>
@@ -46,7 +51,9 @@ export default function AIThinkingPartnerSection() {
                 📊
               </span>
               <div>
-                <div className="font-semibold">{t("AIThinkingPartnerSection.analyticsTitle")}</div>
+                <div className="font-semibold">
+                  {t("AIThinkingPartnerSection.analyticsTitle")}
+                </div>
                 <p className="text-gray-600 text-sm">
                   {t("AIThinkingPartnerSection.analyticsDesc")}
                 </p>
@@ -61,7 +68,9 @@ export default function AIThinkingPartnerSection() {
                 🤖
               </span>
               <div>
-                <div className="font-semibold">{t("AIThinkingPartnerSection.automationTitle")}</div>
+                <div className="font-semibold">
+                  {t("AIThinkingPartnerSection.automationTitle")}
+                </div>
                 <p className="text-gray-600 text-sm">
                   {t("AIThinkingPartnerSection.automationDesc")}
                 </p>

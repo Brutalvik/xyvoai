@@ -25,12 +25,12 @@ export default function Footer() {
             <div className="w-6 h-6 flex mr-">
               <Logo />
             </div>
-            <span className="text-default font-semibold text-base">yvo</span>
+            <span className="text-white font-semibold text-base">yvo</span>
           </div>
-          <p className="text-default-500 text-sm leading-relaxed">
+          <p className="text-white-500 text-sm leading-relaxed">
             {t("tagline")}
           </p>
-          <div className="flex gap-4 mt-4 text-xl text-default-500">
+          <div className="flex gap-4 mt-4 text-xl text-white-500">
             <a
               href="https://github.com"
               aria-label="GitHub"
@@ -63,7 +63,7 @@ export default function Footer() {
 
         {/* Product */}
         <div>
-          <h3 className="text-default-500 font-semibold mb-2">
+          <h3 className="text-white-500 font-semibold mb-2">
             {t("product.title")}
           </h3>
           <ul className="space-y-1">
@@ -104,14 +104,14 @@ export default function Footer() {
 
         {/* Legal */}
         <div>
-          <h3 className="text-default-500 font-semibold mb-2">
+          <h3 className="text-white-500 font-semibold mb-2">
             {t("legal.title")}
           </h3>
           <ul className="space-y-1">
             <li>
               <Link
                 href={`/${locale}/legal/privacy`}
-                className="hover:text-default-500 transition-colors"
+                className="hover:text-white transition-colors"
               >
                 {t("legal.privacy")}
               </Link>
@@ -119,13 +119,16 @@ export default function Footer() {
             <li>
               <Link
                 href={`/${locale}/legal/conditions`}
-                className="hover:text-default-500 transition-colors"
+                className="hover:text-white transition-colors"
               >
                 {t("legal.conditions")}
               </Link>
             </li>
           </ul>
         </div>
+      </div>
+      <div className="w-full text-center text-xs text-white-500 mt-4">
+        &copy; 2025 Xyvo Inc. All rights reserved.
       </div>
     </motion.footer>
   );

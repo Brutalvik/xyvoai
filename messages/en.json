@@ -627,7 +627,8 @@
     "auth": "Auth",
     "api": "API",
     "ui": "UI",
-    "review": "Review"
+    "review": "Review",
+    "calendarDemo": "Calendar Demo"
   },
   "AIThinkingPartnerSection": {
     "title": "Your AI Thinking Partner",
