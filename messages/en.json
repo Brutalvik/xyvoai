@@ -43,11 +43,15 @@
     "remember": "Remember me",
     "forgot": "Forgot password?",
     "signin": "Sign In",
+    "signup": "Sign up",
+    "noAccount": "Don't have an account?",
     "continueWith": "Or continue with",
     "google": "Continue with Google",
     "microsoft": "Continue with Microsoft",
-    "noAccount": "Don't have an account?",
-    "signup": "Sign up",
+    "successTitle": "Welcome back!",
+    "successMessage": "You’ve signed in successfully.",
+    "errorTitle": "Sign-in failed",
+    "errorMessage": "Invalid email or password.",
     "quote": "AI-powered clarity for powerful teams."
   },
   "SigninValidation": {

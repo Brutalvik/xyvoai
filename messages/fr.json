@@ -43,18 +43,22 @@
   },
   "Signin": {
     "title": "Connexion",
-    "subtitle": "Continuez vers votre compte XYVO",
+    "subtitle": "Accédez à votre compte XYVO",
     "email": "Adresse e-mail",
     "password": "Mot de passe",
     "remember": "Se souvenir de moi",
     "forgot": "Mot de passe oublié ?",
-    "signin": "Se connecter",
+    "signin": "Connexion",
+    "signup": "S'inscrire",
+    "noAccount": "Pas encore de compte ?",
     "continueWith": "Ou continuer avec",
     "google": "Continuer avec Google",
     "microsoft": "Continuer avec Microsoft",
-    "noAccount": "Pas de compte ?",
-    "signup": "S'inscrire",
-    "quote": "Clarté par l’IA pour des équipes puissantes."
+    "successTitle": "Bienvenue !",
+    "successMessage": "Vous êtes connecté avec succès.",
+    "errorTitle": "Échec de la connexion",
+    "errorMessage": "Email ou mot de passe invalide.",
+    "quote": "Une clarté propulsée par l'IA pour les équipes puissantes."
   },
   "SigninValidation": {
     "invalidEmail": "Entrez une adresse e-mail valide",

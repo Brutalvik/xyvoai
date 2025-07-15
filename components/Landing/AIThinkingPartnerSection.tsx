@@ -34,17 +34,17 @@ export default function AIThinkingPartnerSection() {
               >
                 🤖
               </span>
-              <span className="font-semibold text-default-50">
+              <span className="font-semibold text-default-400">
                 AI Assistant
               </span>
             </div>
-            <div className="bg-white rounded-xl p-3 mb-3 text-default-50 text-sm">
+            <div className="bg-white rounded-xl p-3 mb-3 text-gray-700 text-sm">
               {t("AIThinkingPartnerSection.chat1")}
             </div>
             <div className="bg-violet-100 rounded-xl p-3 mb-3 text-violet-800 text-sm">
               {t("AIThinkingPartnerSection.chat2")}
             </div>
-            <div className="bg-white rounded-xl p-3 mb-3 text-default-50 text-sm">
+            <div className="bg-white rounded-xl p-3 mb-3 text-gray-700 text-sm">
               {t("AIThinkingPartnerSection.chat3")}
             </div>
             <div className="bg-violet-200 rounded-xl p-3 text-violet-800 text-sm">
