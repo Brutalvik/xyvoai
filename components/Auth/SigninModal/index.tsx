@@ -3,7 +3,6 @@
 import {
   Modal,
   ModalContent,
-  ModalHeader,
   ModalBody,
   ModalFooter,
   Button,
@@ -18,13 +17,13 @@ import { useTranslations } from "next-intl";
 import { useAppDispatch } from "@/store/hooks";
 import { signInThunk } from "@/store/auth/thunks";
 import { setUser } from "@/store/slices/userSlice";
-import { passwordRules } from "@/utils";
 import { PasswordInput } from "@/components/ui/Auth/PasswordInput";
 import { Logo } from "@/components/icons";
 import { HiBan, HiBadgeCheck } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
 import { FaMicrosoft } from "react-icons/fa6";
 import { addToast } from "@heroui/react";
+import { Mail } from "lucide-react";
 
 type Props = {
   isOpen: boolean;
@@ -121,6 +120,13 @@ export default function SigninModal({
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 required
+                endContent={
+                  <Mail
+                    size={20}
+                    className="text-gray-400 pointer-events-none mr-2"
+                    aria-label={t("email")}
+                  />
+                }
               />
               <PasswordInput
                 id="password"
