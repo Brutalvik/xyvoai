@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Sortable from "sortablejs";
 
 import EmptyProjects from "./EmptyProjects";
+import BacklogPanel from "@/components/KanbanBoard/MainBoard/BacklogPanel";
 
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import {
@@ -22,6 +23,8 @@ import Header from "@/components/KanbanBoard/Header";
 import Column from "@/components/KanbanBoard/Column";
 import Card from "@/components/KanbanBoard/Card";
 import NavigationBreadcrumbs from "@/components/KanbanBoard/NavigationBreadcrumbs";
+import XLoader from "@/components/ui/XLoader";
+import LoadingText from "@/components/ui/XLoader/LoadingText";
 
 type ColumnKey = "new" | "active" | "staging" | "deployed";
 
@@ -65,7 +68,12 @@ type CardType = {
 
 type BoardView = "kanban" | "list" | "gantt";
 
+import { useRouter, useParams } from "next/navigation";
+
 export default function MainBoard() {
+  const [showEpicInfo, setShowEpicInfo] = useState(false);
+  const router = useRouter();
+  const { locale } = useParams() as { locale: string };
   const dispatch = useAppDispatch();
   const projects = useAppSelector(selectProjects);
   const loading = useAppSelector(isProjectsLoading);
@@ -116,8 +124,9 @@ export default function MainBoard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <span className="text-lg text-gray-500">Loading projects...</span>
+      <div className="flex flex-col items-center justify-center h-screen">
+        <XLoader />
+        <LoadingText text="Loading Projects" />
       </div>
     );
   }
@@ -156,57 +165,67 @@ export default function MainBoard() {
           projects={projects}
           selectedProjectId={selectedProjectId}
           setSelectedProjectId={setSelectedProjectId}
+          isEmpty={filteredTasks.length === 0}
         />
         {/* Main Content */}
         <main className="flex-1 flex flex-col overflow-hidden">
-          {/* Filters Bar */}
-          <div className="flex items-center gap-4 px-8 pt-4"></div>
-          {/* Header with View Switcher */}
-          <Header
-  view={view}
-  onViewChange={setView}
-  selectedProjectId={selectedProjectId}
-  setSelectedProjectId={setSelectedProjectId}
-  projects={projects}
-/>
-
-          {/* Board Views */}
-          {view === "kanban" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-8 overflow-auto transition-all duration-300">
-              {columns.map((col) => (
-                <Column
-                  key={col.id}
-                  countColor={col.countColor}
-                  countLabel={`${tasksByColumn[col.id]?.length ?? 0}`}
-                  id={col.id}
-                  title={col.title}
-                >
-                  {tasksLoading ? (
-                    <div className="text-gray-400 text-sm">Loading...</div>
-                  ) : tasksError ? (
-                    <div className="text-red-400 text-sm">{tasksError}</div>
-                  ) : tasksByColumn[col.id]?.length ? (
-                    tasksByColumn[col.id].map((card, idx) => (
-                      <Card
-                        key={card.id || card.title + idx}
-                        assignee={card.assignee || "Unassigned"}
-                        effort={card.effort ?? 0}
-                        issueUrl={card.issueUrl || ""}
-                        priority={card.priority || "medium"}
-                        progress={card.progress ?? 0}
-                        status={card.status as any}
-                        title={card.title}
-                      />
-                    ))
-                  ) : (
-                    <div className="text-gray-300 text-sm text-center py-4">
-                      No tasks
-                    </div>
-                  )}
-                </Column>
-              ))}
+          {/* Show empty state if no tasks/epics/pbis */}
+          {filteredTasks.length === 0 ? (
+            <div className="flex flex-1 items-center justify-center">
+              <BacklogPanel />
             </div>
+          ) : (
+            <>
+              {/* Filters Bar */}
+              <div className="flex items-center gap-4 px-8 pt-4"></div>
+              {/* Header with View Switcher */}
+              <Header
+                view={view}
+                onViewChange={setView}
+                selectedProjectId={selectedProjectId}
+                setSelectedProjectId={setSelectedProjectId}
+                projects={projects}
+              />
+              {/* Board Views */}
+              {view === "kanban" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-8 overflow-auto transition-all duration-300">
+                  {columns.map((col) => (
+                    <Column
+                      key={col.id}
+                      countColor={col.countColor}
+                      countLabel={`${tasksByColumn[col.id]?.length ?? 0}`}
+                      id={col.id}
+                      title={col.title}
+                    >
+                      {tasksLoading ? (
+                        <div className="text-gray-400 text-sm">Loading...</div>
+                      ) : tasksError ? (
+                        <div className="text-red-400 text-sm">{tasksError}</div>
+                      ) : tasksByColumn[col.id]?.length ? (
+                        tasksByColumn[col.id].map((card, idx) => (
+                          <Card
+                            key={card.id || card.title + idx}
+                            assignee={card.assignee || "Unassigned"}
+                            effort={card.effort ?? 0}
+                            issueUrl={card.issueUrl || ""}
+                            priority={card.priority || "medium"}
+                            progress={card.progress ?? 0}
+                            status={card.status as any}
+                            title={card.title}
+                          />
+                        ))
+                      ) : (
+                        <div className="text-gray-300 text-sm text-center py-4">
+                          No tasks
+                        </div>
+                      )}
+                    </Column>
+                  ))}
+                </div>
+              )}
+            </>
           )}
+
           {view === "list" && (
             <div className="p-8">
               <div className="bg-white rounded-xl shadow p-8 flex flex-col items-center justify-center min-h-[400px] border border-gray-200">

@@ -66,12 +66,14 @@ interface SidebarProps {
   projects: { id: string; name: string }[];
   selectedProjectId: string;
   setSelectedProjectId: (id: string) => void;
+  isEmpty?: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
   projects,
   selectedProjectId,
   setSelectedProjectId,
+  isEmpty = false,
 }) => {
   const noProjects = projects.length === 0;
   const dispatch = useAppDispatch();
@@ -217,18 +219,28 @@ const Sidebar: React.FC<SidebarProps> = ({
         <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.href}>
-              {noProjects ? (
-                <span className="flex items-center gap-3 px-4 py-2 text-sm rounded text-gray-400 cursor-not-allowed">
-                  {item.icon}
-                  {!isCollapsed && <span>{t(item.labelKey)}</span>}
-                </span>
-              ) : (
-                <NavItem
-                  href={item.href}
-                  icon={item.icon}
-                  label={t(item.labelKey)}
-                />
-              )}
+              {item.labelKey === "backlogs"
+                ? (
+                  <NavItem
+                    href={item.href}
+                    icon={item.icon}
+                    label={t(item.labelKey)}
+                  />
+                )
+                : ((noProjects || isEmpty)
+                  ? (
+                    <span className="flex items-center gap-3 px-4 py-2 text-sm rounded text-gray-400 cursor-not-allowed">
+                      {item.icon}
+                      {!isCollapsed && <span>{t(item.labelKey)}</span>}
+                    </span>
+                  )
+                  : (
+                    <NavItem
+                      href={item.href}
+                      icon={item.icon}
+                      label={t(item.labelKey)}
+                    />
+                  ))}
             </li>
           ))}
         </ul>
@@ -236,18 +248,12 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Settings Button: Just below nav links, not in footer */}
       {!isCollapsed && (
         <div className="px-4 py-2">
-          {noProjects ? (
-            <span className="flex items-center gap-3 px-4 py-2 text-sm rounded text-gray-400 cursor-not-allowed">
-              <Settings />
-              <span>{t("projectSettings")}</span>
-            </span>
-          ) : (
-            <NavItem
-              href={"#"}
-              icon={<Settings />}
-              label={t("projectSettings")}
-            />
-          )}
+          {/* Project settings stays enabled even if isEmpty */}
+          <NavItem
+            href={"#"}
+            icon={<Settings />}
+            label={t("projectSettings")}
+          />
         </div>
       )}
       {/* Mobile view */}
