@@ -19,7 +19,7 @@ export default function LogoBrand() {
         aria-label={t("logoAria", { default: "Go to homepage" })}
       >
         <Logo className="h-7 w-7 sm:h-8 sm:w-8" />
-        <span className="font-bold text-lg text-gray-800 whitespace-nowrap">
+        <span className="font-bold text-lg text-default-900 whitespace-nowrap">
           YVO
         </span>
       </NextLink>

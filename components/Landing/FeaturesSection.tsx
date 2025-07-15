@@ -1,104 +1,102 @@
 "use client";
+
 import React from "react";
 import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
 
 export default function FeaturesSection() {
   const t = useTranslations();
+
+  const cards = [
+    {
+      icon: "🎤",
+      color: "bg-violet-600",
+      bg: "bg-violet-50",
+      title: t("FeaturesSection.aiTitle"),
+      desc: t("FeaturesSection.aiDesc"),
+      aria: t("FeaturesSection.aiAria"),
+      items: [
+        t("FeaturesSection.aiVoice"),
+        t("FeaturesSection.aiSummaries"),
+        t("FeaturesSection.aiPrioritization"),
+      ],
+    },
+    {
+      icon: "🗂️",
+      color: "bg-green-600",
+      bg: "bg-green-50",
+      title: t("FeaturesSection.pmTitle"),
+      desc: t("FeaturesSection.pmDesc"),
+      aria: t("FeaturesSection.pmAria"),
+      items: [
+        t("FeaturesSection.pmKanban"),
+        t("FeaturesSection.pmStory"),
+        t("FeaturesSection.pmTimeline"),
+      ],
+    },
+    {
+      icon: "🔌",
+      color: "bg-orange-500",
+      bg: "bg-orange-50",
+      title: t("FeaturesSection.integrationsTitle"),
+      desc: t("FeaturesSection.integrationsDesc"),
+      aria: t("FeaturesSection.integrationsAria"),
+      items: [
+        t("FeaturesSection.integrationsSync"),
+        t("FeaturesSection.integrationsWorkflows"),
+        t("FeaturesSection.integrationsPermissions"),
+      ],
+    },
+  ];
+
   return (
     <section
       id="features"
       role="region"
       aria-labelledby="features-heading"
-      className="py-20 bg-white"
+      className="py-20 bg-background"
     >
       <div className="max-w-6xl mx-auto px-4">
         <h2
           id="features-heading"
-          className="text-3xl md:text-4xl font-bold text-center mb-2"
+          className="text-3xl md:text-4xl font-bold text-center mb-2 text-foreground"
         >
           {t("FeaturesSection.title")}
         </h2>
-        <p className="text-center text-gray-500 mb-12">
+        <p className="text-center text-muted mb-12">
           {t("FeaturesSection.subtitle")}
         </p>
         <div className="grid md:grid-cols-3 gap-8" role="list">
-          <article
-            className="bg-violet-50 rounded-xl p-6 shadow-sm"
-            role="listitem"
-          >
-            <div
-              className="bg-violet-600 w-10 h-10 flex items-center justify-center rounded-lg mb-4"
-              aria-hidden="true"
+          {cards.map((card, i) => (
+            <motion.article
+              key={i}
+              role="listitem"
+              className={`${card.bg} rounded-xl p-6 shadow-sm`}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.15 }}
             >
-              <span className="text-white text-2xl">🎤</span>
-            </div>
-            <h3 className="font-bold text-lg mb-1">
-              {t("FeaturesSection.aiTitle")}
-            </h3>
-            <p className="text-gray-700 text-sm mb-3">
-              {t("FeaturesSection.aiDesc")}
-            </p>
-            <ul
-              className="text-sm text-gray-600 space-y-1"
-              aria-label={t("FeaturesSection.aiAria")}
-            >
-              <li>✔ {t("FeaturesSection.aiVoice")}</li>
-              <li>✔ {t("FeaturesSection.aiSummaries")}</li>
-              <li>✔ {t("FeaturesSection.aiPrioritization")}</li>
-            </ul>
-          </article>
-
-          <article
-            className="bg-green-50 rounded-xl p-6 shadow-sm"
-            role="listitem"
-          >
-            <div
-              className="bg-green-600 w-10 h-10 flex items-center justify-center rounded-lg mb-4"
-              aria-hidden="true"
-            >
-              <span className="text-white text-2xl">🗂️</span>
-            </div>
-            <h3 className="font-bold text-lg mb-1">
-              {t("FeaturesSection.pmTitle")}
-            </h3>
-            <p className="text-gray-700 text-sm mb-3">
-              {t("FeaturesSection.pmDesc")}
-            </p>
-            <ul
-              className="text-sm text-gray-600 space-y-1"
-              aria-label={t("FeaturesSection.pmAria")}
-            >
-              <li>✔ {t("FeaturesSection.pmKanban")}</li>
-              <li>✔ {t("FeaturesSection.pmStory")}</li>
-              <li>✔ {t("FeaturesSection.pmTimeline")}</li>
-            </ul>
-          </article>
-
-          <article
-            className="bg-orange-50 rounded-xl p-6 shadow-sm"
-            role="listitem"
-          >
-            <div
-              className="bg-orange-500 w-10 h-10 flex items-center justify-center rounded-lg mb-4"
-              aria-hidden="true"
-            >
-              <span className="text-white text-2xl">🔌</span>
-            </div>
-            <h3 className="font-bold text-lg mb-1">
-              {t("FeaturesSection.integrationsTitle")}
-            </h3>
-            <p className="text-gray-700 text-sm mb-3">
-              {t("FeaturesSection.integrationsDesc")}
-            </p>
-            <ul
-              className="text-sm text-gray-600 space-y-1"
-              aria-label={t("FeaturesSection.integrationsAria")}
-            >
-              <li>✔ {t("FeaturesSection.integrationsSync")}</li>
-              <li>✔ {t("FeaturesSection.integrationsWorkflows")}</li>
-              <li>✔ {t("FeaturesSection.integrationsPermissions")}</li>
-            </ul>
-          </article>
+              <div
+                className={`${card.color} w-10 h-10 flex items-center justify-center rounded-lg mb-4`}
+                aria-hidden="true"
+              >
+                <span className="text-default text-2xl">{card.icon}</span>
+              </div>
+              <h3 className="font-bold text-lg mb-1 text-foreground">
+                {card.title}
+              </h3>
+              <p className="text-default text-sm mb-3">{card.desc}</p>
+              <ul
+                className="text-sm text-default space-y-1"
+                aria-label={card.aria}
+              >
+                {card.items.map((text, j) => (
+                  <li key={j}>✔ {text}</li>
+                ))}
+              </ul>
+            </motion.article>
+          ))}
         </div>
       </div>
     </section>

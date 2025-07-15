@@ -3,10 +3,10 @@
 import React, { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import KanbanView from "./ViewSection/KanbanView";
-import TableView from "./ViewSection/TableView";
-import CalendarView from "./ViewSection/CalendarView";
-import TimelineView from "./ViewSection/TimelineView";
+import KanbanView from "@/components/Landing/ViewSection/KanbanView";
+import TableView from "@/components/Landing/ViewSection/TableView";
+import CalendarView from "@/components/Landing/ViewSection/CalendarView";
+import TimelineView from "@/components/Landing/ViewSection/TimelineView";
 
 export default function ViewsSection() {
   const [tab, setTab] = useState("kanban");
@@ -23,26 +23,22 @@ export default function ViewsSection() {
   );
 
   return (
-    <section
-      role="region"
-      aria-labelledby="views-heading"
-      className="py-20 bg-gray-50"
-    >
+    <section role="region" aria-labelledby="views-heading" className="py-20">
       <div className="max-w-6xl mx-auto px-4">
         <h2
           id="views-heading"
-          className="text-3xl md:text-4xl font-bold text-center mb-2"
+          className="text-3xl md:text-4xl font-bold text-center mb-2 text-default-700"
         >
           {t("multipleViews", { default: "Multiple Views, One Platform" })}
         </h2>
-        <p className="text-center text-gray-500 mb-10">
+        <p className="text-center text-default-500 mb-10">
           {t("switchViews", {
             default:
               "Switch between Kanban, Table, Calendar, and Timeline views seamlessly",
           })}
         </p>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 flex flex-col items-center">
+        <div className="bg-default-50 rounded-2xl shadow-lg p-6 sm:p-8 flex flex-col items-center">
           {/* Tab buttons */}
           <div
             className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-6"
@@ -57,25 +53,25 @@ export default function ViewsSection() {
                 aria-controls={`tabpanel-${tabItem.id}`}
                 id={`tab-${tabItem.id}`}
                 tabIndex={tab === tabItem.id ? 0 : -1}
-                className={`px-4 py-2 rounded-lg font-semibold focus:outline-none transition-colors duration-150 ${
+                onClick={() => setTab(tabItem.id)}
+                className={`rounded-xl px-4 py-2 font-semibold transition-colors duration-150 ${
                   tab === tabItem.id
-                    ? "bg-[#7c3aed] text-white shadow"
-                    : "text-gray-600 hover:bg-gray-100"
+                    ? "bg-default-500 text-default-50 shadow"
+                    : "text-default-700 hover:bg-default-400"
                 }`}
                 style={
                   tab === tabItem.id
-                    ? { boxShadow: "0 2px 12px #7c3aed22" }
+                    ? { boxShadow: "0 2px 12px rgba(70, 38, 126, 0.2)" }
                     : {}
                 }
-                onClick={() => setTab(tabItem.id)}
               >
                 {tabItem.label}
               </button>
             ))}
           </div>
 
-          {/* Tab panels with AnimatePresence */}
-          <div className="w-full min-h-[260px]" style={{ minHeight: 260 }}>
+          {/* Tab panels */}
+          <div className="w-full min-h-[260px]">
             <AnimatePresence mode="wait" initial={false}>
               {tab === "kanban" && (
                 <motion.div

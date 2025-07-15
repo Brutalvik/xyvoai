@@ -10,8 +10,8 @@ export default function KanbanView() {
   const columns = [
     {
       title: "To Do",
-      color: "bg-gray-50",
-      dot: "bg-gray-400",
+      color: "bg-default",
+      dot: "bg-gray-500",
       tasks: [
         {
           title: "User Authentication",
@@ -29,8 +29,8 @@ export default function KanbanView() {
     },
     {
       title: "In Progress",
-      color: "bg-yellow-50",
-      dot: "bg-yellow-400",
+      color: "bg-yellow-100/90",
+      dot: "bg-yellow-500",
       tasks: [
         {
           title: "Dashboard UI",
@@ -42,8 +42,8 @@ export default function KanbanView() {
     },
     {
       title: "Review",
-      color: "bg-blue-50",
-      dot: "bg-blue-400",
+      color: "bg-blue-100/90",
+      dot: "bg-blue-500",
       tasks: [
         {
           title: "Mobile Responsive",
@@ -55,8 +55,8 @@ export default function KanbanView() {
     },
     {
       title: "Done",
-      color: "bg-green-50",
-      dot: "bg-green-400",
+      color: "bg-green-100/90",
+      dot: "bg-green-500",
       tasks: [
         {
           title: "Project Setup",
@@ -82,7 +82,7 @@ export default function KanbanView() {
     >
       {columns.map((col, idx) => (
         <div
-          key={col.title}
+          key={idx}
           className={`${col.color} rounded-xl p-4 flex-1 min-w-[220px] flex-shrink-0`}
           aria-label={col.title}
         >
@@ -96,7 +96,7 @@ export default function KanbanView() {
           {col.tasks.map((task) => (
             <div
               key={task.title}
-              className="bg-white rounded-lg p-3 mb-3 shadow-sm flex flex-col gap-2"
+              className="bg-default-400 text-default-500 rounded-xl p-3 mb-3 shadow-sm flex flex-col gap-2"
               aria-label={task.title}
             >
               <div className="font-medium text-gray-900">{task.title}</div>

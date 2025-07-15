@@ -53,7 +53,7 @@ export default function ProfilePage() {
 
   const groupedPermissions = _.groupBy(
     user.permissions,
-    (perm) => perm.split(".")[0],
+    (perm) => perm.split(".")[0]
   );
 
   return (

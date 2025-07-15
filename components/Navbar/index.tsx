@@ -37,7 +37,7 @@ export default function Navbar() {
         position="sticky"
         role="navigation"
         aria-label={t("mainNavAria", { default: "Main Navigation" })}
-        className="py-2 px-4 sm:px-8 bg-white/80 rounded-2xl shadow-lg backdrop-blur sticky top-0 z-50 mb-8 overflow-x-clip"
+        className="py-2 px-4 sm:px-6 rounded-2xl shadow-lg backdrop-blur sticky top-0 z-50 mb-8 overflow-x-clip"
       >
         {/* Desktop Left: Logo + Nav Links */}
         <NavbarContent className="gap-4 hidden md:flex" justify="start">
