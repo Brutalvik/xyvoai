@@ -35,6 +35,27 @@
     "menuToggleAria": "Open menu",
     "menuAria": "Main menu"
   },
+  "Signin": {
+    "title": "Sign in",
+    "subtitle": "Continue to your XYVO account",
+    "email": "Email address",
+    "password": "Password",
+    "remember": "Remember me",
+    "forgot": "Forgot password?",
+    "signin": "Sign In",
+    "continueWith": "Or continue with",
+    "google": "Continue with Google",
+    "microsoft": "Continue with Microsoft",
+    "noAccount": "Don't have an account?",
+    "signup": "Sign up",
+    "quote": "AI-powered clarity for powerful teams."
+  },
+  "SigninValidation": {
+    "invalidEmail": "Enter a valid email address",
+    "required": "This field is required",
+    "passwordLength": "Password must be at least 8 characters",
+    "passwordPattern": "Password must include uppercase, lowercase, number, and symbol"
+  },
   "Settings": {
     "settings": "Settings",
     "settingsComingSoon": "Settings management will be available soon."

@@ -43,7 +43,7 @@ export function PasswordInput({
           type="button"
           onClick={togglePasswordVisibility}
         >
-          {isPasswordVisible ? (
+          {!isPasswordVisible ? (
             <FaEyeSlash className="text-lg text-default-400 pointer-events-none" />
           ) : (
             <FaEye className="text-lg text-default-400 pointer-events-none" />

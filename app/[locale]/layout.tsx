@@ -1,51 +1,47 @@
-// app/[locale]/layout.tsx
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ToastProvider } from "@heroui/toast";
-
 import { Providers } from "@/app/providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import "@/styles/globals.css";
-import { fontSans } from "@/config/fonts";
-
+import { fontSans } from "@/config/fonts"; // ✅ your font import
 import clsx from "clsx";
-
 import { ReduxProvider } from "@/store/Provider";
 import PageTransitionLoader from "@/components/ui/PageTransitionLoader";
-// ✅ NEW
 
 type Props = {
   children: React.ReactNode;
+  modals: React.ReactNode; // ✅ required for modal interception
   params: { locale: string };
 };
 
-export default async function LocaleLayout({ children, params }: Props) {
-  const { locale } = await params;
+export default async function LocaleLayout({
+  children,
+  modals,
+  params,
+}: Props) {
   const messages = await getMessages();
-
   if (!messages) notFound();
 
   return (
-    <html suppressHydrationWarning lang={locale}>
+    <html suppressHydrationWarning lang={params.locale}>
       <body
         className={clsx(
           "text-foreground bg-background font-sans antialiased",
-          fontSans.variable,
+          fontSans.variable
         )}
       >
-        <PageTransitionLoader />
         <Providers>
           <ReduxProvider>
-            <NextIntlClientProvider locale={locale} messages={messages}>
+            <NextIntlClientProvider locale={params.locale} messages={messages}>
               <ToastProvider />
-              {/* ✅ Dispatch refreshSession on mount */}
-              {/* <AuthInitializer /> */}
-              <div className="relative flex flex-col font-sans antialiased">
+              <div className="relative flex flex-col">
                 <Navbar />
-                <main className="w-full max-w-none flex-grow">{children}</main>
+                <main className="flex-grow">{children}</main>
                 <Footer />
+                {modals}
               </div>
             </NextIntlClientProvider>
           </ReduxProvider>
