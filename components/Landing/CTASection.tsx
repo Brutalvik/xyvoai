@@ -2,55 +2,98 @@
 
 import React from "react";
 import { useTranslations } from "next-intl";
+import { Button } from "@heroui/button";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 export default function CTASection() {
   const t = useTranslations();
+  const router = useRouter();
 
   return (
     <section
       role="region"
       aria-labelledby="cta-heading"
-      className="bg-gradient-to-b from-[#0f0c29] via-[#302b63] to-[#24243e] py-20 text-center"
+      className="py-20 text-center text-default-700"
     >
-      <h2
+      <motion.h2
         id="cta-heading"
-        className="text-3xl md:text-4xl font-bold text-white mb-4"
+        className="text-3xl md:text-4xl font-bold text-default-700 mb-4"
+        initial={{ opacity: 0, y: -20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
       >
         {t("CTASection.title")}
-      </h2>
+      </motion.h2>
 
-      <p
-        className="text-lg text-white mb-8"
+      <motion.p
+        className="text-lg text-default-700 mb-8"
         aria-label={t("CTASection.ariaSubheading")}
+        initial={{ opacity: 0, y: -10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
       >
         {t("CTASection.subtitle")}
         {t("CTASection.cta")}
-      </p>
+      </motion.p>
 
-      <div
+      <motion.div
         className="flex justify-center gap-4 mb-4"
         role="group"
         aria-label="Call to Action Buttons"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={{
+          hidden: {},
+          visible: {
+            transition: { staggerChildren: 0.15, delayChildren: 0.4 },
+          },
+        }}
       >
-        <button
-          type="button"
-          className="bg-white text-violet-700 font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100 transition"
-          aria-label={t("CTASection.freeTrial")}
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 10 },
+            visible: { opacity: 1, y: 0 },
+          }}
         >
-          {t("CTASection.freeTrial")}
-        </button>
-        <button
-          type="button"
-          className="bg-white/20 text-white font-semibold px-6 py-3 rounded-lg border border-white hover:bg-white/30 transition"
-          aria-label={t("CTASection.bookDemo")}
-        >
-          {t("CTASection.bookDemo")}
-        </button>
-      </div>
+          <Button
+            variant="ghost"
+            color="primary"
+            onPress={() => router.push("/signup")}
+          >
+            {t("CTASection.freeTrial")}
+          </Button>
+        </motion.div>
 
-      <div className="text-xs text-white/80" aria-label="Trial Details">
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 10 },
+            visible: { opacity: 1, y: 0 },
+          }}
+        >
+          <Button
+            variant="ghost"
+            color="default"
+            onPress={() => router.push("/")}
+          >
+            {t("CTASection.bookDemo")}
+          </Button>
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        className="text-xs text-default-500"
+        aria-label="Trial Details"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.8 }}
+      >
         {t("CTASection.trialDetails")}
-      </div>
+      </motion.div>
     </section>
   );
 }

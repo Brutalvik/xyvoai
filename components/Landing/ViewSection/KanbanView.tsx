@@ -10,8 +10,8 @@ export default function KanbanView() {
   const columns = [
     {
       title: "To Do",
-      color: "bg-default",
-      dot: "bg-gray-500",
+      color: "bg-orange-100/90",
+      dot: "bg-orange-500",
       tasks: [
         {
           title: "User Authentication",
