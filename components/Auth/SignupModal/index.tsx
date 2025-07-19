@@ -102,76 +102,91 @@ export default function SignupModal({
       backdrop="blur"
       size="sm"
     >
-      <ModalContent className="overflow-hidden rounded-xl">
+      <ModalContent className="overflow-y-auto max-h-[90vh] rounded-xl w-full max-w-md mx-4 hide-scrollbar">
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
+          className="w-full"
         >
           {/* Gradient Header */}
-          <div className="bg-gradient-to-br from-[#080f17] to-[#2c7ad4] py-6 px-4 text-center">
+          <div className="bg-gradient-to-br from-[#080f17] to-[#2c7ad4] py-3 sm:py-4 px-4 text-center sticky top-0 z-10">
             <div className="flex flex-row justify-center items-center gap-2">
-              <Logo className="h-8 w-8 text-white" />
-              <h1 className="text-white font-bold text-lg tracking-wide">
+              <Logo className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
+              <h1 className="text-white font-bold text-sm sm:text-base tracking-wide">
                 YVO
               </h1>
             </div>
-            <p className="text-white text-sm">{t("title")}</p>
+            <p className="text-white text-xs mt-0.5">{t("title")}</p>
           </div>
 
           {/* Form */}
-          <ModalBody className="flex flex-col gap-4 py-6 px-6">
-            <form onSubmit={formik.handleSubmit} className="space-y-4">
+          <ModalBody className="flex flex-col gap-3 py-3 sm:py-4 px-4 sm:px-5">
+            <form onSubmit={formik.handleSubmit} className="space-y-3">
               {/* First Name and Last Name */}
-              <div className="flex gap-2">
-                <Input
-                  type="text"
-                  name="firstName"
-                  label={t("firstName")}
-                  placeholder={t("firstName")}
-                  variant="bordered"
-                  size="sm"
-                  autoComplete="given-name"
-                  isInvalid={!!(formik.touched.firstName && formik.errors.firstName)}
-                  errorMessage={
-                    formik.touched.firstName ? formik.errors.firstName : undefined
-                  }
-                  value={formik.values.firstName}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  required
-                  endContent={
-                    <User
-                      size={20}
-                      className="text-gray-400 pointer-events-none mr-2"
-                      aria-label={t("firstName")}
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="lastName"
-                  label={t("lastName")}
-                  placeholder={t("lastName")}
-                  variant="bordered"
-                  size="sm"
-                  autoComplete="family-name"
-                  isInvalid={!!(formik.touched.lastName && formik.errors.lastName)}
-                  errorMessage={
-                    formik.touched.lastName ? formik.errors.lastName : undefined
-                  }
-                  value={formik.values.lastName}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  required
-                  endContent={
-                    <User
-                      size={20}
-                      className="text-gray-400 pointer-events-none mr-2"
-                      aria-label={t("lastName")}
-                    />
-                  }
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="w-full">
+                  <Input
+                    type="text"
+                    name="firstName"
+                    label={t("firstName")}
+                    placeholder={t("firstName")}
+                    variant="bordered"
+                    size="sm"
+                    autoComplete="given-name"
+                    isInvalid={
+                      !!(formik.touched.firstName && formik.errors.firstName)
+                    }
+                    errorMessage={
+                      formik.touched.firstName
+                        ? formik.errors.firstName
+                        : undefined
+                    }
+                    value={formik.values.firstName}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    required
+                    endContent={
+                      <User
+                        size={20}
+                        className="text-gray-400 pointer-events-none mr-2"
+                        aria-label={t("firstName")}
+                      />
+                    }
+                    className="w-full"
+                  />
+                </div>
+                <div className="w-full">
+                  <Input
+                    type="text"
+                    name="lastName"
+                    label={t("lastName")}
+                    placeholder={t("lastName")}
+                    variant="bordered"
+                    size="sm"
+                    autoComplete="family-name"
+                    isInvalid={
+                      !!(formik.touched.lastName && formik.errors.lastName)
+                    }
+                    errorMessage={
+                      formik.touched.lastName
+                        ? formik.errors.lastName
+                        : undefined
+                    }
+                    value={formik.values.lastName}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    required
+                    endContent={
+                      <User
+                        size={20}
+                        className="text-gray-400 pointer-events-none mr-2"
+                        aria-label={t("lastName")}
+                      />
+                    }
+                    className="w-full"
+                  />
+                </div>
               </div>
 
               {/* Email */}
@@ -242,15 +257,17 @@ export default function SignupModal({
               </Button>
             </form>
 
-            <div className="flex items-center gap-3 text-gray-400 text-xs mt-4">
+            <div className="flex items-center gap-2 text-gray-400 text-xs my-2">
               <div className="h-px bg-gray-200 flex-1" />
-              Or continue with
+              <span className="text-xs whitespace-nowrap">
+                Or continue with
+              </span>
               <div className="h-px bg-gray-200 flex-1" />
             </div>
 
             <Button
               variant="bordered"
-              className="w-full text-sm"
+              className="w-full text-xs sm:text-sm"
               startContent={<FcGoogle />}
               onPress={() => alert("Google auth integration not implemented")}
             >
@@ -258,7 +275,7 @@ export default function SignupModal({
             </Button>
             <Button
               variant="bordered"
-              className="w-full text-sm"
+              className="w-full text-xs sm:text-sm"
               startContent={<FaMicrosoft className="text-[#0078D4]" />}
               onPress={() =>
                 alert("Microsoft auth integration not implemented")
@@ -268,24 +285,39 @@ export default function SignupModal({
             </Button>
           </ModalBody>
 
-          <ModalFooter className="flex flex-col gap-2 pb-6 px-6 text-center">
-            <p className="text-[11px] text-gray-400 italic leading-tight">
+          <ModalFooter className="flex flex-col gap-1.5 py-3 sm:py-4 px-4 sm:px-5 text-center border-t border-gray-100">
+            <p className="text-[10px] text-gray-400 italic leading-tight">
               AI-powered clarity for powerful teams.
             </p>
-            <p className="text-[11px] text-gray-400 italic leading-tight">
+            <p className="text-[10px] text-gray-400 italic leading-tight">
               By continuing, you agree to XYVO's{" "}
-              <Link href={`/${locale}/legal/conditions`} size="sm" color="primary">
+              <Link
+                href={`/${locale}/legal/conditions`}
+                size="sm"
+                color="primary"
+                className="text-xs sm:text-sm"
+              >
                 Conditions of Use
               </Link>{" "}
               and{" "}
-              <Link href={`/${locale}/legal/privacy`} size="sm" color="primary">
+              <Link
+                href={`/${locale}/legal/privacy`}
+                size="sm"
+                color="primary"
+                className="text-xs sm:text-sm"
+              >
                 Privacy Notice
               </Link>
               .
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 mt-1">
               {t("haveAccount")}{" "}
-              <Link href="#" color="primary" onClick={onClose}>
+              <Link
+                href="#"
+                color="primary"
+                onClick={onClose}
+                className="text-sm"
+              >
                 {t("signin")}
               </Link>
             </p>
