@@ -201,7 +201,8 @@
   },
   "signup": {
     "title": "Sign up for XYVO",
-    "name": "Your name",
+    "firstName": "First name",
+    "lastName": "Last name",
     "email": "Email",
     "continue": "Continue",
     "singingup": "Signing Up...",

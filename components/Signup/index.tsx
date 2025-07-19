@@ -21,6 +21,7 @@ import { useAppDispatch } from "@/store/hooks";
 import UsageTypeSelector from "@/components/Signup/UsageType";
 import { signupThunk, signupWithUsageTypeThunk } from "@/store/auth/thunks";
 import PlanSelector from "@/components/SelectPlan/Individual";
+import SigninModal from "@/components/Auth/SigninModal";
 
 export default function Signup() {
   const dispatch = useAppDispatch();
@@ -36,10 +37,12 @@ export default function Signup() {
   const [step, setStep] = useState<"form" | "usagetype" | "plan">("form");
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [processingSignup, setProcessingSignup] = useState<boolean>(false);
+  const [isSigninModalOpen, setIsSigninModalOpen] = useState(false);
 
   const formik = useFormik({
     initialValues: {
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       phone: "",
       password: "",
@@ -47,7 +50,8 @@ export default function Signup() {
     },
     validationSchema: Yup.object({
       email: Yup.string().email(v("invalidEmail")).required(v("required")),
-      name: Yup.string().min(2, v("nameShort")).required(v("required")),
+      firstName: Yup.string().min(2, v("nameShort")).required(v("required")),
+      lastName: Yup.string().min(2, v("nameShort")).required(v("required")),
       phone: Yup.string().min(10, v("phoneInvalid")).required(v("required")),
       password: Yup.string()
         .min(8, v("passwordLength"))
@@ -56,8 +60,16 @@ export default function Signup() {
     }),
     onSubmit: async (values, { setSubmitting }) => {
       try {
+        // Combine firstName and lastName as "firstname/lastname" for backend
+        const backendValues = {
+          ...values,
+          name: `${values.firstName}/${values.lastName}`,
+        };
+        // Remove firstName and lastName from the object sent to backend
+        const { firstName, lastName, ...valuesForBackend } = backendValues;
+        
         sessionStorage.setItem("signup-form", JSON.stringify(values));
-        const res = await dispatch(signupThunk(values)).unwrap();
+        const res = await dispatch(signupThunk(valuesForBackend)).unwrap();
 
         if (res?.requireUsageType) {
           setStep("usagetype");
@@ -117,9 +129,17 @@ export default function Signup() {
     if (!saved) return;
 
     const values = JSON.parse(saved);
+    
+    // Combine firstName and lastName as "firstname/lastname" for backend
+    const backendValues = {
+      ...values,
+      name: `${values.firstName}/${values.lastName}`,
+    };
+    // Remove firstName and lastName from the object sent to backend
+    const { firstName, lastName, ...valuesForBackend } = backendValues;
 
     try {
-      await dispatch(signupWithUsageTypeThunk({ values, usageType })).unwrap();
+      await dispatch(signupWithUsageTypeThunk({ values: valuesForBackend, usageType })).unwrap();
       sessionStorage.removeItem("signup-form");
       addToast({
         title: t("successTitle"),
@@ -203,8 +223,8 @@ export default function Signup() {
         <AuthFormLayout
           alternativeAuthLink={{
             text: t("haveAccount"),
-            href: "/auth/signin",
             linkText: t("signin"),
+            onClick: () => setIsSigninModalOpen(true),
           }}
           showSocials={false}
           subtitle=""
@@ -244,20 +264,36 @@ export default function Signup() {
                 transition={{ duration: 0.3 }}
                 onSubmit={formik.handleSubmit}
               >
-                <Input
-                  errorMessage={
-                    formik.touched.name ? formik.errors.name : undefined
-                  }
-                  id="name"
-                  isInvalid={!!(formik.touched.name && formik.errors.name)}
-                  label={t("name")}
-                  name="name"
-                  size="sm"
-                  value={formik.values.name}
-                  variant="bordered"
-                  onBlur={formik.handleBlur}
-                  onChange={formik.handleChange}
-                />
+                <div className="flex gap-2">
+                  <Input
+                    errorMessage={
+                      formik.touched.firstName ? formik.errors.firstName : undefined
+                    }
+                    id="firstName"
+                    isInvalid={!!(formik.touched.firstName && formik.errors.firstName)}
+                    label={t("firstName")}
+                    name="firstName"
+                    size="sm"
+                    value={formik.values.firstName}
+                    variant="bordered"
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                  />
+                  <Input
+                    errorMessage={
+                      formik.touched.lastName ? formik.errors.lastName : undefined
+                    }
+                    id="lastName"
+                    isInvalid={!!(formik.touched.lastName && formik.errors.lastName)}
+                    label={t("lastName")}
+                    name="lastName"
+                    size="sm"
+                    value={formik.values.lastName}
+                    variant="bordered"
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                  />
+                </div>
                 <Input
                   errorMessage={
                     formik.touched.email ? formik.errors.email : undefined
@@ -316,6 +352,15 @@ export default function Signup() {
           </AnimatePresence>
         </AuthFormLayout>
       )}
+      
+      <SigninModal
+        isOpen={isSigninModalOpen}
+        onClose={() => setIsSigninModalOpen(false)}
+        onSuccessRedirect={() => {
+          setIsSigninModalOpen(false);
+          router.push(`/${locale}`);
+        }}
+      />
     </motion.div>
   );
 }

@@ -19,6 +19,8 @@ import AuthControls from "./AuthControls";
 import UserDrawer from "./UserDrawer";
 import LanguageSwitch from "@/components/LanguageSwitch";
 import { ThemeSwitch } from "@/components/theme-switch";
+import SigninModal from "@/components/Auth/SigninModal";
+import { useState } from "react";
 
 export default function Navbar() {
   const t = useTranslations("Navbar");
@@ -27,6 +29,7 @@ export default function Navbar() {
   const loggedIn = useAppSelector(isLoggedIn);
 
   const drawerDisclosure = useDisclosure();
+  const [isSigninModalOpen, setIsSigninModalOpen] = useState(false);
 
   return (
     <>
@@ -66,7 +69,7 @@ export default function Navbar() {
               <Button
                 variant="ghost"
                 onPress={() => {
-                  router.push(`/${locale}/auth/signin`);
+                  setIsSigninModalOpen(true);
                 }}
               >
                 {t("signIn")}
@@ -99,7 +102,7 @@ export default function Navbar() {
                 variant="ghost"
                 className="w-full"
                 onPress={() => {
-                  router.push(`/${locale}/auth/signin`);
+                  setIsSigninModalOpen(true);
                   document.body.click(); // close mobile menu
                 }}
               >
@@ -130,6 +133,16 @@ export default function Navbar() {
           onOpenChange={drawerDisclosure.onOpenChange}
         />
       )}
+      
+      {/* Signin Modal */}
+      <SigninModal
+        isOpen={isSigninModalOpen}
+        onClose={() => setIsSigninModalOpen(false)}
+        onSuccessRedirect={() => {
+          setIsSigninModalOpen(false);
+          router.push(`/${locale}`);
+        }}
+      />
     </>
   );
 }

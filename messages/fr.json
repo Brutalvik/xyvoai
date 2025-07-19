@@ -197,7 +197,8 @@
   },
   "signup": {
     "title": "Inscrivez-vous à XYVO",
-    "name": "Votre nom",
+    "firstName": "Prénom",
+    "lastName": "Nom de famille",
     "email": "Courriel",
     "continue": "Continuer",
     "singingup": "Inscription en cours...",

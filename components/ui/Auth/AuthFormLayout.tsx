@@ -17,8 +17,9 @@ interface AuthFormLayoutProps {
   showSocials?: boolean;
   alternativeAuthLink?: {
     text: string;
-    href: string;
+    href?: string;
     linkText: string;
+    onClick?: () => void;
   };
   showKeyIcon?: boolean; // New prop
 }
@@ -90,12 +91,21 @@ export default function AuthFormLayout({
           {alternativeAuthLink && (
             <div className="text-xs text-center">
               {alternativeAuthLink.text}{" "}
-              <Link
-                className="underline hover:text-blue-500"
-                href={alternativeAuthLink.href}
-              >
-                {alternativeAuthLink.linkText}
-              </Link>
+              {alternativeAuthLink.onClick ? (
+                <button
+                  className="underline hover:text-blue-500 text-xs bg-transparent border-none cursor-pointer"
+                  onClick={alternativeAuthLink.onClick}
+                >
+                  {alternativeAuthLink.linkText}
+                </button>
+              ) : (
+                <Link
+                  className="underline hover:text-blue-500"
+                  href={alternativeAuthLink.href || "#"}
+                >
+                  {alternativeAuthLink.linkText}
+                </Link>
+              )}
             </div>
           )}
 
