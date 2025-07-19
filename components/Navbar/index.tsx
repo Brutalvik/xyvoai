@@ -150,6 +150,13 @@ export default function Navbar() {
           setIsSigninModalOpen(false);
           router.push(`/${locale}`);
         }}
+        onSignupClick={() => {
+          setIsSigninModalOpen(false);
+          // Small delay to allow the signin modal to close before opening signup
+          setTimeout(() => {
+            setIsSignupModalOpen(true);
+          }, 100);
+        }}
       />
       
       {/* Signup Modal */}
@@ -159,6 +166,13 @@ export default function Navbar() {
         onSuccessRedirect={() => {
           setIsSignupModalOpen(false);
           router.push(`/${locale}`);
+        }}
+        onSigninClick={() => {
+          setIsSignupModalOpen(false);
+          // Small delay to allow the signup modal to close before opening signin
+          setTimeout(() => {
+            setIsSigninModalOpen(true);
+          }, 100);
         }}
       />
     </>

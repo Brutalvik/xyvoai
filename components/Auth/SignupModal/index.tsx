@@ -29,12 +29,14 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   onSuccessRedirect: () => void;
+  onSigninClick?: () => void;
 };
 
 export default function SignupModal({
   isOpen,
   onClose,
   onSuccessRedirect,
+  onSigninClick = () => {},
 }: Props) {
   const dispatch = useAppDispatch();
   const t = useTranslations("signup");
@@ -315,8 +317,12 @@ export default function SignupModal({
               <Link
                 href="#"
                 color="primary"
-                onClick={onClose}
                 className="text-sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onClose();
+                  onSigninClick?.();
+                }}
               >
                 {t("signin")}
               </Link>

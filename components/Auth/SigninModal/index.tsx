@@ -29,12 +29,14 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   onSuccessRedirect: () => void;
+  onSignupClick?: () => void;
 };
 
 export default function SigninModal({
   isOpen,
   onClose,
   onSuccessRedirect,
+  onSignupClick,
 }: Props) {
   const dispatch = useAppDispatch();
   const t = useTranslations("Signin");
@@ -195,7 +197,15 @@ export default function SigninModal({
             </p>
             <p className="text-xs text-gray-500">
               {t("noAccount")}{" "}
-              <Link href="/auth/signup" color="primary">
+              <Link
+                href="#"
+                color="primary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onClose();
+                  onSignupClick?.();
+                }}
+              >
                 {t("signup")}
               </Link>
             </p>
