@@ -202,6 +202,24 @@
   },
   "signup": {
     "title": "AI-powered clarity for powerful teams",
+    "usageType": {
+      "title": "Choose Your Plan",
+      "heading": "How will you use YVO?",
+      "subheading": "Select the option that best describes your needs",
+      "personal": {
+        "title": "For Myself",
+        "description": "Perfect for individual users and personal projects",
+        "benefit": "Start with a free trial"
+      },
+      "team": {
+        "title": "For My Team",
+        "description": "Collaborate with your team members",
+        "benefit": "14-day team trial"
+      },
+      "note": "Not sure? You can <a href='#' class='text-primary hover:underline'>learn more</a> about our plans",
+      "back": "Back",
+      "continue": "Continue"
+    },
     "firstName": "First name",
     "lastName": "Last name",
     "email": "Email",

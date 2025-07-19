@@ -198,6 +198,24 @@
   },
   "signup": {
     "title": "Clarté alimentée par l'IA pour des équipes puissantes.",
+    "usageType": {
+      "title": "Choisissez Votre Plan",
+      "heading": "Comment utiliserez-vous YVO ?",
+      "subheading": "Sélectionnez l'option qui correspond le mieux à vos besoins",
+      "personal": {
+        "title": "Pour Moi",
+        "description": "Parfait pour les utilisateurs individuels et les projets personnels",
+        "benefit": "Commencez avec un essai gratuit"
+      },
+      "team": {
+        "title": "Pour Mon Équipe",
+        "description": "Collaborez avec les membres de votre équipe",
+        "benefit": "Essai d'équipe de 14 jours"
+      },
+      "note": "Vous hésitez ? Vous pouvez en <a href='#' class='text-primary hover:underline'>savoir plus</a> sur nos forfaits",
+      "back": "Retour",
+      "continue": "Continuer"
+    },
     "firstName": "Prénom",
     "lastName": "Nom de famille",
     "email": "Courriel",
