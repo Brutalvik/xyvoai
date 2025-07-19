@@ -119,7 +119,9 @@ export default function SignupModal({
                 YVO
               </h1>
             </div>
-            <p className="text-white text-xs mt-0.5">{t("title")}</p>
+            <p className="text-[10px] text-gray-400 leading-tight">
+              {t("title")}
+            </p>
           </div>
 
           {/* Form */}
@@ -288,36 +290,36 @@ export default function SignupModal({
           </ModalBody>
 
           <ModalFooter className="flex flex-col gap-1.5 py-3 sm:py-4 px-4 sm:px-5 text-center border-t border-gray-100">
-            <p className="text-[10px] text-gray-400 italic leading-tight">
-              AI-powered clarity for powerful teams.
-            </p>
-            <p className="text-[10px] text-gray-400 italic leading-tight">
-              By continuing, you agree to XYVO's{" "}
-              <Link
-                href={`/${locale}/legal/conditions`}
-                size="sm"
-                color="primary"
-                className="text-xs sm:text-sm"
-              >
-                Conditions of Use
-              </Link>{" "}
-              and{" "}
-              <Link
-                href={`/${locale}/legal/privacy`}
-                size="sm"
-                color="primary"
-                className="text-xs sm:text-sm"
-              >
-                Privacy Notice
-              </Link>
-              .
+            <p className="text-[10px] text-gray-400 leading-tight">
+              {t.rich("agreementNotice", {
+                terms: (chunks) => (
+                  <Link
+                    href={`/${locale}/legal/conditions`}
+                    color="primary"
+                    className="text-xs"
+                    onClick={onClose}
+                  >
+                    {chunks}
+                  </Link>
+                ),
+                privacy: (chunks) => (
+                  <Link
+                    href={`/${locale}/legal/privacy`}
+                    color="primary"
+                    className="text-xs"
+                    onClick={onClose}
+                  >
+                    {chunks}
+                  </Link>
+                ),
+              })}
             </p>
             <p className="text-xs text-gray-500 mt-1">
               {t("haveAccount")}{" "}
               <Link
                 href="#"
                 color="primary"
-                className="text-sm"
+                className="text-xs"
                 onClick={(e) => {
                   e.preventDefault();
                   onClose();

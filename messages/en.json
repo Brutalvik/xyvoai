@@ -149,6 +149,7 @@
   },
 
   "footer": {
+    "copyright": "© 2025 Xyvo Inc. All rights reserved.",
     "tagline": "AI-powered project management system for modern teams.",
     "product": {
       "title": "Product",
@@ -200,7 +201,7 @@
     "countryCode": "Country Code"
   },
   "signup": {
-    "title": "Sign up for XYVO",
+    "title": "AI-powered clarity for powerful teams",
     "firstName": "First name",
     "lastName": "Last name",
     "email": "Email",

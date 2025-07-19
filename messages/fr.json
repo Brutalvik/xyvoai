@@ -154,6 +154,7 @@
   },
 
   "footer": {
+    "copyright": "© 2025 Xyvo Inc. Tous droits réservés.",
     "tagline": "Système de gestion de projet propulsé par l’IA pour les équipes modernes.",
     "product": {
       "title": "Produit",
@@ -196,7 +197,7 @@
     "countryCode": "Indicatif du pays"
   },
   "signup": {
-    "title": "Inscrivez-vous à XYVO",
+    "title": "Clarté alimentée par l'IA pour des équipes puissantes.",
     "firstName": "Prénom",
     "lastName": "Nom de famille",
     "email": "Courriel",
