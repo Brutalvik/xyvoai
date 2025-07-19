@@ -20,7 +20,6 @@ import UserDrawer from "./UserDrawer";
 import LanguageSwitch from "@/components/LanguageSwitch";
 import { ThemeSwitch } from "@/components/theme-switch";
 import SigninModal from "@/components/Auth/SigninModal";
-import SignupModal from "@/components/Auth/SignupModal";
 import { useState } from "react";
 
 export default function Navbar() {
@@ -31,7 +30,6 @@ export default function Navbar() {
 
   const drawerDisclosure = useDisclosure();
   const [isSigninModalOpen, setIsSigninModalOpen] = useState(false);
-  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
 
   return (
     <>
@@ -80,7 +78,7 @@ export default function Navbar() {
                 variant="solid"
                 color="primary"
                 onPress={() => {
-                  setIsSignupModalOpen(true);
+                  router.push(`/${locale}/auth/signup`);
                 }}
               >
                 {t("signUp")}
@@ -95,17 +93,11 @@ export default function Navbar() {
         <NavbarMenu className="!p-6 space-y-6 backdrop-blur-md shadow-lg">
           {!loggedIn && (
             <div className="flex flex-col items-end gap-3 w-full mt-4">
-              <Button 
-                variant="solid" 
-                color="primary" 
-                className="w-full"
-                onPress={() => {
-                  setIsSignupModalOpen(true);
-                  document.body.click(); // close mobile menu
-                }}
-              >
-                {t("signUp")}
-              </Button>
+              <NextLink href={`/${locale}/auth/signup`} className="w-[90%]">
+                <Button variant="solid" color="primary" className="w-full">
+                  {t("signUp")}
+                </Button>
+              </NextLink>
               <Button
                 variant="ghost"
                 className="w-full"
@@ -148,16 +140,6 @@ export default function Navbar() {
         onClose={() => setIsSigninModalOpen(false)}
         onSuccessRedirect={() => {
           setIsSigninModalOpen(false);
-          router.push(`/${locale}`);
-        }}
-      />
-      
-      {/* Signup Modal */}
-      <SignupModal
-        isOpen={isSignupModalOpen}
-        onClose={() => setIsSignupModalOpen(false)}
-        onSuccessRedirect={() => {
-          setIsSignupModalOpen(false);
           router.push(`/${locale}`);
         }}
       />
