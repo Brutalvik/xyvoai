@@ -48,7 +48,7 @@ export function BoardHeader({
 
   const UnAuthAvatar = () => {
     return (
-      <Tooltip content="Unverified">
+      <Tooltip content="Unverified" showArrow={true}>
         <Badge
           color="warning"
           content="U"
