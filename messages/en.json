@@ -27,6 +27,7 @@
     "signUp": "Sign Up",
     "welcome": "Welcome",
     "unverified": "Unverified",
+    "verify": "Verify",
     "individual": "Individual",
     "profile": "Profile",
     "signOut": "Sign Out",
@@ -198,8 +199,23 @@
       "codeExpiredWarning": "Your verification code has expired. Please request a new one.",
       "maxAttemptsWarning": "Maximum attempts reached. Please request a new verification code.",
       "securityNotice": "For your security, this code will expire in 15 minutes.",
-      "attemptsRemaining": "{remaining} attempts remaining"
+      "attemptsRemaining": "{remaining} attempts remaining",
+      "verifyButton": "Verify Code",
+      "resendButton": "Resend Code",
+      "backButton": "Back",
+      "resendErrorMessage": "Failed to send code. Please try again.",
+      "validation": {
+        "required": "Verification code is required",
+        "invalidCode": "Please enter a valid 6-digit code",
+        "codeLength": "Verification code must be 6 digits",
+        "codeNumeric": "Verification code must contain only numbers"
+      },
+      "success": {
+        "title": "Verification Successful",
+        "message": "Your email address has been successfully verified!"
+      }
     },
+
     "password": {
       "instructionsLabel": "Password instructions",
       "minCharacters": "Min 8 characters",
@@ -308,6 +324,23 @@
     "attemptsRemaining": "{remaining} attempts remaining"
   },
   "validation": {
+    "emailVerification": {
+      "title": "Verify Your Email",
+      "description": "We've sent a 6-digit verification code to {email}. Please enter it below to verify your account.",
+      "codeLabel": "Verification code",
+      "sendCodeButton": "Send verification code",
+      "successTitle": "Verification code sent",
+      "successMessage": "Please check your email for the verification code.",
+      "errorTitle": "Request failed",
+      "errorMessage": "Unable to send verification code. Please try again.",
+      "userNotFound": "No account found with this email address.",
+      "rateLimitTitle": "Too many attempts",
+      "rateLimitMessage": "Please wait before requesting another code.",
+      "rateLimitWarning": "You've reached the maximum number of attempts. Please wait 15 minutes before trying again.",
+      "securityNotice": "For your security, verification codes expire in 15 minutes.",
+      "backToSignin": "Remember your password?",
+      "signinLink": "Sign in"
+    },
     "required": "Required",
     "invalidEmail": "Invalid email",
     "emailTooLong": "Email address is too long",

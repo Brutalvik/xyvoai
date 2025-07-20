@@ -180,15 +180,35 @@
   "auth": {
     "verification": {
       "title": "Entrez le code de vérification",
-      "description": "Nous avons envoyé un code à 6 chiffres à {email}",
+      "description": "Nous avons envoyé un code de vérification à 6 chiffres à {email}. Entrez le code et votre nouveau mot de passe ci-dessous.",
+      "codeLabel": "Code de vérification",
+      "newPasswordLabel": "Nouveau mot de passe",
+      "confirmPasswordLabel": "Confirmer le nouveau mot de passe",
+      "resetPasswordButton": "Réinitialiser le mot de passe",
+      "cancel": "Annuler",
+      "requestNewCode": "Demander un nouveau code",
+      "successTitle": "Réinitialisation réussie",
+      "successMessage": "Votre mot de passe a été mis à jour. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+      "errorTitle": "Échec de la réinitialisation",
+      "errorMessage": "Impossible de réinitialiser le mot de passe. Veuillez réessayer.",
+      "invalidCode": "Code de vérification invalide. Veuillez vérifier et réessayer.",
+      "expiredCode": "Le code de vérification a expiré. Veuillez en demander un nouveau.",
+      "invalidPassword": "Le mot de passe ne répond pas aux exigences de sécurité.",
+      "maxAttemptsTitle": "Trop de tentatives",
+      "maxAttemptsMessage": "Vous avez dépassé le nombre maximum de tentatives. Veuillez demander un nouveau code.",
+      "codeExpiredWarning": "Votre code de vérification a expiré. Veuillez en demander un nouveau.",
+      "maxAttemptsWarning": "Nombre maximum de tentatives atteint. Veuillez demander un nouveau code de vérification.",
+      "securityNotice": "Pour des raisons de sécurité, ce code expirera dans 15 minutes.",
+      "attemptsRemaining": "{remaining} tentatives restantes",
       "verifyButton": "Vérifier le code",
       "resendButton": "Renvoyer le code",
       "backButton": "Retour",
-      "errorMessage": "Code de vérification invalide. Veuillez réessayer.",
       "resendErrorMessage": "Échec de l'envoi du code. Veuillez réessayer.",
       "validation": {
         "required": "Le code de vérification est requis",
-        "invalidCode": "Veuillez entrer un code à 6 chiffres valide"
+        "invalidCode": "Veuillez entrer un code à 6 chiffres valide",
+        "codeLength": "Le code de vérification doit contenir 6 chiffres",
+        "codeNumeric": "Le code de vérification ne doit contenir que des chiffres"
       },
       "success": {
         "title": "Vérification réussie",
@@ -267,8 +287,8 @@
     "errorMessage": "Impossible d'envoyer le code de vérification. Veuillez réessayer.",
     "userNotFound": "Aucun compte trouvé avec cette adresse courriel.",
     "rateLimitTitle": "Trop de tentatives",
-    "rateLimitMessage": "Veuillez attendre avant de demander un autre code.",
-    "rateLimitWarning": "Vous avez atteint le nombre maximum de tentatives. Veuillez attendre 15 minutes avant de réessayer.",
+    "rateLimitMessage": "Veuillez patienter avant de demander un autre code.",
+    "rateLimitWarning": "Vous avez atteint le nombre maximum de tentatives. Veuillez patienter 15 minutes avant de réessayer.",
     "securityNotice": "Pour votre sécurité, les codes de vérification expirent dans 15 minutes.",
     "backToSignin": "Vous vous souvenez de votre mot de passe ?",
     "signinLink": "Se connecter"
@@ -297,6 +317,23 @@
     "attemptsRemaining": "{remaining} tentatives restantes"
   },
   "validation": {
+    "emailVerification": {
+      "title": "Vérifiez votre adresse e-mail",
+      "description": "Nous avons envoyé un code de vérification à 6 chiffres à {email}. Veuillez le saisir ci-dessous pour vérifier votre compte.",
+      "codeLabel": "Code de vérification",
+      "sendCodeButton": "Envoyer le code de vérification",
+      "successTitle": "Code de vérification envoyé",
+      "successMessage": "Veuillez vérifier votre e-mail pour le code de vérification.",
+      "errorTitle": "Échec de la demande",
+      "errorMessage": "Impossible d'envoyer le code de vérification. Veuillez réessayer.",
+      "userNotFound": "Aucun compte trouvé avec cette adresse e-mail.",
+      "rateLimitTitle": "Trop de tentatives",
+      "rateLimitMessage": "Veuillez patienter avant de demander un autre code.",
+      "rateLimitWarning": "Vous avez atteint le nombre maximum de tentatives. Veuillez patienter 15 minutes avant de réessayer.",
+      "securityNotice": "Pour votre sécurité, les codes de vérification expirent après 15 minutes.",
+      "backToSignin": "Vous connaissez votre mot de passe ?",
+      "signinLink": "Se connecter"
+    },
     "required": "Obligatoire",
     "invalidEmail": "Courriel invalide",
     "emailTooLong": "L'adresse courriel est trop longue",
@@ -336,19 +373,19 @@
     },
     "taskGen": {
       "badge": "Tâches générées",
-      "fakeUI": "📌 Réunion d'équipe — Lundi 10h\n📌 Revue de conception — Mardi 14h"
+      "fakeUI": " Réunion d'équipe — Lundi 10h\n Revue de conception — Mardi 14h"
     },
     "calendar": {
       "badge": "Planification automatique",
-      "fakeUI": "📅 Créneau réservé : Lundi 10h"
+      "fakeUI": " Créneau réservé : Lundi 10h"
     },
     "assign": {
       "badge": "Partagé avec l’équipe",
-      "fakeUI": "👤 Assigné à : Alex, Priya"
+      "fakeUI": " Assigné à : Alex, Priya"
     },
     "summary": {
       "badge": "Résumé par l'IA",
-      "fakeUI": "📝 Résumé : Planification hebdomadaire initiée avec tâches et calendrier."
+      "fakeUI": " Résumé : Planification hebdomadaire initiée avec tâches et calendrier."
     }
   },
   "conditions": {
@@ -747,7 +784,7 @@
     "chat1": "Que dois-je faire ensuite ?",
     "chat2": "En fonction de vos objectifs de sprint et de la vélocité de l'équipe, je recommande de vous concentrer sur la tâche Authentification Utilisateur (5 points). Elle bloque 2 autres tâches et correspond à la priorité actuelle du sprint.",
     "chat3": "Créer une tâche pour l'optimisation mobile",
-    "chat4": "✓ Tâche 'Optimisation mobile' créée avec 8 points, assignée à l'équipe Frontend, à rendre pour vendredi prochain. Critères d'acceptation ajoutés et liée au sprint en cours."
+    "chat4": " Tâche 'Optimisation mobile' créée avec 8 points, assignée à l'équipe Frontend, à rendre pour vendredi prochain. Critères d'acceptation ajoutés et liée au sprint en cours."
   },
   "CTASection": {
     "title": "Prêt à transformer votre gestion de projet ?",
