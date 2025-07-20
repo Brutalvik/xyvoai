@@ -3,7 +3,7 @@
 import { Menu, Search, Eye, Filter, Trash2 } from "lucide-react";
 import { useAppSelector } from "@/store/hooks";
 import { isLoggedIn, selectUser } from "@/store/selectors";
-import { useDisclosure } from "@heroui/react";
+import { Badge, Tooltip, useDisclosure } from "@heroui/react";
 import { Avatar } from "@heroui/react";
 import _ from "lodash";
 
@@ -20,8 +20,48 @@ export function BoardHeader({
   const activeUser: any = useAppSelector(selectUser);
   const { user } = activeUser || {};
 
-  const avatarBg = user?.id ? getBgColor(user.id) : "bg-gray-400";
+  const avatarBg = getBgColor(user?.id || "", true);
   const avatarInitial = getInitial(user?.name || "");
+
+  const AuthAvatar = () => {
+    return (
+      <Avatar
+        name={avatarInitial}
+        radius="md"
+        size="sm"
+        src={user?.image}
+        style={
+          user?.image
+            ? {}
+            : {
+                backgroundColor: avatarBg,
+                fontSize: "0.975rem",
+                fontWeight: 700,
+                color: "#fff",
+              }
+        }
+        className="cursor-pointer"
+        onClick={drawerDisclosure.onOpen}
+      />
+    );
+  };
+
+  const UnAuthAvatar = () => {
+    return (
+      <Tooltip content="Unverified">
+        <Badge
+          color="warning"
+          content="U"
+          variant="solid"
+          className="cursor-pointer"
+          size="sm"
+          showOutline={false}
+        >
+          <AuthAvatar />
+        </Badge>
+      </Tooltip>
+    );
+  };
 
   return (
     <>
@@ -51,25 +91,7 @@ export function BoardHeader({
           <button className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-neutral-700">
             <Trash2 size={18} />
           </button>
-          {loggedIn && (
-            <Avatar
-              name={avatarInitial}
-              size="sm"
-              src={user?.image}
-              style={
-                user?.image
-                  ? {}
-                  : {
-                      backgroundColor: getBgColor(user?.id || "", true),
-                      fontSize: "0.975rem",
-                      fontWeight: 700,
-                      color: "#fff",
-                    }
-              }
-              className="cursor-pointer"
-              onClick={drawerDisclosure.onOpen}
-            />
-          )}
+          {loggedIn && !user.emailVerified ? <AuthAvatar /> : <UnAuthAvatar />}
         </div>
       </header>
 
