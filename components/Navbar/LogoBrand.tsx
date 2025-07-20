@@ -2,8 +2,8 @@
 
 import { NavbarBrand } from "@heroui/navbar";
 import NextLink from "next/link";
-import { Logo } from "@/components/icons";
 import { useTranslations } from "next-intl";
+import XyvoLogo from "@/components/XyvoLogo";
 
 export default function LogoBrand() {
   const t = useTranslations("Navbar");
@@ -18,10 +18,7 @@ export default function LogoBrand() {
         href="/"
         aria-label={t("logoAria", { default: "Go to homepage" })}
       >
-        <Logo className="h-7 w-7 sm:h-8 sm:w-8" />
-        <span className="font-bold text-lg text-default-900 whitespace-nowrap">
-          YVO
-        </span>
+        <XyvoLogo />
       </NextLink>
     </NavbarBrand>
   );

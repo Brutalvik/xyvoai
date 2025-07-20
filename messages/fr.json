@@ -33,6 +33,7 @@
     "signUp": "S'inscrire",
     "welcome": "Bienvenue",
     "individual": "Individuel",
+    "team": "Équipe",
     "profile": "Profil",
     "signOut": "Déconnexion",
     "signedOutTitle": "Déconnecté",
@@ -155,7 +156,7 @@
   },
 
   "footer": {
-    "copyright": "© 2025 Xyvo Inc. Tous droits réservés.",
+    "copyright": " 2025 Xyvo Inc. Tous droits réservés.",
     "tagline": "Système de gestion de projet propulsé par l’IA pour les équipes modernes.",
     "product": {
       "title": "Produit",

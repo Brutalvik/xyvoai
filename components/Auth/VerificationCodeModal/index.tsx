@@ -164,7 +164,8 @@ export function VerificationCodeModal({
                     {onResendCode && (
                       <Button
                         type="button"
-                        variant="light"
+                        variant="flat"
+                        color="default"
                         className="w-full"
                         onPress={handleResendCode}
                         isDisabled={isResending}

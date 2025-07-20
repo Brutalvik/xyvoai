@@ -29,6 +29,7 @@
     "unverified": "Unverified",
     "verify": "Verify",
     "individual": "Individual",
+    "team": "Team",
     "profile": "Profile",
     "signOut": "Sign Out",
     "signedOutTitle": "Signed Out",
@@ -152,7 +153,7 @@
   },
 
   "footer": {
-    "copyright": "© 2025 Xyvo Inc. All rights reserved.",
+    "copyright": " 2025 Xyvo Inc. All rights reserved.",
     "tagline": "AI-powered project management system for modern teams.",
     "product": {
       "title": "Product",
@@ -380,19 +381,19 @@
     },
     "taskGen": {
       "badge": "Tasks Generated",
-      "fakeUI": "📌 Team Sync — Monday 10am\n📌 Design Review — Tuesday 2pm"
+      "fakeUI": " Team Sync — Monday 10am\n Design Review — Tuesday 2pm"
     },
     "calendar": {
       "badge": "Auto-Scheduling",
-      "fakeUI": "📅 Calendar slot booked: 10am Monday"
+      "fakeUI": " Calendar slot booked: 10am Monday"
     },
     "assign": {
       "badge": "Shared with Team",
-      "fakeUI": "👤 Assigned to: Alex, Priya"
+      "fakeUI": " Assigned to: Alex, Priya"
     },
     "summary": {
       "badge": "AI Summary",
-      "fakeUI": "📝 Summary: Weekly planning initiated with tasks and timeline."
+      "fakeUI": " Summary: Weekly planning initiated with tasks and timeline."
     }
   },
   "conditions": {
@@ -795,7 +796,7 @@
     "chat1": "What should I work on next?",
     "chat2": "Based on your sprint goals and team velocity, I recommend focusing on the User Authentication task (5 points). It's blocking 2 other tasks and aligns with your current sprint priority.",
     "chat3": "Create a task for mobile optimization",
-    "chat4": "✓ Created task 'Mobile Optimization' with 8 story points, assigned to Frontend team, due next Friday. Added acceptance criteria and linked to current sprint."
+    "chat4": " Created task 'Mobile Optimization' with 8 story points, assigned to Frontend team, due next Friday. Added acceptance criteria and linked to current sprint."
   },
   "CTASection": {
     "title": "Ready to Transform Your Project Management?",
