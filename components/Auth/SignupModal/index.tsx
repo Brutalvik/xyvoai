@@ -18,7 +18,7 @@ import { signupThunk, signupWithUsageTypeThunk } from "@/store/auth/thunks";
 import { PasswordInput } from "@/components/ui/Auth/PasswordInput";
 import { PhoneInput } from "@/components/ui/Auth/PhoneInput";
 import { Logo } from "@/components/icons";
-import { HiBan, HiExclamation } from "react-icons/hi";
+import { HiBadgeCheck, HiBan, HiExclamation } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
 import { FaMicrosoft } from "react-icons/fa6";
 import { addToast } from "@heroui/react";
@@ -26,6 +26,7 @@ import { Mail, User } from "lucide-react";
 import { passwordRules } from "@/utils";
 import { UsageType, UsageTypeModal } from "@/components/Auth/UsageTypeModal";
 import { useState } from "react";
+import { setUser } from "@/store/slices/userSlice";
 
 type Props = {
   isOpen: boolean;
@@ -68,7 +69,6 @@ export default function SignupModal({
     }),
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        // Combine firstName and lastName as "firstname/lastname" for backend
         const formattedValues = {
           ...values,
           firstName: values.firstName,
@@ -118,7 +118,7 @@ export default function SignupModal({
           usageType: usageType,
         })
       ).unwrap();
-      console.log("response from thunk", response);
+
       if (response?.status === 207) {
         addToast({
           title: t("warningTitle"),
@@ -130,8 +130,15 @@ export default function SignupModal({
         return;
       }
       if (response?.status === 200) {
+        addToast({
+          title: t("successTitle"),
+          description: t("successMessage"),
+          color: "success",
+          icon: <HiBadgeCheck />,
+        });
         setIsUsageTypeModalOpen(false);
         onSuccessRedirect();
+        return;
       }
     } catch (error: any) {
       addToast({
