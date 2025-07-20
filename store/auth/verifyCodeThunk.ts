@@ -9,7 +9,7 @@ export const resendVerificationCodeThunk = createAsyncThunk(
       const response = await resendVerificationCode(email);
       return response;
     } catch (error: any) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error);
     }
   }
 );
@@ -22,11 +22,9 @@ export const verifyCodeThunk = createAsyncThunk(
   ) => {
     try {
       const response = await verifyCode(email, code);
-      console.log("Response from verifyCodeThunk:", response);
       return response;
     } catch (error: any) {
-      console.log("Error from verifyCodeThunk:", error);
-      return rejectWithValue(error.message);
+      return rejectWithValue(error);
     }
   }
 );

@@ -5,15 +5,21 @@ import {
   VerifyCodeErrorType,
 } from "@/utils/VerificationErrorCodes";
 
-export function mapVerifyCodeError(error: {
-  error?: string;
-  message?: string;
-}): {
+export function mapVerifyCodeError(error: string): {
   type: VerifyCodeErrorType;
-  status: "danger" | "warning" | "info";
+  status:
+    | "warning"
+    | "default"
+    | "foreground"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "danger"
+    | undefined;
   message: string;
 } {
-  switch (error?.error) {
+  switch (error) {
     case VerifyCodeErrors.CODE_MISMATCH:
       return {
         type: VerifyCodeErrors.CODE_MISMATCH,
@@ -38,7 +44,7 @@ export function mapVerifyCodeError(error: {
     case VerifyCodeErrors.USER_ALREADY_CONFIRMED:
       return {
         type: VerifyCodeErrors.USER_ALREADY_CONFIRMED,
-        status: "info",
+        status: "warning",
         message: "Your email is already verified.",
       };
 
@@ -60,8 +66,7 @@ export function mapVerifyCodeError(error: {
       return {
         type: VerifyCodeErrors.UNKNOWN,
         status: "danger",
-        message:
-          error?.message || "An unknown error occurred. Please try again.",
+        message: "An unknown error occurred. Please try again.",
       };
   }
 }

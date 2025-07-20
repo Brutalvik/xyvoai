@@ -133,7 +133,7 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
       addToast({
         title: t("errorToast.title"),
         description: mapped.message,
-        color: "danger",
+        color: mapped.status,
         icon: <HiExclamationCircle />,
       });
     }
