@@ -24,7 +24,7 @@ interface Props {
 
 export function UsageTypeModal({ isOpen, onClose, onContinue }: Props) {
   const t = useTranslations("signup");
-  const [usageType, setUsageType] = React.useState<UsageType | "">("");
+  const [usageType, setUsageType] = React.useState<UsageType | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState<UsageType | null>(
     null
@@ -41,19 +41,11 @@ export function UsageTypeModal({ isOpen, onClose, onContinue }: Props) {
     setSelectedCard(type);
   };
 
-  const handleCloseModal = () => {
-    // Reset state when modal is closed
-    setUsageType("");
-    setSelectedCard(null);
-    setIsSubmitting(false);
-    onClose();
-  };
-
   return (
     <Modal
       isOpen={isOpen}
       onOpenChange={(open) => {
-        if (!open) handleCloseModal();
+        if (!open) onClose();
       }}
       placement="top-center"
       backdrop="blur"
@@ -166,7 +158,6 @@ export function UsageTypeModal({ isOpen, onClose, onContinue }: Props) {
                       const target = e.target as HTMLElement;
                       if (target.tagName === "A") {
                         e.preventDefault();
-                        // Handle learn more action
                       }
                     }}
                   />

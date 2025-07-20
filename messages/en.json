@@ -232,6 +232,8 @@
     "successTitle": "Account created!",
     "successMessage": "You’ve successfully registered. Please log in.",
     "errorTitle": "Registration failed",
+    "warningTitle": "Registration Completed",
+    "warningMessage": "Partial Registration, Please login",
     "errorMessage": "Something went wrong. Please try again.",
     "selectUsageTitle": "How will you use Xyvo?",
     "selectUsageDescription": "This helps us customize your experience",

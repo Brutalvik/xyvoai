@@ -228,6 +228,8 @@
     "successTitle": "Compte créé !",
     "successMessage": "Vous vous êtes inscrit avec succès. Veuillez vous connecter.",
     "errorTitle": "Échec de l'inscription",
+    "warningTitle": "Inscription terminée",
+    "warningMessage": "Inscription terminée, Veuillez vous connecter.",
     "errorMessage": "Une erreur s'est produite. Veuillez réessayer.",
     "selectUsageTitle": "Comment allez-vous utiliser Xyvo ?",
     "selectUsageDescription": "Cela nous aide à personnaliser votre expérience",

@@ -3,6 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { CDN } from "@/config";
 import { clearUser, setUser } from "@/store/slices/userSlice";
+import { UsageType } from "@/components/Auth/UsageTypeModal";
 
 type SignupForm = {
   name: string;
@@ -46,12 +47,11 @@ export const signupThunk = createAsyncThunk(
 export const signupWithUsageTypeThunk = createAsyncThunk(
   "auth/signup",
   async (
-    {
-      values,
-      usageType,
-    }: { values: SignupForm; usageType: "personal" | "team" },
+    { values, usageType }: { values: SignupForm; usageType: UsageType },
     { rejectWithValue }
   ) => {
+    console.log("values from thunk", values);
+    console.log("usageType from thunk", usageType);
     try {
       const res = await fetch(`${CDN.userAuthUrl}/auth/signup`, {
         method: "POST",
@@ -71,8 +71,20 @@ export const signupWithUsageTypeThunk = createAsyncThunk(
       const data = await res.json();
 
       if (!res.ok) throw new Error(data?.message || "Signup failed");
+      if (res.status === 207) {
+        return {
+          isRegistered: true,
+          message: "Partial Registration",
+          status: 207,
+        };
+      }
 
-      return data;
+      return {
+        isRegistered: true,
+        message: "User Registered Successfully",
+        user: data,
+        status: 200,
+      };
     } catch (error: any) {
       return rejectWithValue(error.message || "Signup failed");
     }

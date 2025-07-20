@@ -14,18 +14,18 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useTranslations, useLocale } from "next-intl";
 import { useAppDispatch } from "@/store/hooks";
-import { signupThunk } from "@/store/auth/thunks";
+import { signupThunk, signupWithUsageTypeThunk } from "@/store/auth/thunks";
 import { PasswordInput } from "@/components/ui/Auth/PasswordInput";
 import { PhoneInput } from "@/components/ui/Auth/PhoneInput";
 import { Logo } from "@/components/icons";
-import { HiBan } from "react-icons/hi";
+import { HiBan, HiExclamation } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
 import { FaMicrosoft } from "react-icons/fa6";
 import { addToast } from "@heroui/react";
 import { Mail, User } from "lucide-react";
 import { passwordRules } from "@/utils";
 import { UsageType, UsageTypeModal } from "@/components/Auth/UsageTypeModal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Props = {
   isOpen: boolean;
@@ -46,7 +46,7 @@ export default function SignupModal({
   const locale = useLocale();
 
   const [isUsageTypeModalOpen, setIsUsageTypeModalOpen] = useState(false);
-  const [usageType, setUsageType] = useState<UsageType>("personal");
+  const [usageType, setUsageType] = useState<UsageType | null>(null);
 
   const formik = useFormik({
     initialValues: {
@@ -80,21 +80,22 @@ export default function SignupModal({
         const { requireUsageType } = await dispatch(
           signupThunk(valuesForBackend)
         ).unwrap();
-        console.log("requireUsageType", requireUsageType);
-        if (!requireUsageType) {
+        // if (!requireUsageType && requireUsageType === true) {
+        //   onClose();
+        //   addToast({
+        //     title: t("errorTitle"),
+        //     description: t("usageTypeRequired"),
+        //     color: "danger",
+        //     icon: <HiBan />,
+        //   });
+        //   return;
+        // }
+        if (requireUsageType) {
           onClose();
-          addToast({
-            title: t("errorTitle"),
-            description: t("usageTypeRequired"),
-            color: "danger",
-            icon: <HiBan />,
-          });
+          setIsUsageTypeModalOpen(true);
           return;
         }
-        formik.setFieldValue("usageType", usageType);
-        console.log("values", formik.values);
         onClose();
-        setIsUsageTypeModalOpen(true);
       } catch (error: any) {
         addToast({
           title: t("errorTitle"),
@@ -112,10 +113,43 @@ export default function SignupModal({
     setIsUsageTypeModalOpen(false);
   };
 
-  const onUsageTypeModalContinue = (usageType: UsageType) => {
-    setUsageType(usageType);
-    setIsUsageTypeModalOpen(false);
-    onSuccessRedirect();
+  const onUsageTypeModalContinue = async (usageType: UsageType) => {
+    try {
+      const response = await dispatch(
+        signupWithUsageTypeThunk({
+          values: {
+            name: `${formik.values.firstName} ${formik.values.lastName}`,
+            email: formik.values.email,
+            phone: formik.values.phone,
+            password: formik.values.password,
+            countryCode: formik.values.countryCode,
+          },
+          usageType: usageType,
+        })
+      ).unwrap();
+      console.log("response from thunk", response);
+      if (response?.status === 207) {
+        addToast({
+          title: t("errorTitle"),
+          description: response?.message || t("errorMessage"),
+          color: "warning",
+          icon: <HiExclamation />,
+        });
+        setIsUsageTypeModalOpen(false);
+        return;
+      }
+      if (response?.status === 200) {
+        setIsUsageTypeModalOpen(false);
+        onSuccessRedirect();
+      }
+    } catch (error: any) {
+      addToast({
+        title: t("warningTitle"),
+        description: error?.message || t("errorMessage"),
+        color: "danger",
+        icon: <HiBan />,
+      });
+    }
   };
 
   return (
