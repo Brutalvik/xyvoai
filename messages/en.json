@@ -348,7 +348,7 @@
     "nameShort": "Too short",
     "phoneInvalid": "Please enter a valid phone number",
     "passwordLength": "Password must be at least 8 characters",
-    "passwordPattern": "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
+    "passwordPattern": "Password must contain at least one uppercase, one lowercase, one number, and one special character.",
     "invalidCodeFormat": "Please enter a valid verification code",
     "codeLength": "Verification code must be 6 digits",
     "passwordMismatch": "Passwords do not match"
