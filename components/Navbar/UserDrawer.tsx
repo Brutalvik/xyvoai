@@ -34,6 +34,8 @@ import {
   resendVerificationCodeThunk,
   verifyCodeThunk,
 } from "@/store/auth/verifyCodeThunk";
+import { title } from "process";
+import { mapVerifyCodeError } from "@/utils/mapVerifyCodeErrors";
 
 interface UserDrawerProps {
   isOpen: boolean;
@@ -52,35 +54,72 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
 
   const handleVerify = async (code: string) => {
     try {
-      const status = await dispatch(
-        verifyCodeThunk({ email: user?.email, code })
-      ).unwrap();
+      await dispatch(verifyCodeThunk({ email: user?.email, code })).unwrap();
 
-      if (status === 200) {
-        addToast({
-          title: t("verifiedToast.title"),
-          description: t("verifiedToast.description"),
-          color: "success",
-          icon: <HiBadgeCheck />,
-        });
-
-        verificationModal.onClose();
-      }
-    } catch (err: any) {
       addToast({
-        title: t("errorToast.title"),
-        description: err.message || t("verifiedToast.error"),
-        color: "danger",
+        title: t("verifiedToast.title"),
+        description: t("verifiedToast.description"),
+        color: "success",
+        icon: <HiBadgeCheck />,
       });
+      verificationModal.onClose();
+    } catch (err: any) {
+      const errorType = err?.name || err?.error;
+
+      switch (errorType) {
+        case "CodeMismatchException":
+          addToast({
+            title: t("verifyErrors.invalidCodeTitle"),
+            description: t("verifyErrors.invalidCode"),
+            color: "danger",
+            icon: <HiExclamationCircle />,
+          });
+          break;
+
+        case "ExpiredCodeException":
+          addToast({
+            title: t("verifyErrors.codeExpiredTitle"),
+            description: t("verifyErrors.codeExpired"),
+            color: "danger",
+            icon: <HiExclamationCircle />,
+          });
+          break;
+
+        case "UserNotFoundException":
+          addToast({
+            title: t("verifyErrors.userNotFoundTitle"),
+            description: t("verifyErrors.userNotFound"),
+            color: "danger",
+            icon: <HiExclamationCircle />,
+          });
+          break;
+
+        case "NotAuthorizedException":
+          addToast({
+            title: t("verifyErrors.alreadyVerifiedTitle"),
+            description: t("verifyErrors.alreadyVerified"),
+            color: "warning",
+            icon: <HiInformationCircle />,
+          });
+          break;
+
+        default:
+          addToast({
+            title: t("verifyErrors.defaultTitle"),
+            description: t("verifyErrors.default"),
+            color: "danger",
+            icon: <HiExclamationCircle />,
+          });
+          break;
+      }
     }
   };
 
   const handleResendCode = async () => {
     try {
-      const response = await dispatch(
+      await dispatch(
         resendVerificationCodeThunk({ email: user?.email })
       ).unwrap();
-      console.log(response);
 
       addToast({
         title: t("resendToast.title"),
@@ -89,22 +128,14 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
         icon: <HiUserCircle />,
       });
     } catch (err: any) {
-      console.log(err);
-      if (err.response.status === 409) {
-        addToast({
-          title: t("resendToast.rateLimitErrorTitle"),
-          description: t("resendToast.rateLimitError"),
-          color: "danger",
-          icon: <HiExclamationCircle />,
-        });
-      } else {
-        addToast({
-          title: t("resendToast.errorTitle"),
-          description: err.message || t("resendToast.errorDescription"),
-          color: "danger",
-          icon: <HiUserCircle />,
-        });
-      }
+      const mapped = mapVerifyCodeError(err);
+
+      addToast({
+        title: t("errorToast.title"),
+        description: mapped.message,
+        color: "danger",
+        icon: <HiExclamationCircle />,
+      });
     }
   };
 

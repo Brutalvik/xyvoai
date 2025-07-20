@@ -6,7 +6,8 @@ export const resendVerificationCodeThunk = createAsyncThunk(
   "auth/resendVerificationCode",
   async ({ email }: { email: string }, { rejectWithValue }) => {
     try {
-      await resendVerificationCode(email);
+      const response = await resendVerificationCode(email);
+      return response;
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -20,8 +21,11 @@ export const verifyCodeThunk = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      await verifyCode(email, code);
+      const response = await verifyCode(email, code);
+      console.log("Response from verifyCodeThunk:", response);
+      return response;
     } catch (error: any) {
+      console.log("Error from verifyCodeThunk:", error);
       return rejectWithValue(error.message);
     }
   }

@@ -51,6 +51,18 @@
       "rateLimitErrorTitle": "Trop de tentatives",
       "rateLimitError": "Veuillez attendre 10 minutes avant de demander un nouveau code."
     },
+    "verifyErrors": {
+      "invalidCodeTitle": "Code invalide",
+      "invalidCode": "Le code que vous avez entré est invalide. Veuillez réessayer.",
+      "codeExpiredTitle": "Code expiré",
+      "codeExpired": "Le code que vous avez entré a expiré. Veuillez réessayer.",
+      "userNotFoundTitle": "Utilisateur non trouvé",
+      "userNotFound": "Aucun compte trouvé avec cette adresse e-mail.",
+      "alreadyVerifiedTitle": "Déjà vérifié",
+      "alreadyVerified": "Votre adresse e-mail a déjà été vérifiée.",
+      "defaultTitle": "Échec de la vérification",
+      "default": "La vérification a échoué. Veuillez réessayer."
+    },
     "verifiedToast": {
       "title": "Vérifié !",
       "description": "Votre adresse e-mail a été vérifiée avec succès.",

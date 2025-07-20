@@ -134,7 +134,7 @@ export function VerificationCodeModal({
                   <div className="space-y-2">
                     <InputOtp
                       value={values.code}
-                      onChange={(val) => setFieldValue("code", val)}
+                      onValueChange={(val) => setFieldValue("code", val)}
                       length={6}
                       autoFocus
                       classNames={{

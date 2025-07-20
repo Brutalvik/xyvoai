@@ -49,6 +49,18 @@
       "title": "Verified!",
       "description": "Your email has been successfully verified.",
       "error": "Verification failed. Please try again."
+    },
+    "verifyErrors": {
+      "invalidCodeTitle": "Invalid Code",
+      "invalidCode": "The code you entered is invalid. Please try again.",
+      "codeExpiredTitle": "Code Expired",
+      "codeExpired": "The code you entered has expired. Please try again.",
+      "userNotFoundTitle": "User Not Found",
+      "userNotFound": "No account found with this email address.",
+      "alreadyVerifiedTitle": "Already Verified",
+      "alreadyVerified": "Your email has already been verified.",
+      "defaultTitle": "Verification Failed",
+      "default": "Verification failed. Please try again."
     }
   },
   "Signin": {
