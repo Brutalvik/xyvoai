@@ -43,13 +43,13 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
               <div className="flex items-start justify-between">
                 <div className="flex flex-col">
                   <p>
-                    {t("welcome")}, {_.capitalize(user?.name)}
+                    {t("welcome")} {_.capitalize(user?.firstName)}
                   </p>
                   <p className="text-sm text-gray-500">
                     {_.capitalize(t(user?.role ?? "individual"))}
                   </p>
                 </div>
-                <div className="flex items-center gap-10 mr-10 block sm:hidden">
+                <div className="flex items-center gap-10 mr-10 block">
                   <LanguageSwitch />
                   <ThemeSwitch />
                 </div>

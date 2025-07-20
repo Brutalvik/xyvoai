@@ -8,8 +8,6 @@ import { Avatar } from "@heroui/react";
 import _ from "lodash";
 
 import UserDrawer from "@/components/Navbar/UserDrawer";
-import LanguageSwitch from "@/components/LanguageSwitch";
-import { ThemeSwitch } from "@/components/theme-switch";
 import { getBgColor, getInitial } from "@/utils";
 
 export function BoardHeader({
@@ -53,25 +51,24 @@ export function BoardHeader({
           <button className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-neutral-700">
             <Trash2 size={18} />
           </button>
-          {loggedIn && user && (
-            <button onClick={drawerDisclosure.onOpen}>
-              <Avatar
-                name={avatarInitial}
-                size="sm"
-                src={user?.image}
-                style={
-                  user?.image
-                    ? {}
-                    : {
-                        backgroundColor: getBgColor(user?.id || "", true),
-                        fontSize: "0.975rem",
-                        fontWeight: 700,
-                        color: "#fff",
-                      }
-                }
-                className="cursor-pointer"
-              />
-            </button>
+          {loggedIn && (
+            <Avatar
+              name={avatarInitial}
+              size="sm"
+              src={user?.image}
+              style={
+                user?.image
+                  ? {}
+                  : {
+                      backgroundColor: getBgColor(user?.id || "", true),
+                      fontSize: "0.975rem",
+                      fontWeight: 700,
+                      color: "#fff",
+                    }
+              }
+              className="cursor-pointer"
+              onClick={drawerDisclosure.onOpen}
+            />
           )}
         </div>
       </header>
