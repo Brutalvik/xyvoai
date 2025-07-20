@@ -7,6 +7,7 @@ import {
   DrawerBody,
   DrawerFooter,
   Button,
+  Chip,
 } from "@heroui/react";
 import { Settings2 } from "lucide-react";
 import _ from "lodash";
@@ -31,6 +32,7 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
   const dispatch = useAppDispatch();
   const activeUser: any = useAppSelector(selectUser);
   const { user } = activeUser || {};
+  const firstName = user?.name?.split(" ")[0];
 
   console.log(user);
 
@@ -39,12 +41,17 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
       <DrawerContent>
         {(onClose) => (
           <>
-            <DrawerHeader className="flex flex-col gap-3">
+            <DrawerHeader className="flex flex-col gap-2">
               <div className="flex items-start justify-between">
                 <div className="flex flex-col">
                   <p>
-                    {t("welcome")} {_.capitalize(user?.firstName)}
+                    {t("welcome")} {_.capitalize(firstName)}
                   </p>
+                  {String(user?.emailVerified) !== "true" && (
+                    <Chip color="warning" variant="flat" size="sm">
+                      {t("unverified")}
+                    </Chip>
+                  )}
                   <p className="text-sm text-gray-500">
                     {_.capitalize(t(user?.role ?? "individual"))}
                   </p>

@@ -2,6 +2,7 @@
 
 import { Menu, Search, Eye, Filter, Trash2 } from "lucide-react";
 import { useAppSelector } from "@/store/hooks";
+import { useTranslations } from "next-intl";
 import { isLoggedIn, selectUser } from "@/store/selectors";
 import { Badge, Tooltip, useDisclosure } from "@heroui/react";
 import { Avatar } from "@heroui/react";
@@ -16,6 +17,7 @@ export function BoardHeader({
   onToggleSidebar: () => void;
 }) {
   const drawerDisclosure = useDisclosure();
+  const t = useTranslations("Navbar");
   const loggedIn = useAppSelector(isLoggedIn);
   const activeUser: any = useAppSelector(selectUser);
   const { user } = activeUser || {};
@@ -48,7 +50,7 @@ export function BoardHeader({
 
   const UnAuthAvatar = () => {
     return (
-      <Tooltip content="Unverified" showArrow={true}>
+      <Tooltip content={t("unverified")} showArrow={true}>
         <Badge
           color="warning"
           content="U"
@@ -91,7 +93,11 @@ export function BoardHeader({
           <button className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-neutral-700">
             <Trash2 size={18} />
           </button>
-          {loggedIn && !user.emailVerified ? <AuthAvatar /> : <UnAuthAvatar />}
+          {loggedIn && String(user.emailVerified) === "true" ? (
+            <AuthAvatar />
+          ) : (
+            <UnAuthAvatar />
+          )}
         </div>
       </header>
 
