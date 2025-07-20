@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Modal, ModalContent, Button, InputOtp } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { Formik, Form, Field, FormikHelpers } from "formik";
+import { Formik, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { Logo } from "@/components/icons";
 import { HiArrowLeft, HiRefresh } from "react-icons/hi";
@@ -58,7 +58,6 @@ export function VerificationCodeModal({
     try {
       setError(null);
       await onVerify(values.code);
-      // Reset form on successful verification
       resetForm();
     } catch (err: any) {
       setError(err.message || t("errorMessage"));
@@ -79,6 +78,16 @@ export function VerificationCodeModal({
       setIsResending(false);
     }
   };
+
+  useEffect(() => {
+    const getCode = async () => {
+      if (isOpen) {
+        setError(null);
+        await onResendCode?.();
+      }
+    };
+    getCode();
+  }, [isOpen]);
 
   return (
     <Modal
@@ -117,31 +126,26 @@ export function VerificationCodeModal({
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
-              validateOnChange={false}
-              validateOnBlur={false}
+              validateOnChange={true}
+              validateOnBlur={true}
             >
               {({ isSubmitting, setFieldValue, values, errors, touched }) => (
                 <Form className="space-y-6">
                   <div className="space-y-2">
-                    <Field name="code">
-                      {({ field, form }: any) => (
-                        <InputOtp
-                          {...field}
-                          length={6}
-                          autoFocus
-                          classNames={{
-                            base: "justify-center",
-                            input: "text-2xl font-semibold text-center",
-                            inputWrapper: "h-12 w-12 mx-1",
-                          }}
-                          isInvalid={!!(errors.code && touched.code)}
-                          errorMessage={touched.code ? errors.code : undefined}
-                          onChange={(value) => {
-                            setFieldValue("code", value);
-                          }}
-                        />
-                      )}
-                    </Field>
+                    <InputOtp
+                      value={values.code}
+                      onChange={(val) => setFieldValue("code", val)}
+                      length={6}
+                      autoFocus
+                      classNames={{
+                        base: "justify-center",
+                        input: "text-2xl font-semibold text-center",
+                        segmentWrapper: "flex flex-row justify-center",
+                        segment: "h-12 w-12 mx-1",
+                      }}
+                      isInvalid={!!(errors.code && touched.code)}
+                      errorMessage={touched.code ? errors.code : undefined}
+                    />
 
                     {error && (
                       <p className="text-sm text-danger-500 text-center">

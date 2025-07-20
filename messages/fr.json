@@ -42,7 +42,20 @@
     "logoAria": "Logo Xyvo",
     "menuToggleAria": "Ouvrir le menu",
     "menuAria": "Menu principal",
-    "owner": "Propriétaire"
+    "owner": "Propriétaire",
+    "resendToast": {
+      "title": "Code envoyé",
+      "description": "Un nouveau code de vérification a été envoyé à votre adresse e-mail.",
+      "errorTitle": "Échec de l'envoi",
+      "errorDescription": "Nous n'avons pas pu envoyer le code de vérification. Veuillez réessayer plus tard.",
+      "rateLimitErrorTitle": "Trop de tentatives",
+      "rateLimitError": "Veuillez attendre 10 minutes avant de demander un nouveau code."
+    },
+    "verifiedToast": {
+      "title": "Vérifié !",
+      "description": "Votre adresse e-mail a été vérifiée avec succès.",
+      "error": "La vérification a échoué. Veuillez réessayer."
+    }
   },
   "Signin": {
     "title": "Connexion",

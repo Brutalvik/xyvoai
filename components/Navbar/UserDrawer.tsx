@@ -9,23 +9,31 @@ import {
   Button,
   Chip,
   useDisclosure,
+  addToast,
 } from "@heroui/react";
 import { Settings2 } from "lucide-react";
 import _ from "lodash";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectUser } from "@/store/selectors";
 import { signoutThunk } from "@/store/auth/thunks";
-import { addToast } from "@heroui/react";
-import { HiInformationCircle } from "react-icons/hi";
+import {
+  HiBadgeCheck,
+  HiExclamationCircle,
+  HiInformationCircle,
+  HiUserCircle,
+} from "react-icons/hi";
 import LanguageSwitch from "@/components/LanguageSwitch";
 import VerificationCodeModal from "@/components/Auth/VerificationCodeModal";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { drawerNavItems } from "@/components/Navbar/DrawerNavItems";
 import Link from "next/link";
 import clsx from "clsx";
-import { usePathname } from "next/navigation";
+import {
+  resendVerificationCodeThunk,
+  verifyCodeThunk,
+} from "@/store/auth/verifyCodeThunk";
 
 interface UserDrawerProps {
   isOpen: boolean;
@@ -43,31 +51,61 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
   const pathname = usePathname();
 
   const handleVerify = async (code: string) => {
-    // This is a placeholder. In a real app, you would dispatch a thunk
-    // to your backend to verify the code.
-    console.log(`Verifying ${user?.email} with code: ${code}`);
-    // Example: await dispatch(verifyEmailThunk({ email: user?.email, code }));
-    addToast({
-      title: "Verification Successful",
-      description: "Your email has been verified.",
-      color: "success",
-      icon: <HiInformationCircle />,
-    });
-    verificationModal.onClose();
-    // You might want to re-fetch user data here to update the UI
+    try {
+      const status = await dispatch(
+        verifyCodeThunk({ email: user?.email, code })
+      ).unwrap();
+
+      if (status === 200) {
+        addToast({
+          title: t("verifiedToast.title"),
+          description: t("verifiedToast.description"),
+          color: "success",
+          icon: <HiBadgeCheck />,
+        });
+
+        verificationModal.onClose();
+      }
+    } catch (err: any) {
+      addToast({
+        title: t("errorToast.title"),
+        description: err.message || t("verifiedToast.error"),
+        color: "danger",
+      });
+    }
   };
 
   const handleResendCode = async () => {
-    // This is a placeholder. In a real app, you would dispatch a thunk
-    // to your backend to resend the verification code.
-    console.log(`Resending verification code to ${user?.email}`);
-    // Example: await dispatch(resendVerificationCodeThunk({ email: user?.email }));
-    addToast({
-      title: "Code Sent",
-      description: "A new verification code has been sent to your email.",
-      color: "primary",
-      icon: <HiInformationCircle />,
-    });
+    try {
+      const response = await dispatch(
+        resendVerificationCodeThunk({ email: user?.email })
+      ).unwrap();
+      console.log(response);
+
+      addToast({
+        title: t("resendToast.title"),
+        description: t("resendToast.description"),
+        color: "primary",
+        icon: <HiUserCircle />,
+      });
+    } catch (err: any) {
+      console.log(err);
+      if (err.response.status === 409) {
+        addToast({
+          title: t("resendToast.rateLimitErrorTitle"),
+          description: t("resendToast.rateLimitError"),
+          color: "danger",
+          icon: <HiExclamationCircle />,
+        });
+      } else {
+        addToast({
+          title: t("resendToast.errorTitle"),
+          description: err.message || t("resendToast.errorDescription"),
+          color: "danger",
+          icon: <HiUserCircle />,
+        });
+      }
+    }
   };
 
   return (
@@ -109,7 +147,6 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
                 </div>
               </DrawerHeader>
 
-              {/* NAV ITEMS */}
               <DrawerBody>
                 <div className="flex flex-col gap-2 px-1">
                   {drawerNavItems.map(({ title, icon: Icon, path, badge }) => {
@@ -176,6 +213,7 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
           )}
         </DrawerContent>
       </Drawer>
+
       {user && (
         <VerificationCodeModal
           isOpen={verificationModal.isOpen}

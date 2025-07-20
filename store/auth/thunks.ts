@@ -4,6 +4,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { CDN } from "@/config";
 import { clearUser, setUser } from "@/store/slices/userSlice";
 import { UsageType } from "@/components/Auth/UsageTypeModal";
+import { fetchWithAuth } from "@/utils/api";
 
 type SignupForm = {
   firstName: string;
@@ -20,12 +21,8 @@ export const signupThunk = createAsyncThunk(
   "auth/signup",
   async (values: SignupForm, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${CDN.userAuthUrl}/auth/signup`, {
+      const data = await fetchWithAuth("/auth/signup", {
         method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           firstName: values.firstName,
           lastName: values.lastName,
@@ -35,10 +32,6 @@ export const signupThunk = createAsyncThunk(
           password: values.password,
         }),
       });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data?.message || "Signup failed");
 
       return data;
     } catch (error: any) {
@@ -55,12 +48,8 @@ export const signupWithUsageTypeThunk = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await fetch(`${CDN.userAuthUrl}/auth/signup`, {
+      const res = await fetchWithAuth("/auth/signup", {
         method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           firstName: values.firstName,
           lastName: values.lastName,
@@ -72,10 +61,8 @@ export const signupWithUsageTypeThunk = createAsyncThunk(
         }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data?.message || "Signup failed");
-      if (res.status === 207) {
+      // fetchWithAuth returns parsed JSON, but we still check its status manually if needed
+      if (res?.status === 207) {
         return {
           isRegistered: true,
           message: "Partial Registration",
@@ -86,7 +73,7 @@ export const signupWithUsageTypeThunk = createAsyncThunk(
       return {
         isRegistered: true,
         message: "User Registered Successfully",
-        user: data,
+        user: res,
         status: 200,
       };
     } catch (error: any) {
@@ -105,21 +92,15 @@ export const signInThunk = createAsyncThunk(
   "auth/signin",
   async (values: SigninPayload, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${CDN.userAuthUrl}/auth/signin`, {
+      const data = await fetchWithAuth("/auth/signin", {
         method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           email: values.email,
           password: values.password,
         }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok || !data?.isLoggedIn) {
+      if (!data?.isLoggedIn) {
         throw new Error(data?.message || "Sign in failed");
       }
 
@@ -137,32 +118,16 @@ export const signInThunk = createAsyncThunk(
 //refresh token
 export const refreshTokenThunk = createAsyncThunk(
   "auth/refresh",
-  async (_, { getState, dispatch, rejectWithValue }) => {
+  async (_, { dispatch, rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const refreshToken = state.user?.user?.refreshToken;
-
-      if (!refreshToken) throw new Error("Missing refresh token");
-
-      const res = await fetch(`${CDN.userAuthUrl}/auth/refresh`, {
+      const data = await fetchWithAuth("/auth/refresh", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ refreshToken }),
       });
 
-      if (!res.ok) throw new Error("Refresh token failed");
-
-      const data = await res.json();
-
       dispatch(setUser(data.user));
-
       return data.user;
-    } catch (err) {
+    } catch (err: any) {
       dispatch(clearUser());
-
       return rejectWithValue("Session expired. Please sign in again.");
     }
   }
@@ -173,19 +138,30 @@ export const signoutThunk = createAsyncThunk(
   "auth/signout",
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const res = await fetch(`${CDN.userAuthUrl}/auth/signout`, {
+      await fetchWithAuth("/auth/signout", {
         method: "POST",
-        credentials: "include",
       });
 
-      if (!res.ok) throw new Error("Sign out failed");
-
-      // Clear user from Redux store
       dispatch(clearUser());
-
       return true;
     } catch (error: any) {
       return rejectWithValue(error.message || "Sign out failed");
     }
   }
 );
+
+//resend verification code
+export async function resendVerificationCode(email: string): Promise<void> {
+  await fetchWithAuth("/auth/resend-verification", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+//verify code
+export async function verifyCode(email: string, code: string): Promise<void> {
+  await fetchWithAuth("/auth/verify", {
+    method: "POST",
+    body: JSON.stringify({ email, code }),
+  });
+}

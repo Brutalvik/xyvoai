@@ -36,7 +36,20 @@
     "logoAria": "Xyvo Logo",
     "menuToggleAria": "Open menu",
     "menuAria": "Main menu",
-    "owner": "Owner"
+    "owner": "Owner",
+    "resendToast": {
+      "title": "Code Sent",
+      "description": "A new verification code has been sent to your email.",
+      "errorTitle": "Failed to Resend",
+      "errorDescription": "We couldn’t send the verification code. Please try again later.",
+      "rateLimitErrorTitle": "Too many attempts",
+      "rateLimitError": "Please wait 10 minutes before requesting another code."
+    },
+    "verifiedToast": {
+      "title": "Verified!",
+      "description": "Your email has been successfully verified.",
+      "error": "Verification failed. Please try again."
+    }
   },
   "Signin": {
     "title": "Sign in",
