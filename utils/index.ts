@@ -3,7 +3,7 @@ import { CalendarDate } from "@internationalized/date";
 
 import { canadianAreaCodes } from "@/chunks/areaCodes";
 
-export const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/;
+export const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{5,}$/;
 
 export const formatPhoneNumber = (raw?: string): string => {
   const digits = raw?.replace(/\D/g, "") ?? "";
