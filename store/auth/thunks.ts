@@ -6,6 +6,8 @@ import { clearUser, setUser } from "@/store/slices/userSlice";
 import { UsageType } from "@/components/Auth/UsageTypeModal";
 
 type SignupForm = {
+  firstName: string;
+  lastName: string;
   name: string;
   email: string;
   phone: string;
@@ -25,6 +27,8 @@ export const signupThunk = createAsyncThunk(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          firstName: values.firstName,
+          lastName: values.lastName,
           name: values.name,
           email: values.email,
           phone: values.countryCode + values.phone,
@@ -50,8 +54,6 @@ export const signupWithUsageTypeThunk = createAsyncThunk(
     { values, usageType }: { values: SignupForm; usageType: UsageType },
     { rejectWithValue }
   ) => {
-    console.log("values from thunk", values);
-    console.log("usageType from thunk", usageType);
     try {
       const res = await fetch(`${CDN.userAuthUrl}/auth/signup`, {
         method: "POST",
@@ -60,6 +62,8 @@ export const signupWithUsageTypeThunk = createAsyncThunk(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          firstName: values.firstName,
+          lastName: values.lastName,
           name: values.name,
           email: values.email,
           phone: values.countryCode + values.phone,

@@ -32,6 +32,8 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
   const activeUser: any = useAppSelector(selectUser);
   const { user } = activeUser || {};
 
+  console.log(user);
+
   return (
     <Drawer isOpen={isOpen} placement="right" onOpenChange={onOpenChange}>
       <DrawerContent>

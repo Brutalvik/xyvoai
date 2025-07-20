@@ -95,9 +95,9 @@ export default function Navbar() {
         <NavbarMenu className="!p-6 space-y-6 backdrop-blur-md shadow-lg">
           {!loggedIn && (
             <div className="flex flex-col items-end gap-3 w-full mt-4">
-              <Button 
-                variant="solid" 
-                color="primary" 
+              <Button
+                variant="solid"
+                color="primary"
                 className="w-full"
                 onPress={() => {
                   setIsSignupModalOpen(true);
@@ -141,14 +141,14 @@ export default function Navbar() {
           onOpenChange={drawerDisclosure.onOpenChange}
         />
       )}
-      
+
       {/* Signin Modal */}
       <SigninModal
         isOpen={isSigninModalOpen}
         onClose={() => setIsSigninModalOpen(false)}
         onSuccessRedirect={() => {
           setIsSigninModalOpen(false);
-          router.push(`/${locale}`);
+          router.push(`/${locale}/overview`);
         }}
         onSignupClick={() => {
           setIsSigninModalOpen(false);
@@ -158,7 +158,7 @@ export default function Navbar() {
           }, 100);
         }}
       />
-      
+
       {/* Signup Modal */}
       <SignupModal
         isOpen={isSignupModalOpen}

@@ -33,7 +33,8 @@
     "signedOutDescription": "You have been successfully signed out.",
     "logoAria": "Xyvo Logo",
     "menuToggleAria": "Open menu",
-    "menuAria": "Main menu"
+    "menuAria": "Main menu",
+    "owner": "Owner"
   },
   "Signin": {
     "title": "Sign in",
@@ -175,6 +176,29 @@
     "searchPlaceholder": "Search..."
   },
   "auth": {
+    "verification": {
+      "title": "Enter verification code",
+      "description": "We've sent a 6-digit verification code to {email}. Enter the code and your new password below.",
+      "codeLabel": "Verification code",
+      "newPasswordLabel": "New password",
+      "confirmPasswordLabel": "Confirm new password",
+      "resetPasswordButton": "Reset password",
+      "cancel": "Cancel",
+      "requestNewCode": "Request new code",
+      "successTitle": "Password reset successful",
+      "successMessage": "Your password has been updated. You can now sign in with your new password.",
+      "errorTitle": "Reset failed",
+      "errorMessage": "Unable to reset password. Please try again.",
+      "invalidCode": "Invalid verification code. Please check and try again.",
+      "expiredCode": "Verification code has expired. Please request a new one.",
+      "invalidPassword": "Password does not meet security requirements.",
+      "maxAttemptsTitle": "Too many attempts",
+      "maxAttemptsMessage": "You've exceeded the maximum number of attempts. Please request a new code.",
+      "codeExpiredWarning": "Your verification code has expired. Please request a new one.",
+      "maxAttemptsWarning": "Maximum attempts reached. Please request a new verification code.",
+      "securityNotice": "For your security, this code will expire in 15 minutes.",
+      "attemptsRemaining": "{remaining} attempts remaining"
+    },
     "password": {
       "instructionsLabel": "Password instructions",
       "minCharacters": "Min 8 characters",

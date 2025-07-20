@@ -39,7 +39,8 @@
     "signedOutDescription": "Vous avez été déconnecté avec succès.",
     "logoAria": "Logo Xyvo",
     "menuToggleAria": "Ouvrir le menu",
-    "menuAria": "Menu principal"
+    "menuAria": "Menu principal",
+    "owner": "Propriétaire"
   },
   "Signin": {
     "title": "Connexion",
@@ -177,6 +178,23 @@
     "searchPlaceholder": "Rechercher..."
   },
   "auth": {
+    "verification": {
+      "title": "Entrez le code de vérification",
+      "description": "Nous avons envoyé un code à 6 chiffres à {email}",
+      "verifyButton": "Vérifier le code",
+      "resendButton": "Renvoyer le code",
+      "backButton": "Retour",
+      "errorMessage": "Code de vérification invalide. Veuillez réessayer.",
+      "resendErrorMessage": "Échec de l'envoi du code. Veuillez réessayer.",
+      "validation": {
+        "required": "Le code de vérification est requis",
+        "invalidCode": "Veuillez entrer un code à 6 chiffres valide"
+      },
+      "success": {
+        "title": "Vérification réussie",
+        "message": "Votre adresse e-mail a été vérifiée avec succès !"
+      }
+    },
     "password": {
       "instructionsLabel": "Instructions de mot de passe",
       "minCharacters": "Au moins 8 caractères",

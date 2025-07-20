@@ -46,7 +46,6 @@ export default function SignupModal({
   const locale = useLocale();
 
   const [isUsageTypeModalOpen, setIsUsageTypeModalOpen] = useState(false);
-  const [usageType, setUsageType] = useState<UsageType | null>(null);
 
   const formik = useFormik({
     initialValues: {
@@ -70,26 +69,16 @@ export default function SignupModal({
     onSubmit: async (values, { setSubmitting }) => {
       try {
         // Combine firstName and lastName as "firstname/lastname" for backend
-        const backendValues = {
+        const formattedValues = {
           ...values,
+          firstName: values.firstName,
+          lastName: values.lastName,
           name: `${values.firstName} ${values.lastName}`,
         };
-        // Remove firstName and lastName from the object sent to backend
-        const { firstName, lastName, ...valuesForBackend } = backendValues;
 
         const { requireUsageType } = await dispatch(
-          signupThunk(valuesForBackend)
+          signupThunk(formattedValues)
         ).unwrap();
-        // if (!requireUsageType && requireUsageType === true) {
-        //   onClose();
-        //   addToast({
-        //     title: t("errorTitle"),
-        //     description: t("usageTypeRequired"),
-        //     color: "danger",
-        //     icon: <HiBan />,
-        //   });
-        //   return;
-        // }
         if (requireUsageType) {
           onClose();
           setIsUsageTypeModalOpen(true);
@@ -118,6 +107,8 @@ export default function SignupModal({
       const response = await dispatch(
         signupWithUsageTypeThunk({
           values: {
+            firstName: formik.values.firstName,
+            lastName: formik.values.lastName,
             name: `${formik.values.firstName} ${formik.values.lastName}`,
             email: formik.values.email,
             phone: formik.values.phone,
@@ -130,8 +121,8 @@ export default function SignupModal({
       console.log("response from thunk", response);
       if (response?.status === 207) {
         addToast({
-          title: t("errorTitle"),
-          description: response?.message || t("errorMessage"),
+          title: t("warningTitle"),
+          description: response?.message || t("warningMessage"),
           color: "warning",
           icon: <HiExclamation />,
         });
@@ -144,7 +135,7 @@ export default function SignupModal({
       }
     } catch (error: any) {
       addToast({
-        title: t("warningTitle"),
+        title: t("errorTitle"),
         description: error?.message || t("errorMessage"),
         color: "danger",
         icon: <HiBan />,
@@ -355,7 +346,7 @@ export default function SignupModal({
                     <Link
                       href={`/${locale}/legal/conditions`}
                       color="primary"
-                      className="text-xs"
+                      className="text-[10px]"
                       onClick={onClose}
                     >
                       {chunks}
@@ -365,7 +356,7 @@ export default function SignupModal({
                     <Link
                       href={`/${locale}/legal/privacy`}
                       color="primary"
-                      className="text-xs"
+                      className="text-[10px]"
                       onClick={onClose}
                     >
                       {chunks}

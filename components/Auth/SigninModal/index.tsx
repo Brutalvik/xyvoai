@@ -144,14 +144,19 @@ export default function SigninModal({
                   formik.touched.password ? formik.errors.password : undefined
                 }
               />
-              <div className="flex items-center justify-between text-xs text-gray-500">
+              <div className="flex items-center justify-between text-[11px] text-gray-500">
                 <Checkbox
                   size="sm"
                   classNames={{ label: "text-xs text-gray-600" }}
                 >
                   {t("remember")}
                 </Checkbox>
-                <Link href="/auth/forgot" size="sm" color="primary">
+                <Link
+                  href="/auth/forgot"
+                  size="sm"
+                  color="primary"
+                  className="text-[11px]"
+                >
                   {t("forgot")}
                 </Link>
               </div>
@@ -165,7 +170,7 @@ export default function SigninModal({
               </Button>
             </form>
 
-            <div className="flex items-center gap-3 text-gray-400 text-xs mt-4">
+            <div className="flex items-center gap-3 text-gray-400 text-[11px] mt-4">
               <div className="h-px bg-gray-200 flex-1" />
               {t("continueWith")}
               <div className="h-px bg-gray-200 flex-1" />
@@ -195,11 +200,12 @@ export default function SigninModal({
             <p className="text-[11px] text-gray-400 italic leading-tight">
               {t("quote")}
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-[11px] text-gray-500">
               {t("noAccount")}{" "}
               <Link
                 href="#"
                 color="primary"
+                className="text-[11px]"
                 onClick={(e) => {
                   e.preventDefault();
                   onClose();
