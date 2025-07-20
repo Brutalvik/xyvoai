@@ -22,6 +22,10 @@ import { HiInformationCircle } from "react-icons/hi";
 import LanguageSwitch from "@/components/LanguageSwitch";
 import VerificationCodeModal from "@/components/Auth/VerificationCodeModal";
 import { ThemeSwitch } from "@/components/theme-switch";
+import { drawerNavItems } from "@/components/Navbar/DrawerNavItems";
+import Link from "next/link";
+import clsx from "clsx";
+import { usePathname } from "next/navigation";
 
 interface UserDrawerProps {
   isOpen: boolean;
@@ -36,6 +40,7 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
   const { user } = activeUser || {};
   const firstName = user?.name?.split(" ")[0];
   const verificationModal = useDisclosure();
+  const pathname = usePathname();
 
   const handleVerify = async (code: string) => {
     // This is a placeholder. In a real app, you would dispatch a thunk
@@ -103,8 +108,36 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
                   </div>
                 </div>
               </DrawerHeader>
+              {/* NAV ITEMS */}
+              <DrawerBody>
+                <div className="flex flex-col gap-2 px-1">
+                  {drawerNavItems.map(({ title, icon: Icon, path, badge }) => {
+                    const isActive = pathname === path;
 
-              <DrawerBody>{/* Future drawer content */}</DrawerBody>
+                    return (
+                      <Link
+                        key={title}
+                        href={path}
+                        onClick={onClose}
+                        className={clsx(
+                          "flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors",
+                          isActive && "bg-gray-100 dark:bg-neutral-800"
+                        )}
+                      >
+                        <div className="flex items-center gap-2 text-sm text-neutral-800 dark:text-neutral-200">
+                          <Icon size={18} />
+                          <span>{title}</span>
+                        </div>
+                        {badge && (
+                          <span className="ml-auto text-xs px-2 py-0.5 rounded bg-blue-500 text-white">
+                            {badge}
+                          </span>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </DrawerBody>
 
               <DrawerFooter className="flex items-end justify-between">
                 <div className="flex items-center">
