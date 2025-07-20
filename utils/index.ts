@@ -67,3 +67,14 @@ export const renderWeekendCell = (date: CalendarDate) => {
     className: isWeekendDay ? "bg-yellow-50 text-yellow-700 font-semibold" : "",
   };
 };
+
+// export const formatPhoneNumber = (phone: string): string => {
+//   // Remove non-digit chars and keep +
+//   const cleaned = phone.replace(/[^\d+]/g, "");
+
+//   const match = cleaned.match(/^\+?(\d{1})(\d{3})(\d{3})(\d{4})$/);
+//   if (!match) return phone;
+
+//   const [, country, area, prefix, line] = match;
+//   return `+${country} (${area}) ${prefix} ${line}`;
+// };

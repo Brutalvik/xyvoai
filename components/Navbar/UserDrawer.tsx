@@ -58,6 +58,8 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
         verifyCodeThunk({ email: user?.email, code })
       ).unwrap();
 
+      console.log("data", data);
+
       dispatch(setUser(data?.user));
 
       addToast({
@@ -92,7 +94,6 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
         icon: <HiUserCircle />,
       });
     } catch (err: any) {
-      console.log("err", err);
       const mapped = mapVerifyCodeError(err);
 
       addToast({

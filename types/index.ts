@@ -34,6 +34,7 @@ export interface User {
   permissions: string[];
   attributes: Record<string, string>;
   tokenExpiresAt?: number;
+  emailVerified: boolean;
 }
 
 export interface TeamMember {

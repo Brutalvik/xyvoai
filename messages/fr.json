@@ -1,4 +1,10 @@
 {
+  "status": {
+    "active": "Actif",
+    "suspended": "Suspendu",
+    "pending": "En attente",
+    "inactive": "Inactif"
+  },
   "hero": {
     "verbs": [
       "Réinventez",
@@ -132,7 +138,6 @@
     "organizationName": "Nom de l'organisation",
     "timezone": "Fuseau horaire",
     "role": "Rôle",
-    "status": "Statut",
     "lastLogin": "Dernière connexion",
     "noLastLogin": "Aucune activité de connexion pour le moment",
     "createdAt": "Créé le",
@@ -174,7 +179,18 @@
     "permissions_project_update": "Mettre à jour le projet",
     "permissions_sprint_create": "Créer un sprint",
     "permissions_sprint_delete": "Supprimer le sprint",
-    "close": "Fermer"
+    "close": "Fermer",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "user": {
+      "status": "Statut"
+    },
+    "status": {
+      "active": "Actif",
+      "suspended": "Suspendu",
+      "pending": "En attente",
+      "inactive": "Inactif"
+    }
   },
   "Search": {
     "placeholder": "Rechercher...",

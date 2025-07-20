@@ -72,10 +72,10 @@ export default function BoardHeader() {
   );
 
   const UnAuthAvatar = () => (
-    <Tooltip content={t("unverified")} showArrow>
+    <Tooltip color="warning" content={t("unverified")} showArrow>
       <Badge
         color="warning"
-        content="U"
+        content=""
         variant="solid"
         className="cursor-pointer"
         size="sm"
@@ -109,24 +109,22 @@ export default function BoardHeader() {
           {/* 🔔 Notifications */}
           <Popover placement="bottom-end">
             <PopoverTrigger>
-              <button className="relative p-2 rounded-md hover:bg-gray-100 dark:hover:bg-neutral-700">
+              <button className="relative h-9 w-9 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-neutral-700">
                 <Badge
                   color="primary"
                   size="sm"
                   content={
-                    <AnimatePresence>
-                      {unreadCount > 0 && (
-                        <motion.span
-                          key={unreadCount}
-                          initial={{ scale: 0.5, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          exit={{ scale: 0.5, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          {unreadCount}
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
+                    unreadCount > 0 ? (
+                      <motion.span
+                        key={unreadCount}
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.5, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {unreadCount}
+                      </motion.span>
+                    ) : null
                   }
                 >
                   <Bell size={18} />
@@ -135,49 +133,42 @@ export default function BoardHeader() {
             </PopoverTrigger>
 
             <PopoverContent className="w-64 p-2 shadow-lg rounded-lg bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-              >
-                <p className="text-xs uppercase tracking-wide font-semibold mb-2 text-gray-500 dark:text-gray-300">
-                  Notifications
-                </p>
-                <ul className="space-y-2">
-                  {notifications.map((notif) => (
-                    <li
-                      key={notif.id}
-                      className="flex items-start gap-2 text-sm hover:bg-gray-50 dark:hover:bg-neutral-700 px-2 py-1 rounded-md transition cursor-pointer"
-                      onClick={() => markAsRead(notif.id)}
+              <p className="text-xs uppercase tracking-wide font-semibold mb-2 text-gray-500 dark:text-gray-300">
+                Notifications
+              </p>
+              <ul className="space-y-2">
+                {notifications.map((notif) => (
+                  <li
+                    key={notif.id}
+                    className="flex items-start gap-2 text-sm hover:bg-gray-50 dark:hover:bg-neutral-700 px-2 py-1 rounded-md transition cursor-pointer"
+                    onClick={() => markAsRead(notif.id)}
+                  >
+                    {!notif.read && (
+                      <span className="mt-1 w-2 h-2 rounded-full bg-yellow-500 shrink-0"></span>
+                    )}
+                    <span
+                      className={clsx("text-gray-700 dark:text-gray-100", {
+                        "opacity-70": notif.read,
+                      })}
                     >
-                      {!notif.read && (
-                        <span className="mt-1 w-2 h-2 rounded-full bg-yellow-500 shrink-0"></span>
-                      )}
-                      <span
-                        className={clsx("text-gray-700 dark:text-gray-100", {
-                          "opacity-70": notif.read,
-                        })}
-                      >
-                        {notif.message}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
+                      {notif.message}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </PopoverContent>
           </Popover>
 
           {/* Help & Settings */}
-          <button className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-neutral-700">
+          <button className="p-2 rounded-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-neutral-700">
             <HelpCircle size={18} />
           </button>
-          <button className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-neutral-700">
+          <button className="p-2 rounded-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-neutral-700">
             <GearIcon size={18} />
           </button>
 
           {/* Avatar */}
-          {loggedIn && String(user.emailVerified) === "true" ? (
+          {loggedIn && String(user?.emailVerified) === "true" ? (
             <AuthAvatar />
           ) : (
             <UnAuthAvatar />

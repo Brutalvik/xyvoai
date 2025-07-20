@@ -126,7 +126,6 @@
     "organizationName": "Organization Name",
     "timezone": "Timezone",
     "role": "Profile.role",
-    "status": "Status",
     "lastLogin": "Last Login",
     "noLastLogin": "No login activity yet",
     "createdAt": "Profile.createdAt",
@@ -169,7 +168,16 @@
     "permissions_project_update": "Update Project",
     "permissions_sprint_create": "Create Sprint",
     "permissions_sprint_delete": "Delete Sprint",
-    "close": "Close"
+    "close": "Close",
+    "user": {
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "suspended": "Suspended",
+      "pending": "Pending",
+      "inactive": "Inactive"
+    }
   },
   "Search": {
     "placeholder": "Search...",
