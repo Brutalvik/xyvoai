@@ -108,6 +108,7 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
                   </div>
                 </div>
               </DrawerHeader>
+
               {/* NAV ITEMS */}
               <DrawerBody>
                 <div className="flex flex-col gap-2 px-1">

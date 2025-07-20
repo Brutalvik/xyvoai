@@ -92,46 +92,48 @@ export default function Navbar() {
         </NavbarContent>
 
         {/* Mobile Menu */}
-        <NavbarMenu className="!p-6 space-y-6 backdrop-blur-md shadow-lg">
-          {!loggedIn && (
-            <div className="flex flex-col items-end gap-3 w-full mt-4">
-              <Button
-                variant="solid"
-                color="primary"
-                className="w-full"
-                onPress={() => {
-                  setIsSignupModalOpen(true);
-                  document.body.click(); // close mobile menu
-                }}
-              >
-                {t("signUp")}
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full"
-                onPress={() => {
-                  setIsSigninModalOpen(true);
-                  document.body.click(); // close mobile menu
-                }}
-              >
-                {t("signIn")}
-              </Button>
-            </div>
-          )}
-          {!loggedIn && (
-            <nav className="flex flex-col items-end gap-5 mt-6">
-              <NextLink href="#features" className="text-lg font-semibold">
-                {t("features")}
-              </NextLink>
-              <NextLink href="#pricing" className="text-lg font-semibold">
-                {t("pricing")}
-              </NextLink>
-              <NextLink href="#about" className="text-lg font-semibold">
-                {t("about")}
-              </NextLink>
-            </nav>
-          )}
-        </NavbarMenu>
+        <NavbarMenuToggle>
+          <NavbarMenu className="!p-6 space-y-6 backdrop-blur-md shadow-lg">
+            {!loggedIn && (
+              <div className="flex flex-col items-end gap-3 w-full mt-4">
+                <Button
+                  variant="solid"
+                  color="primary"
+                  className="w-full"
+                  onPress={() => {
+                    setIsSignupModalOpen(true);
+                    document.body.click(); // close mobile menu
+                  }}
+                >
+                  {t("signUp")}
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full"
+                  onPress={() => {
+                    setIsSigninModalOpen(true);
+                    document.body.click(); // close mobile menu
+                  }}
+                >
+                  {t("signIn")}
+                </Button>
+              </div>
+            )}
+            {!loggedIn && (
+              <nav className="flex flex-col items-end gap-5 mt-6">
+                <NextLink href="#features" className="text-lg font-semibold">
+                  {t("features")}
+                </NextLink>
+                <NextLink href="#pricing" className="text-lg font-semibold">
+                  {t("pricing")}
+                </NextLink>
+                <NextLink href="#about" className="text-lg font-semibold">
+                  {t("about")}
+                </NextLink>
+              </nav>
+            )}
+          </NavbarMenu>
+        </NavbarMenuToggle>
       </HeroUINavbar>
 
       {/* User Drawer (still active for logged in users) */}
