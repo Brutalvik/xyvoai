@@ -57,8 +57,8 @@ export default function Navbar() {
           <div className="flex items-center ml-auto space-x-3 sm:space-x-4">
             <LanguageSwitch />
             <ThemeSwitch />
-            <NavbarMenuToggle />
           </div>
+          <NavbarMenuToggle />
         </NavbarContent>
 
         {/* Desktop Right */}
