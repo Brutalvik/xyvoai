@@ -24,8 +24,8 @@ export default function ProjectHeader() {
 
   return (
     <div className="w-full border-b border-gray-200 dark:border-neutral-700 px-4 py-3">
-      <div className="flex flex-wrap gap-3 items-center justify-between">
-        {/* Left: Editable title + chip */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {/* Left: Title and Quarter */}
         <div className="flex items-center gap-2 min-w-0">
           {editing ? (
             <input
@@ -48,45 +48,10 @@ export default function ProjectHeader() {
           </Chip>
         </div>
 
-        {/* Right: Avatars + Actions */}
-        <div className="flex items-center gap-3">
-          {/* AvatarGroup (show fewer on mobile) */}
-          <Dropdown>
-            <Tooltip content={`Total Members: ${teamMembers.length}`}>
-              <DropdownTrigger>
-                <div className="cursor-pointer">
-                  <AvatarGroup
-                    isBordered
-                    max={3} // 👈 show fewer on mobile
-                    total={teamMembers.length}
-                    size="sm"
-                    className="shrink-0"
-                  >
-                    {teamMembers.map((member, idx) => (
-                      <Avatar key={idx} src={member.src} name={member.name} />
-                    ))}
-                  </AvatarGroup>
-                </div>
-              </DropdownTrigger>
-            </Tooltip>
-            <DropdownMenu
-              aria-label="All team members"
-              className="max-h-[300px] overflow-y-auto scrollbar-hide p-2"
-            >
-              {teamMembers.map((member, index) => (
-                <DropdownItem
-                  key={index}
-                  className="flex items-center gap-3 py-2 px-3 hover:bg-default-100 rounded-md"
-                >
-                  <Avatar size="sm" src={member.src} />
-                  <span>{member.name}</span>
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
-
-          {/* Mobile: Icon menu */}
-          <div className="sm:hidden">
+        {/* Right: Buttons and Avatars */}
+        <div className="flex items-center gap-3 ml-auto">
+          {/* 👇 Mobile (xs) only: Action menu */}
+          <div className="flex sm:hidden">
             <Dropdown placement="bottom-end">
               <DropdownTrigger>
                 <Button isIconOnly size="sm" variant="flat">
@@ -112,7 +77,7 @@ export default function ProjectHeader() {
             </Dropdown>
           </div>
 
-          {/* Desktop: Inline buttons */}
+          {/* 👇 Tablet & up: Show buttons inline */}
           <div className="hidden sm:flex gap-2">
             <Button
               color="default"
@@ -134,6 +99,45 @@ export default function ProjectHeader() {
               New Task
             </Button>
           </div>
+
+          {/* 👇 Avatars (responsive max) */}
+          <Dropdown>
+            <Tooltip content={`Total Members: ${teamMembers.length}`}>
+              <DropdownTrigger>
+                <div className="cursor-pointer">
+                  <AvatarGroup
+                    isBordered
+                    size="sm"
+                    className="shrink-0"
+                    max={4}
+                  >
+                    {teamMembers.map((member, idx) => (
+                      <Avatar key={idx} src={member.src} name={member.name} />
+                    ))}
+                  </AvatarGroup>
+                </div>
+              </DropdownTrigger>
+            </Tooltip>
+            {/* Avatar Dropdown Menu */}
+            <DropdownMenu
+              aria-label="All team members"
+              className="max-h-[300px] overflow-y-auto scrollbar-hide p-1 rounded-md"
+              itemClasses={{
+                base: "flex items-center gap-3 px-3 py-2 rounded-md hover:bg-default-100 transition-colors",
+              }}
+            >
+              {teamMembers.map((member, index) => (
+                <DropdownItem key={index} className="!p-0">
+                  <div className="flex items-center gap-3 w-full px-3 py-2">
+                    <Avatar size="sm" src={member.src} />
+                    <span className="text-sm text-default-900 truncate">
+                      {member.name}
+                    </span>
+                  </div>
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
         </div>
       </div>
     </div>
