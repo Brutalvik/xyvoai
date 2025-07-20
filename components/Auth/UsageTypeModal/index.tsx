@@ -41,11 +41,19 @@ export function UsageTypeModal({ isOpen, onClose, onContinue }: Props) {
     setSelectedCard(type);
   };
 
+  const handleCloseModal = () => {
+    // Reset state when modal is closed
+    setUsageType("");
+    setSelectedCard(null);
+    setIsSubmitting(false);
+    onClose();
+  };
+
   return (
     <Modal
       isOpen={isOpen}
       onOpenChange={(open) => {
-        if (!open) onClose();
+        if (!open) handleCloseModal();
       }}
       placement="top-center"
       backdrop="blur"

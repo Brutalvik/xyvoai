@@ -25,7 +25,7 @@ import { addToast } from "@heroui/react";
 import { Mail, User } from "lucide-react";
 import { passwordRules } from "@/utils";
 import { UsageType, UsageTypeModal } from "@/components/Auth/UsageTypeModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   isOpen: boolean;
@@ -91,6 +91,8 @@ export default function SignupModal({
           });
           return;
         }
+        formik.setFieldValue("usageType", usageType);
+        console.log("values", formik.values);
         onClose();
         setIsUsageTypeModalOpen(true);
       } catch (error: any) {
@@ -110,7 +112,7 @@ export default function SignupModal({
     setIsUsageTypeModalOpen(false);
   };
 
-  const onUsageTypeModalContinue = (usageType: "personal" | "team") => {
+  const onUsageTypeModalContinue = (usageType: UsageType) => {
     setUsageType(usageType);
     setIsUsageTypeModalOpen(false);
     onSuccessRedirect();

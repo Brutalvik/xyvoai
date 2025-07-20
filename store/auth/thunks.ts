@@ -39,7 +39,7 @@ export const signupThunk = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message || "Signup failed");
     }
-  },
+  }
 );
 
 //signup with usage type
@@ -50,7 +50,7 @@ export const signupWithUsageTypeThunk = createAsyncThunk(
       values,
       usageType,
     }: { values: SignupForm; usageType: "personal" | "team" },
-    { rejectWithValue },
+    { rejectWithValue }
   ) => {
     try {
       const res = await fetch(`${CDN.userAuthUrl}/auth/signup`, {
@@ -76,7 +76,7 @@ export const signupWithUsageTypeThunk = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message || "Signup failed");
     }
-  },
+  }
 );
 
 //Signin thunk
@@ -115,7 +115,7 @@ export const signInThunk = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error?.message || "Sign in failed");
     }
-  },
+  }
 );
 
 //refresh token
@@ -149,7 +149,7 @@ export const refreshTokenThunk = createAsyncThunk(
 
       return rejectWithValue("Session expired. Please sign in again.");
     }
-  },
+  }
 );
 
 //signout thunk
@@ -171,5 +171,5 @@ export const signoutThunk = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message || "Sign out failed");
     }
-  },
+  }
 );

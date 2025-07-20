@@ -76,7 +76,6 @@ export default function FeaturesSection() {
             >
               <div
                 className={`w-10 h-10 flex items-center justify-center rounded-lg mb-4`}
-                aria-hidden="true"
               >
                 <span className="text-default text-2xl">{card.icon}</span>
               </div>
