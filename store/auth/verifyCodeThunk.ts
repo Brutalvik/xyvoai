@@ -9,7 +9,11 @@ export const resendVerificationCodeThunk = createAsyncThunk(
       const response = await resendVerificationCode(email);
       return response;
     } catch (error: any) {
-      return rejectWithValue(error);
+      return rejectWithValue({
+        name: error.name || "Error",
+        message: error.message || "Something went wrong",
+        status: error.status || 500,
+      });
     }
   }
 );
@@ -24,7 +28,11 @@ export const verifyCodeThunk = createAsyncThunk(
       const response = await verifyCode(email, code);
       return response;
     } catch (error: any) {
-      return rejectWithValue(error);
+      return rejectWithValue({
+        name: error.name || "Error",
+        message: error.message || "Something went wrong",
+        status: error.status || 500,
+      });
     }
   }
 );

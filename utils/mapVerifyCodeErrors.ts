@@ -5,7 +5,11 @@ import {
   VerifyCodeErrorType,
 } from "@/utils/VerificationErrorCodes";
 
-export function mapVerifyCodeError(error: string): {
+export function mapVerifyCodeError(error: {
+  name: string;
+  message: string;
+  status: number;
+}): {
   type: VerifyCodeErrorType;
   status:
     | "warning"
@@ -19,7 +23,7 @@ export function mapVerifyCodeError(error: string): {
     | undefined;
   message: string;
 } {
-  switch (error) {
+  switch (error.message) {
     case VerifyCodeErrors.CODE_MISMATCH:
       return {
         type: VerifyCodeErrors.CODE_MISMATCH,
@@ -58,6 +62,13 @@ export function mapVerifyCodeError(error: string): {
     case VerifyCodeErrors.RATE_LIMIT_EXCEEDED:
       return {
         type: VerifyCodeErrors.RATE_LIMIT_EXCEEDED,
+        status: "danger",
+        message: "Too many attempts. Please try again in 10 minutes.",
+      };
+
+    case VerifyCodeErrors.LIMIT_EXCEEDED:
+      return {
+        type: VerifyCodeErrors.LIMIT_EXCEEDED,
         status: "danger",
         message: "Too many attempts. Please try again in 10 minutes.",
       };

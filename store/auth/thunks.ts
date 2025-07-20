@@ -160,8 +160,10 @@ export async function resendVerificationCode(email: string): Promise<void> {
 
 //verify code
 export async function verifyCode(email: string, code: string): Promise<void> {
-  await fetchWithAuth("/auth/verify", {
+  const response = await fetchWithAuth("/auth/verify", {
     method: "POST",
     body: JSON.stringify({ email, code }),
   });
+
+  return response;
 }

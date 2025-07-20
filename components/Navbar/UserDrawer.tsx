@@ -34,8 +34,8 @@ import {
   resendVerificationCodeThunk,
   verifyCodeThunk,
 } from "@/store/auth/verifyCodeThunk";
-import { title } from "process";
 import { mapVerifyCodeError } from "@/utils/mapVerifyCodeErrors";
+import { setUser } from "@/store/slices/userSlice";
 
 interface UserDrawerProps {
   isOpen: boolean;
@@ -54,7 +54,11 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
 
   const handleVerify = async (code: string) => {
     try {
-      await dispatch(verifyCodeThunk({ email: user?.email, code })).unwrap();
+      const data: any = await dispatch(
+        verifyCodeThunk({ email: user?.email, code })
+      ).unwrap();
+
+      dispatch(setUser(data?.user));
 
       addToast({
         title: t("verifiedToast.title"),
@@ -64,54 +68,14 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
       });
       verificationModal.onClose();
     } catch (err: any) {
-      const errorType = err?.name || err?.error;
+      const mapped = mapVerifyCodeError(err);
 
-      switch (errorType) {
-        case "CodeMismatchException":
-          addToast({
-            title: t("verifyErrors.invalidCodeTitle"),
-            description: t("verifyErrors.invalidCode"),
-            color: "danger",
-            icon: <HiExclamationCircle />,
-          });
-          break;
-
-        case "ExpiredCodeException":
-          addToast({
-            title: t("verifyErrors.codeExpiredTitle"),
-            description: t("verifyErrors.codeExpired"),
-            color: "danger",
-            icon: <HiExclamationCircle />,
-          });
-          break;
-
-        case "UserNotFoundException":
-          addToast({
-            title: t("verifyErrors.userNotFoundTitle"),
-            description: t("verifyErrors.userNotFound"),
-            color: "danger",
-            icon: <HiExclamationCircle />,
-          });
-          break;
-
-        case "NotAuthorizedException":
-          addToast({
-            title: t("verifyErrors.alreadyVerifiedTitle"),
-            description: t("verifyErrors.alreadyVerified"),
-            color: "warning",
-            icon: <HiInformationCircle />,
-          });
-          break;
-
-        default:
-          addToast({
-            title: t("verifyErrors.defaultTitle"),
-            description: t("verifyErrors.default"),
-            color: "danger",
-            icon: <HiExclamationCircle />,
-          });
-          break;
-      }
+      addToast({
+        title: t("verifyErrors.defaultTitle"),
+        description: mapped.message,
+        color: mapped.status,
+        icon: <HiExclamationCircle />,
+      });
     }
   };
 
@@ -128,10 +92,11 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
         icon: <HiUserCircle />,
       });
     } catch (err: any) {
+      console.log("err", err);
       const mapped = mapVerifyCodeError(err);
 
       addToast({
-        title: t("errorToast.title"),
+        title: t("verifyErrors.defaultTitle"),
         description: mapped.message,
         color: mapped.status,
         icon: <HiExclamationCircle />,

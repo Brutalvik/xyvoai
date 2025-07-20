@@ -4,7 +4,8 @@ export const VerifyCodeErrors = {
   USER_NOT_FOUND: "UserNotFoundException",
   USER_ALREADY_CONFIRMED: "NotAuthorizedException",
   INVALID_PARAMETER: "InvalidParameterException",
-  RATE_LIMIT_EXCEEDED: "LimitExceededException",
+  LIMIT_EXCEEDED: "LimitExceededException",
+  RATE_LIMIT_EXCEEDED: "RateLimitExceeded",
   UNKNOWN: "UnknownError",
 } as const;
 
