@@ -3,7 +3,7 @@
 import { useAppSelector } from "@/store/hooks";
 import { isLoggedIn } from "@/store/selectors";
 import Navbar from "@/components/Navbar";
-import { BoardHeader } from "@/components/Overview/BoardHeader";
+import BoardHeader from "@/components/Overview/BoardHeader";
 import { usePathname } from "next/navigation";
 
 export default function NavbarConditional() {
