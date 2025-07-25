@@ -1,7 +1,9 @@
 "use client";
 
+import BacklogWorkItem from "@/components/Backlog";
 import ProjectHeader from "@/components/Overview/ProjectHeader";
 import { ReactNode } from "react";
+import KanbanBoard from "@/components/Overview/Kanban";
 
 export function BoardLayout({ children }: { children: ReactNode }) {
   return (
@@ -11,6 +13,9 @@ export function BoardLayout({ children }: { children: ReactNode }) {
         {/* Adjust top-[56px] if your top nav bar height is different */}
         <ProjectHeader />
       </div>
+      {/* Divider */}
+      <div className="border-t border-gray-200 dark:border-neutral-700" />
+      <KanbanBoard />
 
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto">{children}</div>

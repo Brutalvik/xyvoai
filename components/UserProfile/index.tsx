@@ -34,6 +34,7 @@ import { selectUser } from "@/store/selectors";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { signoutThunk } from "@/store/auth/thunks";
 import { formatPhoneNumber } from "@/utils";
+import { formattedDate } from "@/components/UserProfile/helper";
 
 export default function ProfilePage() {
   const t = useTranslations("Profile");
@@ -54,7 +55,7 @@ export default function ProfilePage() {
             <Avatar
               size="lg"
               className="ring-2 ring-white shadow-md cursor-pointer"
-              name={user.name}
+              name={user?.name?.toUpperCase()}
               src={user.image}
             />
             <div>
@@ -111,7 +112,7 @@ export default function ProfilePage() {
                     <HiOutlineCalendarDays className="inline mr-2 cursor-pointer" />
                   </Tooltip>
                   {user?.lastLogin
-                    ? new Date(user.lastLogin).toLocaleString()
+                    ? formattedDate(new Date(user.lastLogin))
                     : t("noLastLogin")}
                 </li>
               </ul>
