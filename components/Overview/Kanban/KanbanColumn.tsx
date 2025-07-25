@@ -8,7 +8,10 @@ import { Column } from "@/components/Overview/Kanban/types";
 interface KanbanColumnProps {
   column: Column;
   onTaskCreate?: (columnId: string) => void;
-  onTaskEdit?: (taskId: string) => void;
+  onTaskEdit?: (
+    taskId: string,
+    updates: Partial<import("./types").Task>
+  ) => void;
   onTaskDelete?: (taskId: string) => void;
   onTaskMove?: (
     taskId: string,

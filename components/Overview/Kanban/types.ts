@@ -11,6 +11,26 @@ export interface Tag {
   color: string;
 }
 
+export type WorkItemType =
+  | "user-story"
+  | "task"
+  | "bug"
+  | "feature"
+  | "epic"
+  | "research"
+  | "design"
+  | "infrastructure-change"
+  | "custom";
+
+export interface WorkItemTypeConfig {
+  id: WorkItemType | string;
+  name: string;
+  icon: string;
+  color: string;
+  backgroundColor: string;
+  description?: string;
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -23,6 +43,12 @@ export interface Task {
   completedDate?: string;
   priority?: "low" | "medium" | "high" | "critical";
   dueDate?: string;
+  workItemType: WorkItemType | string;
+  storyPoints?: number;
+  effort?: number;
+  businessValue?: number;
+  parentId?: string;
+  childrenIds?: string[];
 }
 
 export interface Column {
@@ -36,15 +62,22 @@ export interface Column {
 
 export interface KanbanBoardProps {
   columns: Column[];
+  workItemTypes?: WorkItemTypeConfig[];
+  availableUsers?: User[];
+  availableTags?: Tag[];
   onTaskMove?: (
     taskId: string,
     fromColumnId: string,
     toColumnId: string
   ) => void;
-  onTaskCreate?: (columnId: string) => void;
-  onTaskEdit?: (taskId: string) => void;
+  onTaskCreate?: (
+    columnId: string,
+    workItemType?: WorkItemType | string
+  ) => void;
+  onTaskEdit?: (taskId: string, updates: Partial<Task>) => void;
   onTaskDelete?: (taskId: string) => void;
   onColumnAdd?: () => void;
-  onColumnEdit?: (columnId: string) => void;
+  onColumnEdit?: (columnId: string, updates: Partial<Column>) => void;
   onColumnDelete?: (columnId: string) => void;
+  onWorkItemTypeCreate?: (workItemType: Omit<WorkItemTypeConfig, "id">) => void;
 }

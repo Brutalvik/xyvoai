@@ -68,7 +68,7 @@ export default function ProjectHeader() {
                   startContent={<Plus size={16} />}
                   onClick={handleNewTask}
                 >
-                  New Task
+                  New
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -93,7 +93,7 @@ export default function ProjectHeader() {
               startContent={<Plus size={16} />}
               onPress={handleNewTask}
             >
-              New Task
+              New{" "}
             </Button>
           </div>
 
