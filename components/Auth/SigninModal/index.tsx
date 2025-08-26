@@ -30,6 +30,7 @@ type Props = {
   onClose: () => void;
   onSuccessRedirect: () => void;
   onSignupClick?: () => void;
+  onForgotPasswordClick?: () => void; 
 };
 
 export default function SigninModal({
@@ -37,6 +38,7 @@ export default function SigninModal({
   onClose,
   onSuccessRedirect,
   onSignupClick,
+  onForgotPasswordClick,
 }: Props) {
   const dispatch = useAppDispatch();
   const t = useTranslations("Signin");
@@ -151,11 +153,16 @@ export default function SigninModal({
                 >
                   {t("remember")}
                 </Checkbox>
-                <Link
-                  href="/auth/forgot"
+                 <Link
+                  href="#"
                   size="sm"
                   color="primary"
                   className="text-[11px]"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onClose();
+                    onForgotPasswordClick?.(); 
+                  }}
                 >
                   {t("forgot")}
                 </Link>

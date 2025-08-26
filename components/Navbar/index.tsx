@@ -21,6 +21,7 @@ import LanguageSwitch from "@/components/LanguageSwitch";
 import { ThemeSwitch } from "@/components/theme-switch";
 import SigninModal from "@/components/Auth/SigninModal";
 import SignupModal from "@/components/Auth/SignupModal";
+import ForgotPasswordModal from "@/components/Auth/ForgotPasswordModal"; // ✅ Import the combined modal
 import { useState } from "react";
 
 export default function Navbar() {
@@ -30,8 +31,10 @@ export default function Navbar() {
   const loggedIn = useAppSelector(isLoggedIn);
 
   const drawerDisclosure = useDisclosure();
+
   const [isSigninModalOpen, setIsSigninModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false); // ✅ State for forgot password modal
 
   return (
     <>
@@ -69,18 +72,14 @@ export default function Navbar() {
             <>
               <Button
                 variant="ghost"
-                onPress={() => {
-                  setIsSigninModalOpen(true);
-                }}
+                onPress={() => setIsSigninModalOpen(true)}
               >
                 {t("signIn")}
               </Button>
               <Button
                 variant="solid"
                 color="primary"
-                onPress={() => {
-                  setIsSignupModalOpen(true);
-                }}
+                onPress={() => setIsSignupModalOpen(true)}
               >
                 {t("signUp")}
               </Button>
@@ -91,7 +90,6 @@ export default function Navbar() {
         </NavbarContent>
 
         {/* Mobile Menu */}
-
         <NavbarMenu className="!p-6 space-y-6 backdrop-blur-md shadow-lg">
           {!loggedIn && (
             <div className="flex flex-col items-end gap-3 w-full mt-4">
@@ -143,7 +141,7 @@ export default function Navbar() {
         </NavbarMenu>
       </HeroUINavbar>
 
-      {/* User Drawer (still active for logged in users) */}
+      {/* User Drawer */}
       {loggedIn && (
         <UserDrawer
           isOpen={drawerDisclosure.isOpen}
@@ -161,10 +159,11 @@ export default function Navbar() {
         }}
         onSignupClick={() => {
           setIsSigninModalOpen(false);
-          // Small delay to allow the signin modal to close before opening signup
-          setTimeout(() => {
-            setIsSignupModalOpen(true);
-          }, 100);
+          setTimeout(() => setIsSignupModalOpen(true), 100);
+        }}
+        onForgotPasswordClick={() => { 
+          setIsSigninModalOpen(false);
+          setTimeout(() => setIsForgotPasswordOpen(true), 100);
         }}
       />
 
@@ -178,11 +177,14 @@ export default function Navbar() {
         }}
         onSigninClick={() => {
           setIsSignupModalOpen(false);
-          // Small delay to allow the signup modal to close before opening signin
-          setTimeout(() => {
-            setIsSigninModalOpen(true);
-          }, 100);
+          setTimeout(() => setIsSigninModalOpen(true), 100);
         }}
+      />
+
+      {/* Forgot Password Modal */}
+      <ForgotPasswordModal
+        isOpen={isForgotPasswordOpen}
+        onClose={() => setIsForgotPasswordOpen(false)}
       />
     </>
   );

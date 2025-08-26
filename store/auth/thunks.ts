@@ -1,7 +1,5 @@
 // store/auth/thunks.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
-
-import { CDN } from "@/config";
 import { clearUser, setUser } from "@/store/slices/userSlice";
 import { UsageType } from "@/components/Auth/UsageTypeModal";
 import { fetchWithAuth } from "@/utils/api";
@@ -167,3 +165,51 @@ export async function verifyCode(email: string, code: string): Promise<void> {
 
   return response;
 }
+
+
+export const requestPasswordResetCodeThunk = createAsyncThunk<
+  { message: string },
+  { email: string },
+  { rejectValue: string }
+>(
+  "auth/requestPasswordResetCode",
+  async ({ email }, { rejectWithValue }) => {
+    try {
+      const res = await fetchWithAuth("/auth/reset-password", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
+
+         console.log("Reset code sent successfully:", res);
+      return { message: res.message };
+
+   
+
+    } catch (err: any) {
+      return rejectWithValue(err?.message || "Failed to send reset code");
+    }
+  }
+);
+
+// 2️⃣ Reset password using code
+export const resetPasswordThunk = createAsyncThunk<
+  { message: string },
+  { email: string; code: string; newPassword: string },
+  { rejectValue: string }
+>(
+  "auth/resetPassword",
+  async ({ email, code, newPassword }, { rejectWithValue }) => {
+    try {
+      const res = await fetchWithAuth("/auth/confirm-reset", {
+        method: "POST",
+        body: JSON.stringify({ email, code, newPassword }),
+      });
+      console.log("Password reset successful:", res);
+      return { message: res.message };
+
+      
+    } catch (err: any) {
+      return rejectWithValue(err?.message || "Failed to reset password");
+    }
+  }
+);

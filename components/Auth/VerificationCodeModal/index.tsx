@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Modal, ModalContent, Button, InputOtp } from "@heroui/react";
+import { Modal, ModalContent, Button, InputOtp, code } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { Formik, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
@@ -17,6 +17,7 @@ interface VerificationCodeModalProps {
   onResendCode?: () => Promise<void>;
   title?: string;
   description?: string;
+  codeError?: boolean;
 }
 
 interface FormValues {
@@ -31,6 +32,7 @@ export function VerificationCodeModal({
   onResendCode,
   title,
   description,
+  codeError
 }: VerificationCodeModalProps) {
   const t = useTranslations("auth.verification");
   const [isResending, setIsResending] = useState(false);
@@ -143,8 +145,8 @@ export function VerificationCodeModal({
                         segmentWrapper: "flex flex-row justify-center",
                         segment: "h-12 w-12 mx-1",
                       }}
-                      isInvalid={!!(errors.code && touched.code)}
-                      errorMessage={touched.code ? errors.code : undefined}
+                      isInvalid={!!(errors.code && touched.code) || codeError}
+                      errorMessage={touched.code ? errors.code : codeError ? t("codeError") : undefined}
                     />
 
                     {error && (
