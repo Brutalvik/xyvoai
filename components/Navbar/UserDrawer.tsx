@@ -57,11 +57,7 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
       const data: any = await dispatch(
         verifyCodeThunk({ email: user?.email, code })
       ).unwrap();
-
-      console.log("data", data);
-
       dispatch(setUser(data?.user));
-
       addToast({
         title: t("verifiedToast.title"),
         description: t("verifiedToast.description"),

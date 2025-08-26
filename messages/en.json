@@ -237,6 +237,7 @@
       "resendButton": "Resend Code",
       "backButton": "Back",
       "resendErrorMessage": "Failed to send code. Please try again.",
+      "codeError": "Invalid verification code. Please try again.",
       "validation": {
         "required": "Verification code is required",
         "invalidCode": "Please enter a valid 6-digit code",
@@ -326,11 +327,15 @@
     "verifyError": "Invalid verification code",
     "resendError": "Failed to resend code. Please try again.",
     "resetTitle": "Reset Your Password",
-    "resetDescription": "Enter a new password for your account linked to {{email}}.",
+    "resetDescription": "Enter a new password for your account linked to {email}.",
     "passwordMin": "Password must be at least 6 characters",
     "passwordMismatch": "Passwords do not match",
     "resetButton": "Reset Password",
-    "resetError": "Failed to reset password. Please try again."
+    "resetError": "Failed to reset password. Please try again.",
+     "newPassword": "Enter your new password",
+    "confirmPassword": "Confirm your new password",
+    "passwordResetSuccess": "Password reset successful",
+    "changeSuccess": "Your password has been changed successfully."
   },
   "resetPassword": {
     "title": "Enter verification code",

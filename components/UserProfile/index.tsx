@@ -184,7 +184,6 @@ export default function ProfilePage() {
             <Button
               color="primary"
               variant="solid"
-              onPress={() => console.log("Reset password")}
               className="mt-3"
             >
               {t("resetPassword")}

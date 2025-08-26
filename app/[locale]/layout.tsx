@@ -24,8 +24,10 @@ export default async function LocaleLayout({
   const messages = await getMessages();
   if (!messages) notFound();
 
+  const { locale } = params;
+  if (locale !== "en" && locale !== "fr") notFound();
   return (
-    <html suppressHydrationWarning lang={params?.locale}>
+    <html suppressHydrationWarning lang={locale}>
       <body
         className={clsx(
           "text-foreground bg-background font-sans antialiased",
@@ -34,7 +36,7 @@ export default async function LocaleLayout({
       >
         <Providers>
           <ReduxProvider>
-            <NextIntlClientProvider locale={params?.locale} messages={messages}>
+            <NextIntlClientProvider locale={locale} messages={messages}>
               <ToastProvider />
               <div className="relative flex flex-col">
                 <NavbarConditional />

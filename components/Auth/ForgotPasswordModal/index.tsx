@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Modal, ModalContent, ModalBody, Button, Input } from "@heroui/react";
+import { Modal, ModalContent, ModalBody, Button, Input, addToast } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { Formik, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
@@ -41,10 +41,8 @@ export default function ForgotPasswordModal({ isOpen, onClose, onSuccessRedirect
   });
 
   const handleRequestCode = async (values: RequestCodeValues, actions: FormikHelpers<RequestCodeValues>) => {
-    console.log("Requesting password reset code for:", values.email);
     try {
-      const result = await dispatch(requestPasswordResetCodeThunk({ email: values.email })).unwrap();
-      console.log("Dispatch result:", result);
+      await dispatch(requestPasswordResetCodeThunk({ email: values.email })).unwrap();
       setEmail(values.email);
       setStep("verify");
     } catch (err: any) {
@@ -68,7 +66,6 @@ export default function ForgotPasswordModal({ isOpen, onClose, onSuccessRedirect
     try {
       await dispatch(requestPasswordResetCodeThunk({ email })).unwrap();
     } catch (err: any) {
-      console.log("ERROR OCCURED")
       throw new Error(err || t("resendError"));
     }
   };
@@ -90,6 +87,11 @@ const handleResetPassword = async (values: ResetPasswordValues, actions: FormikH
     actions.resetForm();
     onClose();
     onSuccessRedirect?.();
+    addToast({
+      title: t("passwordResetSuccess"),
+      description: `${t("changeSuccess")}`,
+      color: "success",
+    });
   } catch (err: any) {
     const errorMessage = err?.toString() || t("resetError");
 

@@ -247,6 +247,7 @@
       "resendButton": "Renvoyer le code",
       "backButton": "Retour",
       "resendErrorMessage": "Échec de l'envoi du code. Veuillez réessayer.",
+      "codeError": "Code de vérification invalide. Veuillez réessayer.",
       "validation": {
         "required": "Le code de vérification est requis",
         "invalidCode": "Veuillez entrer un code à 6 chiffres valide",
@@ -329,11 +330,15 @@
     "verifyError": "Code de vérification invalide",
     "resendError": "Échec du renvoi du code. Veuillez réessayer.",
     "resetTitle": "Réinitialisez votre mot de passe",
-    "resetDescription": "Entrez un nouveau mot de passe pour votre compte lié à {{email}}.",
+    "resetDescription": "Entrez un nouveau mot de passe pour votre compte lié à {email}.",
     "passwordMin": "Le mot de passe doit contenir au moins 6 caractères",
     "passwordMismatch": "Les mots de passe ne correspondent pas",
     "resetButton": "Réinitialiser le mot de passe",
-    "resetError": "Échec de la réinitialisation du mot de passe. Veuillez réessayer."
+    "resetError": "Échec de la réinitialisation du mot de passe. Veuillez réessayer.",
+    "newPassword": "Entrez votre nouveau mot de passe",
+    "confirmPassword": "Confirmez votre nouveau mot de passe",
+    "passwordResetSuccess": "Réinitialisation du mot de passe réussie",
+    "changeSuccess": "Votre mot de passe a été modifié avec succès."
   },
   "resetPassword": {
     "title": "Entrez le code de vérification",

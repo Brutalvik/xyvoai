@@ -179,12 +179,7 @@ export const requestPasswordResetCodeThunk = createAsyncThunk<
         method: "POST",
         body: JSON.stringify({ email }),
       });
-
-         console.log("Reset code sent successfully:", res);
       return { message: res.message };
-
-   
-
     } catch (err: any) {
       return rejectWithValue(err?.message || "Failed to send reset code");
     }
@@ -204,10 +199,7 @@ export const resetPasswordThunk = createAsyncThunk<
         method: "POST",
         body: JSON.stringify({ email, code, newPassword }),
       });
-      console.log("Password reset successful:", res);
       return { message: res.message };
-
-      
     } catch (err: any) {
       return rejectWithValue(err?.message || "Failed to reset password");
     }
