@@ -24,7 +24,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
   if (!messages) notFound();
 
-  const { locale } = params;
+  const { locale } = await params;
   if (locale !== "en" && locale !== "fr") notFound();
   return (
     <html suppressHydrationWarning lang={locale}>
