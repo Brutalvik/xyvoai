@@ -113,7 +113,7 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
                     <p>
                       {t("welcome")} {_.capitalize(firstName)}
                     </p>
-                    {String(user?.emailVerified) !== "true" ? (
+                    {String(user?.confirmedUser) !== "CONFIRMED" ? (
                       <div className="flex items-center gap-2 mt-1">
                         <Chip color="warning" variant="flat" size="sm">
                           {t("unverified")}

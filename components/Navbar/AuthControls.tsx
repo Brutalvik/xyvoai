@@ -61,7 +61,7 @@ export default function AuthControls({
               user?.image
                 ? {}
                 : {
-                    backgroundColor: getBgColor(user?.id || "", true),
+                    backgroundColor: avatarBg,
                     fontSize: "0.975rem",
                     fontWeight: "700",
                     color: "#fff",

@@ -9,6 +9,8 @@ import * as Yup from "yup";
 import { Logo } from "@/components/icons";
 import { HiArrowLeft, HiRefresh } from "react-icons/hi";
 
+const CODEMISMATCH_ERROR = "CodeMismatchException";
+
 interface VerificationCodeModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -59,7 +61,7 @@ export function VerificationCodeModal({
   ) => {
     try {
       setError(null);
-      await onVerify(values.code);
+      const res = await onVerify(values.code);
       resetForm();
     } catch (err: any) {
       setError(err.message || t("errorMessage"));

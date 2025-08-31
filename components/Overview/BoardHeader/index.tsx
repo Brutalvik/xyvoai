@@ -168,7 +168,7 @@ export default function BoardHeader() {
           </button>
 
           {/* Avatar */}
-          {loggedIn && String(user?.emailVerified) === "true" ? (
+          {loggedIn && String(user?.confirmedUser) === "CONFIRMED" ? (
             <AuthAvatar />
           ) : (
             <UnAuthAvatar />

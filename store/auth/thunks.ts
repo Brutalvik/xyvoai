@@ -158,7 +158,7 @@ export async function resendVerificationCode(email: string): Promise<void> {
 
 //verify code
 export async function verifyCode(email: string, code: string): Promise<void> {
-  const response = await fetchWithAuth("/auth/verify", {
+  const response = await fetchWithAuth("/auth/verify-code", {
     method: "POST",
     body: JSON.stringify({ email, code }),
   });
