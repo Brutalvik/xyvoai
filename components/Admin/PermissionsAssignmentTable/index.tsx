@@ -122,6 +122,13 @@ export default function PermissionAssignmentTable({
 
   const handleAssign = () => {
     if (!selectedPermission || !resourceId) return;
+    console.log("Assigning permission:", {
+      user_id: resourceType === "user" ? resourceId : "",
+      resource_type: resourceType,
+      resource_id: resourceId,
+      permission: selectedPermission,
+      granted_by: currentUserId,
+    });
     dispatch(
       assignPermission({
         user_id: resourceType === "user" ? resourceId : "",
