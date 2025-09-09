@@ -9,7 +9,7 @@ import { decodeToken } from "./lib/utils"; // You need this utility
 const intlMiddleware = createIntlMiddleware(routing);
 
 const protectedRoutes = ["/overview", "/projects", "/tasks"];
-const adminRoutes = ["/admin", "/admin/permissions", "/admin/users"];
+const adminRoutes = ["/users"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

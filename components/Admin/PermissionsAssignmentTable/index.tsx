@@ -41,7 +41,7 @@ interface PermissionsProps {
   systemPermissions: SystemPermission[];
 }
 
-export default function PermissionAssignmentEnterprise({
+export default function PermissionsAssignmentTable({
   systemPermissions,
 }: PermissionsProps) {
   const t = useTranslations("PermissionAssignment");
