@@ -747,7 +747,8 @@
     "team": "Équipe",
     "project": "Projet",
     "getUser": "Voir l’utilisateur",
-    "clearUser": "Réinitialiser l'utilisateur"
+    "clearUser": "Réinitialiser l'utilisateur",
+    "revokeSelected": "Révoquer {count} permission(s) sélectionnée(s)"
   },
   "FeaturesSection": {
     "title": "Conçu pour la rapidité et l'intelligence",

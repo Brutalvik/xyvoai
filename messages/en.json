@@ -316,7 +316,7 @@
     "selectUsageOptionTeam": "With my team (Organization)",
     "selectUsageError": "Please select how you will use Xyvo"
   },
-"ForgotPassword": {
+  "ForgotPassword": {
     "requestTitle": "Forgot Your Password?",
     "requestDescription": "Enter your email address to receive a verification code.",
     "email": "Email",
@@ -332,7 +332,7 @@
     "passwordMismatch": "Passwords do not match",
     "resetButton": "Reset Password",
     "resetError": "Failed to reset password. Please try again.",
-     "newPassword": "Enter your new password",
+    "newPassword": "Enter your new password",
     "confirmPassword": "Confirm your new password",
     "passwordResetSuccess": "Password reset successful",
     "changeSuccess": "Your password has been changed successfully."
@@ -748,7 +748,8 @@
     "team": "Team",
     "project": "Project",
     "getUser": "Get User",
-    "clearUser": "Clear User"
+    "clearUser": "Clear User",
+    "revokeSelected": "Revoke {count} selected permission(s)"
   },
   "FeaturesSection": {
     "title": "Built for Speed & Intelligence",

@@ -61,14 +61,15 @@ export default function PermissionAssignmentTable({
     useState<keyof SystemPermission>("category");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
+  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const confirmModal = useDisclosure();
   const [pendingDelete, setPendingDelete] = useState<{
-    id: string;
-    permission: string;
+    ids: string[];
+    permissionNames: string[];
   } | null>(null);
-  const [isResourceFetched, setIsResourceFetched] = useState<boolean>(false);
 
+  const [isResourceFetched, setIsResourceFetched] = useState<boolean>(false);
   const [isFetchingUser, setIsFetchingUser] = useState(false);
   const [isAssigning, setIsAssigning] = useState(false);
 
@@ -86,7 +87,7 @@ export default function PermissionAssignmentTable({
   };
 
   const handleResourceIdChange = (e: ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/[^a-fA-F0-9]/g, ""); // keep hex chars only
+    let value = e.target.value.replace(/[^a-fA-F0-9]/g, "");
     if (value.length === 32) {
       try {
         const dashed = addDashes(value);
@@ -159,52 +160,40 @@ export default function PermissionAssignmentTable({
       .finally(() => setIsAssigning(false));
   };
 
-  const confirmRevoke = (id: string, permission: string) => {
-    setPendingDelete({ id, permission });
+  const confirmRevoke = (ids: string[], permissionNames: string[]) => {
+    setPendingDelete({ ids, permissionNames });
     confirmModal.onOpen();
   };
 
   const handleRevoke = () => {
     if (!pendingDelete) return;
-    const { id, permission } = pendingDelete;
 
-    setAssignedPermissions((prev) => prev.filter((p) => p.id !== id));
+    const { ids, permissionNames } = pendingDelete;
+    setAssignedPermissions((prev) => prev.filter((p) => !ids.includes(p.id)));
+    setSelectedPermissions([]);
 
-    let undo = false;
-    const timeout = setTimeout(() => {
-      if (!undo) {
-        dispatch(removePermission(id)).catch(() => {
-          addToast({
-            title: t("error"),
-            description: `${t("failedToRevoke")} '${permission}'.`,
-            color: "danger",
-            timeout: 3000,
+    ids.forEach((id, idx) => {
+      let undo = false;
+      const timeout = setTimeout(() => {
+        if (!undo) {
+          dispatch(removePermission(id)).catch(() => {
+            addToast({
+              title: t("error"),
+              description: `${t("failedToRevoke")} '${permissionNames[idx]}'.`,
+              color: "danger",
+              timeout: 3000,
+            });
           });
-        });
-      }
-    }, 3000);
+        }
+      }, 3000);
 
-    addToast({
-      title: t("permissionRevoked"),
-      description: `'${permission}' ${t("permissionRemoved")}`,
-      color: "success",
-      variant: "solid",
-      endContent: (
-        <div className="flex gap-2 mt-2">
-          <Button
-            color="primary"
-            size="sm"
-            variant="bordered"
-            onPress={() => {
-              undo = true;
-              clearTimeout(timeout);
-              setAssignedPermissions((prev) => [...prev, { id, permission }]);
-            }}
-          >
-            {t("undo")}
-          </Button>
-        </div>
-      ),
+      addToast({
+        title: t("permissionRevoked"),
+        description: `'${permissionNames[idx]}' ${t("permissionRemoved")}`,
+        color: "success",
+        variant: "solid",
+        timeout: 3000,
+      });
     });
 
     confirmModal.onClose();
@@ -241,10 +230,12 @@ export default function PermissionAssignmentTable({
     setAssignedPermissions([]);
     setIsResourceFetched(false);
     setSelectedPermission("");
+    setSelectedPermissions([]);
   };
 
   return (
     <div className="space-y-10 text-sm">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h2 className="text-2xl font-bold tracking-tight">
           {t("userPermissions")}
@@ -303,7 +294,7 @@ export default function PermissionAssignmentTable({
                 </Button>
                 <Button
                   color="secondary"
-                  size="lg" // added size prop
+                  size="lg"
                   variant="flat"
                   onPress={handleClearUser}
                 >
@@ -326,25 +317,51 @@ export default function PermissionAssignmentTable({
         </div>
       </div>
 
-      {/* Permission Chips */}
+      {/* Permission Chips with multi-select */}
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">{t("assignedPermissions")}</h3>
         {assignedPermissions.length === 0 ? (
           <p className="text-foreground-400 italic">{t("noneAssigned")}</p>
         ) : (
-          <div className="flex flex-wrap gap-2">
-            {assignedPermissions.map(({ id, permission }, index) => (
-              <Chip
-                key={index}
-                color="primary"
+          <>
+            <div className="flex flex-wrap gap-2">
+              {assignedPermissions.map(({ id, permission }, index) => (
+                <Chip
+                  className="cursor-pointer select-none"
+                  key={index}
+                  color="primary"
+                  size="md"
+                  variant={selectedPermissions.includes(id) ? "solid" : "flat"}
+                  onClick={() => {
+                    setSelectedPermissions((prev) =>
+                      prev.includes(id)
+                        ? prev.filter((p) => p !== id)
+                        : [...prev, id]
+                    );
+                  }}
+                  onClose={() => confirmRevoke([id], [permission])}
+                >
+                  {permission}
+                </Chip>
+              ))}
+            </div>
+            {selectedPermissions.length > 0 && (
+              <Button
+                color="danger"
                 size="md"
-                variant="flat"
-                onClose={() => confirmRevoke(id, permission)}
+                onPress={() =>
+                  confirmRevoke(
+                    selectedPermissions,
+                    assignedPermissions
+                      .filter((p) => selectedPermissions.includes(p.id))
+                      .map((p) => p.permission)
+                  )
+                }
               >
-                {permission}
-              </Chip>
-            ))}
-          </div>
+                {t("revokeSelected", { count: selectedPermissions.length })}
+              </Button>
+            )}
+          </>
         )}
       </div>
 
@@ -456,16 +473,15 @@ export default function PermissionAssignmentTable({
           {(onClose) => (
             <>
               <ModalHeader>{t("confirmRevoke")}</ModalHeader>
-              <ModalBody className="flex flex-row">
-                <p>
-                  {t("confirmRevokeMessage")}{" "}
-                  <span className="font-semibold text-red-500">
-                    {pendingDelete?.permission}
-                  </span>{" "}
-                  {t("permissionText")}
-                </p>
+              <ModalBody>
+                <p>{t("confirmRevokeMessage")}</p>
+                <ul className="list-disc ml-6 mt-2 text-red-500">
+                  {pendingDelete?.permissionNames.map((name) => (
+                    <li key={name}>{name}</li>
+                  ))}
+                </ul>
               </ModalBody>
-              <ModalFooter>
+              <ModalFooter className="flex gap-2">
                 <Button variant="light" onPress={onClose}>
                   {t("cancel")}
                 </Button>
