@@ -1,7 +1,7 @@
 // components/PermissionAssignmentEnterprise.tsx
 "use client";
 
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import {
   Select,
   SelectItem,
@@ -33,6 +33,7 @@ import {
 } from "@/store/slices/permissionsSlice";
 import { SystemPermission } from "@/types";
 import { selectUserId } from "@/store/selectors";
+import { addDashes } from "@/components/Admin/PermissionsAssignmentTable/helper";
 
 type ResourceType = "user" | "team" | "project";
 const resourceTypes: ResourceType[] = ["user", "team", "project"];
@@ -41,7 +42,7 @@ interface PermissionsProps {
   systemPermissions: SystemPermission[];
 }
 
-export default function PermissionsAssignmentTable({
+export default function PermissionAssignmentTable({
   systemPermissions,
 }: PermissionsProps) {
   const t = useTranslations("PermissionAssignment");
@@ -78,8 +79,25 @@ export default function PermissionsAssignmentTable({
         return type;
     }
   };
+
+  const handleResourceIdChange = (e: ChangeEvent<HTMLInputElement>) => {
+  let value = e.target.value.replace(/[^a-fA-F0-9]/g, ""); // keep hex chars only
+
+  if (value.length === 32) {
+    try {
+      const dashed = addDashes(value);
+      setResourceId(dashed);
+    } catch {
+      setResourceId(value); // fallback
+    }
+  } else {
+    setResourceId(value); // typing in progress
+  }
+};
+
   const handleFetchResource = () => {
     dispatch(fetchUserPermissions(resourceId)).then((res: any) => {
+      console.log("Fetched user permissions:", res);
       if (res.payload) {
         setUserData(res.payload);
         setAssignedPermissions(
@@ -237,7 +255,7 @@ export default function PermissionsAssignmentTable({
           <Input
             label={t("resourceId")}
             value={resourceId}
-            onChange={(e) => setResourceId(e.target.value)}
+            onChange={handleResourceIdChange}
           />
 
           {isResourceFetched ? (
@@ -303,6 +321,7 @@ export default function PermissionsAssignmentTable({
         )}
       </div>
 
+        {console.log("User Data:", userData)}
       {/* User Info */}
       {userData && (
         <div className="bg-muted p-6 rounded-xl border border-border shadow-sm max-w-5xl">

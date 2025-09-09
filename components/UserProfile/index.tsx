@@ -23,6 +23,7 @@ import {
   HiOutlineMail,
   HiOutlinePhone,
   HiOutlineKey,
+  HiOutlineUserCircle
 } from "react-icons/hi";
 import {
   HiOutlineBuildingOffice2,
@@ -34,7 +35,7 @@ import { selectUser } from "@/store/selectors";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { signoutThunk } from "@/store/auth/thunks";
 import { formatPhoneNumber } from "@/utils";
-import { formattedDate } from "@/components/UserProfile/helper";
+import { formattedDate, removeDashes } from "@/components/UserProfile/helper";
 
 export default function ProfilePage() {
   const t = useTranslations("Profile");
@@ -43,10 +44,11 @@ export default function ProfilePage() {
   const dispatch = useAppDispatch();
   const [showPasswordResetModal, setShowPasswordResetModal] = useState(false);
   const { user }: any = useAppSelector(selectUser);
+  console.log("User in profile page:", user);
   const uniquePermissions: string[] = Array.from(
     new Set(user.permissions as string[])
   );
-
+  
   return (
     <div className="flex flex-col items-center justify-center py-10 px-4 min-h-screen bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-900 dark:to-neutral-950">
       <Card className="w-full max-w-2xl shadow-xl rounded-2xl border border-neutral-200 dark:border-neutral-700">
@@ -83,6 +85,12 @@ export default function ProfilePage() {
                   </Tooltip>
                   {user.email}
                 </li>
+                 <li>
+                  <Tooltip content={"User ID"}>
+                    <HiOutlineUserCircle className="inline mr-2 cursor-pointer" />
+                  </Tooltip>
+                  {removeDashes(user.id)}
+                </li>
                 <li>
                   <Tooltip content={t("phone")}>
                     <HiOutlinePhone className="inline mr-2 cursor-pointer" />
@@ -100,6 +108,12 @@ export default function ProfilePage() {
                     <HiOutlineBuildingOffice2 className="inline mr-2 cursor-pointer" />
                   </Tooltip>
                   {user.organizationName}
+                </li>
+                <li>
+                  <Tooltip content={"Organization ID"}>
+                    <HiOutlineBuildingOffice2 className="inline mr-2 cursor-pointer" />
+                  </Tooltip>
+                  {removeDashes(user?.organizationId)}
                 </li>
                 <li>
                   <Tooltip content={t("timezone")}>

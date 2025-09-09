@@ -28,7 +28,9 @@ export default function AdminPermissionsPage() {
         </div>
       ) : permissions.length > 0 ? (
         <PermissionAssignmentTable systemPermissions={permissions} />
-      ) : null}
+      ) : (
+        <p className="text-sm text-gray-500">No permissions found.</p>
+      )}
     </div>
   );
 }

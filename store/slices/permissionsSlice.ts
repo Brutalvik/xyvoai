@@ -48,18 +48,35 @@ export const fetchSystemPermissions = createAsyncThunk<
 });
 
 export const fetchUserPermissions = createAsyncThunk<
-  any, // Ideally: `UserWithPermissions`, define a proper type later
+  { id?: string; permissions: any[] }, // tighten types later
   string,
   { state: RootState }
 >("permissions/fetchUserPermissions", async (userId, thunkAPI) => {
   try {
     const data = await fetchWithAuth(`/user-permissions/user/${userId}`);
 
-    if (!data.success || !data.user || !Array.isArray(data.user.permissions)) {
-      throw new Error("Invalid response: user or permissions not found");
+    if (!data.success) {
+      throw new Error("Request failed");
     }
 
-    return data.user;
+    // Case 1: API returns { user: { permissions: [...] } }
+    if (data.user && Array.isArray(data.user.permissions)) {
+      return {
+        id: data.user.id,
+        permissions: data.user.permissions,
+      };
+    }
+
+    // Case 2: API returns { user_permissions: [] }
+    if (Array.isArray(data.user_permissions)) {
+      return {
+        id: userId,
+        permissions: data.user_permissions,
+      };
+    }
+
+    // Unexpected shape
+    throw new Error("Invalid response structure");
   } catch (err: any) {
     console.error("❌ fetchUserPermissions error:", err);
 
@@ -69,6 +86,7 @@ export const fetchUserPermissions = createAsyncThunk<
   }
 });
 
+// Thunk to assign a permission to a user
 export const assignPermission = createAsyncThunk<
   any,
   {
@@ -82,11 +100,18 @@ export const assignPermission = createAsyncThunk<
   try {
     const res = await fetchWithAuth("/user-permissions", {
       method: "POST",
-      body: JSON.stringify({ ...payload }),
+      body: JSON.stringify(payload),
     });
 
+    console.log("Assign permission response:", res);
+
+    // If fetchWithAuth returns raw Response
     if (!res.ok) throw new Error("Failed to assign permission");
     const data = await res.json();
+
+    if (!data.success) {
+      throw new Error(data.error || "Failed to assign permission");
+    }
 
     return data.user_permission;
   } catch (err: any) {
@@ -95,6 +120,7 @@ export const assignPermission = createAsyncThunk<
     );
   }
 });
+
 
 export const removePermission = createAsyncThunk<any, string>(
   "permissions/removePermission",
