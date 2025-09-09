@@ -128,15 +128,39 @@ export default function PermissionAssignmentTable({
       .finally(() => setIsFetchingUser(false));
   };
 
-  const handleAssign = () => {
+  const handleBatchAssign = () => {
     if (!selectedPermission || !resourceId) return;
     setIsAssigning(true);
+
+    // Prepare permissions to assign
+    let permissionsToAssign = [selectedPermission];
+
+    // If all CRUD children are already assigned + the new selection completes the set, assign the parent instead
+    if (!fullAccessMap[selectedPermission]) {
+      Object.entries(fullAccessMap).forEach(([parent, children]) => {
+        const alreadyAssignedChildren = assignedPermissions
+          .map((p) => p.permission)
+          .filter((p) => children.includes(p));
+
+        // If selecting this child completes the full set
+        if (
+          children.includes(selectedPermission) &&
+          [...alreadyAssignedChildren, selectedPermission].length ===
+            children.length
+        ) {
+          // Remove individual children from assignment and assign the parent instead
+          permissionsToAssign = [parent];
+        }
+      });
+    }
+
+    // Dispatch assignment
     dispatch(
       assignPermission({
         user_id: resourceType === "user" ? resourceId : "",
         resource_type: resourceType,
         resource_id: resourceId,
-        permission: selectedPermission,
+        permission: permissionsToAssign[0], // only one at a time in your current workflow
         granted_by: currentUserId as string,
       })
     )
@@ -155,7 +179,7 @@ export default function PermissionAssignmentTable({
         }
         addToast({
           title: t("permissionAssigned"),
-          description: `'${selectedPermission}' ${t("permissionGranted")}`,
+          description: `'${permissionsToAssign[0]}' ${t("permissionGranted")}`,
           color: "success",
           variant: "solid",
           timeout: 3000,
@@ -302,7 +326,7 @@ export default function PermissionAssignmentTable({
                   isDisabled={!resourceId || !selectedPermission}
                   isLoading={isAssigning}
                   variant="shadow"
-                  onPress={handleAssign}
+                  onPress={handleBatchAssign}
                 >
                   {t("assign")}
                 </Button>

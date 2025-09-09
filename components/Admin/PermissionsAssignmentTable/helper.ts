@@ -20,3 +20,8 @@ export function addDashes(uuid: string): string {
   );
 }
 
+// Helper: check if all children of a parent are selected
+export const allChildrenSelected = (
+  children: string[],
+  selected: Set<string>
+) => children.every((child) => selected.has(child));
