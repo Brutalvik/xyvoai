@@ -747,7 +747,8 @@
     "user": "User",
     "team": "Team",
     "project": "Project",
-    "getUser": "Get User"
+    "getUser": "Get User",
+    "clearUser": "Clear User"
   },
   "FeaturesSection": {
     "title": "Built for Speed & Intelligence",

@@ -746,7 +746,8 @@
     "user": "Utilisateur",
     "team": "Équipe",
     "project": "Projet",
-    "getUser": "Voir l’utilisateur"
+    "getUser": "Voir l’utilisateur",
+    "clearUser": "Réinitialiser l'utilisateur"
   },
   "FeaturesSection": {
     "title": "Conçu pour la rapidité et l'intelligence",

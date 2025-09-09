@@ -1,4 +1,4 @@
-// components/PermissionAssignmentEnterprise.tsx
+// components/PermissionAssignmentTable.tsx
 "use client";
 
 import { ChangeEvent, useState } from "react";
@@ -48,6 +48,7 @@ export default function PermissionAssignmentTable({
   const t = useTranslations("PermissionAssignment");
   const dispatch = useAppDispatch();
   const currentUserId = useAppSelector(selectUserId);
+
   const [resourceType, setResourceType] = useState<ResourceType>("user");
   const [resourceId, setResourceId] = useState("");
   const [selectedPermission, setSelectedPermission] = useState("");
@@ -59,6 +60,7 @@ export default function PermissionAssignmentTable({
   const [sortColumn, setSortColumn] =
     useState<keyof SystemPermission>("category");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const confirmModal = useDisclosure();
   const [pendingDelete, setPendingDelete] = useState<{
@@ -66,6 +68,9 @@ export default function PermissionAssignmentTable({
     permission: string;
   } | null>(null);
   const [isResourceFetched, setIsResourceFetched] = useState<boolean>(false);
+
+  const [isFetchingUser, setIsFetchingUser] = useState(false);
+  const [isAssigning, setIsAssigning] = useState(false);
 
   const getResourceTypeLabel = (type: ResourceType) => {
     switch (type) {
@@ -81,54 +86,46 @@ export default function PermissionAssignmentTable({
   };
 
   const handleResourceIdChange = (e: ChangeEvent<HTMLInputElement>) => {
-  let value = e.target.value.replace(/[^a-fA-F0-9]/g, ""); // keep hex chars only
-
-  if (value.length === 32) {
-    try {
-      const dashed = addDashes(value);
-      setResourceId(dashed);
-    } catch {
-      setResourceId(value); // fallback
-    }
-  } else {
-    setResourceId(value); // typing in progress
-  }
-};
-
-  const handleFetchResource = () => {
-    dispatch(fetchUserPermissions(resourceId)).then((res: any) => {
-      console.log("Fetched user permissions:", res);
-      if (res.payload) {
-        setUserData(res.payload);
-        setAssignedPermissions(
-          res.payload.permissions.map(
-            (p: { id: string; permission: string }) => ({
-              id: p.id,
-              permission: p.permission,
-            }),
-          ),
-        );
-        setIsResourceFetched(true);
-      } else {
-        setUserData(null);
-        setAssignedPermissions([]);
+    let value = e.target.value.replace(/[^a-fA-F0-9]/g, ""); // keep hex chars only
+    if (value.length === 32) {
+      try {
+        const dashed = addDashes(value);
+        setResourceId(dashed);
+      } catch {
+        setResourceId(value);
       }
-    });
+    } else {
+      setResourceId(value);
+    }
   };
 
-  // useEffect(() => {
-  //   if (!resourceId) return;
-  // }, [resourceType, resourceId, dispatch]);
+  const handleFetchResource = () => {
+    if (!resourceId) return;
+    setIsFetchingUser(true);
+    dispatch(fetchUserPermissions(resourceId))
+      .then((res: any) => {
+        if (res.payload) {
+          setUserData(res.payload);
+          setAssignedPermissions(
+            res.payload.permissions.map(
+              (p: { id: string; permission: string }) => ({
+                id: p.id,
+                permission: p.permission,
+              })
+            )
+          );
+          setIsResourceFetched(true);
+        } else {
+          setUserData(null);
+          setAssignedPermissions([]);
+        }
+      })
+      .finally(() => setIsFetchingUser(false));
+  };
 
   const handleAssign = () => {
     if (!selectedPermission || !resourceId) return;
-    console.log("Assigning permission:", {
-      user_id: resourceType === "user" ? resourceId : "",
-      resource_type: resourceType,
-      resource_id: resourceId,
-      permission: selectedPermission,
-      granted_by: currentUserId,
-    });
+    setIsAssigning(true);
     dispatch(
       assignPermission({
         user_id: resourceType === "user" ? resourceId : "",
@@ -136,26 +133,30 @@ export default function PermissionAssignmentTable({
         resource_id: resourceId,
         permission: selectedPermission,
         granted_by: currentUserId as string,
-      }),
-    ).then(() => {
-      setSelectedPermission("");
-      dispatch(fetchUserPermissions(resourceId)).then((res: any) => {
-        setUserData(res.payload);
-        setAssignedPermissions(
-          res.payload.permissions.map(
-            (p: { id: string; permission: string }) => ({
-              id: p.id,
-              permission: p.permission,
-            }),
-          ),
-        );
-      });
-      addToast({
-        title: t("permissionAssigned"),
-        description: `'${selectedPermission}' ${t("permissionGranted")}`,
-        color: "success",
-      });
-    });
+      })
+    )
+      .then(() => dispatch(fetchUserPermissions(resourceId)))
+      .then((res: any) => {
+        if (res.payload) {
+          setUserData(res.payload);
+          setAssignedPermissions(
+            res.payload.permissions.map(
+              (p: { id: string; permission: string }) => ({
+                id: p.id,
+                permission: p.permission,
+              })
+            )
+          );
+        }
+        addToast({
+          title: t("permissionAssigned"),
+          description: `'${selectedPermission}' ${t("permissionGranted")}`,
+          color: "success",
+          timeout: 3000,
+        });
+        setSelectedPermission("");
+      })
+      .finally(() => setIsAssigning(false));
   };
 
   const confirmRevoke = (id: string, permission: string) => {
@@ -177,6 +178,7 @@ export default function PermissionAssignmentTable({
             title: t("error"),
             description: `${t("failedToRevoke")} '${permission}'.`,
             color: "danger",
+            timeout: 3000,
           });
         });
       }
@@ -185,7 +187,8 @@ export default function PermissionAssignmentTable({
     addToast({
       title: t("permissionRevoked"),
       description: `'${permission}' ${t("permissionRemoved")}`,
-      color: "warning",
+      color: "success",
+      variant: "solid",
       endContent: (
         <div className="flex gap-2 mt-2">
           <Button
@@ -222,20 +225,27 @@ export default function PermissionAssignmentTable({
       [perm.label, perm.key, perm.category, perm.description]
         .join(" ")
         .toLowerCase()
-        .includes(searchTerm.toLowerCase()),
+        .includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
       const valA = (a[sortColumn] || "").toString().toLowerCase();
       const valB = (b[sortColumn] || "").toString().toLowerCase();
-
       return sortDirection === "asc"
         ? valA.localeCompare(valB)
         : valB.localeCompare(valA);
     });
 
+  const handleClearUser = () => {
+    setResourceId("");
+    setUserData(null);
+    setAssignedPermissions([]);
+    setIsResourceFetched(false);
+    setSelectedPermission("");
+  };
+
   return (
     <div className="space-y-10 text-sm">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h2 className="text-2xl font-bold tracking-tight">
           {t("userPermissions")}
         </h2>
@@ -270,7 +280,7 @@ export default function PermissionAssignmentTable({
               <Select
                 items={systemPermissions.filter(
                   (perm) =>
-                    !assignedPermissions.some((p) => p.permission === perm.key),
+                    !assignedPermissions.some((p) => p.permission === perm.key)
                 )}
                 label={t("permission")}
                 selectedKeys={[selectedPermission]}
@@ -280,22 +290,32 @@ export default function PermissionAssignmentTable({
               >
                 {(perm) => <SelectItem key={perm.key}>{perm.label}</SelectItem>}
               </Select>
-              <Button
-                className="self-end mb-1"
-                color="primary"
-                isDisabled={!resourceId || !selectedPermission}
-                size="lg"
-                variant="shadow"
-                onPress={handleAssign}
-              >
-                {t("assign")}
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  color="primary"
+                  isDisabled={!resourceId || !selectedPermission}
+                  isLoading={isAssigning}
+                  size="lg"
+                  variant="shadow"
+                  onPress={handleAssign}
+                >
+                  {t("assign")}
+                </Button>
+                <Button
+                  color="secondary"
+                  size="lg" // added size prop
+                  variant="flat"
+                  onPress={handleClearUser}
+                >
+                  {t("clearUser")}
+                </Button>
+              </div>
             </>
           ) : (
             <Button
-              className="self-end mb-1"
               color="primary"
               isDisabled={!resourceId}
+              isLoading={isFetchingUser}
               size="lg"
               variant="shadow"
               onPress={handleFetchResource}
@@ -328,7 +348,6 @@ export default function PermissionAssignmentTable({
         )}
       </div>
 
-        {console.log("User Data:", userData)}
       {/* User Info */}
       {userData && (
         <div className="bg-muted p-6 rounded-xl border border-border shadow-sm max-w-5xl">
@@ -357,33 +376,6 @@ export default function PermissionAssignmentTable({
                 {t("role")}
               </div>
               <div>{userData.role}</div>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-foreground-400">
-                {t("plan")}
-              </div>
-              <Chip
-                className="mt-1"
-                color={
-                  userData.plan === "free"
-                    ? "default"
-                    : userData.plan === "solo_plus"
-                      ? "secondary"
-                      : "primary"
-                }
-                size="sm"
-                variant="flat"
-              >
-                {userData.plan}
-              </Chip>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-foreground-400">
-                {t("organization")}
-              </div>
-              <div className="break-all text-xs text-foreground-600">
-                {userData.organization_id}
-              </div>
             </div>
           </div>
         </div>
@@ -418,7 +410,7 @@ export default function PermissionAssignmentTable({
                           }
                         >
                           {t(
-                            key as "label" | "key" | "description" | "category",
+                            key as "label" | "key" | "description" | "category"
                           )}
                           {sortColumn === key ? (
                             sortDirection === "asc" ? (
