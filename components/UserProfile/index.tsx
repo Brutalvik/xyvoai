@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import _ from "lodash";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   Button,
@@ -23,32 +23,74 @@ import {
   HiOutlineMail,
   HiOutlinePhone,
   HiOutlineKey,
-  HiOutlineUserCircle
+  HiOutlineUserCircle,
 } from "react-icons/hi";
 import {
   HiOutlineBuildingOffice2,
   HiOutlineCalendarDays,
 } from "react-icons/hi2";
 import { LogOut } from "lucide-react";
+import { FiCopy, FiCheckSquare } from "react-icons/fi";
 
 import { selectUser } from "@/store/selectors";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { signoutThunk } from "@/store/auth/thunks";
+import { fetchUserPermissions } from "@/store/slices/permissionsSlice";
 import { formatPhoneNumber } from "@/utils";
-import { formattedDate, removeDashes } from "@/components/UserProfile/helper";
+import { formattedDate } from "@/components/UserProfile/helper";
+
+// Truncated ID with copy button
+function TruncatedId({ id }: { id: string }) {
+  const [copied, setCopied] = useState(false);
+  const truncated = `${id.slice(0, 4)}...${id.slice(-4)}`;
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(id);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <span className="flex items-center gap-1">
+      {truncated}
+      <button
+        onClick={handleCopy}
+        className="p-1 rounded hover:bg-gray-200 dark:hover:bg-neutral-700 transition"
+        title="Copy full ID"
+      >
+        {copied ? (
+          <FiCheckSquare className="w-4 h-4 text-green-500" />
+        ) : (
+          <FiCopy className="w-4 h-4" />
+        )}
+      </button>
+    </span>
+  );
+}
 
 export default function ProfilePage() {
   const t = useTranslations("Profile");
-
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [showPasswordResetModal, setShowPasswordResetModal] = useState(false);
   const { user }: any = useAppSelector(selectUser);
-  console.log("User in profile page:", user);
-  const uniquePermissions: string[] = Array.from(
-    new Set(user.permissions as string[])
-  );
-  
+
+  const [permissions, setPermissions] = useState<string[]>([]);
+  const [showPasswordResetModal, setShowPasswordResetModal] = useState(false);
+
+  // Fetch permissions on mount and whenever user ID changes
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchUserPermissions(user.id)).then((res: any) => {
+        if (res.payload?.permissions) {
+          setPermissions(res.payload.permissions);
+        }
+      });
+    }
+  }, [user?.id, dispatch]);
+
+  // Unique permissions for display
+  const uniquePermissions: string[] = Array.from(new Set(permissions));
+
   return (
     <div className="flex flex-col items-center justify-center py-10 px-4 min-h-screen bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-900 dark:to-neutral-950">
       <Card className="w-full max-w-2xl shadow-xl rounded-2xl border border-neutral-200 dark:border-neutral-700">
@@ -74,56 +116,57 @@ export default function ProfilePage() {
 
         <div className="bg-white dark:bg-neutral-950 px-8 py-6 rounded-b-2xl space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Account Info */}
             <div className="space-y-3">
               <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">
                 {t("account")}
               </h3>
               <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                <li>
+                <li className="flex items-center gap-2">
                   <Tooltip content={t("email")}>
-                    <HiOutlineMail className="inline mr-2 cursor-pointer" />
+                    <HiOutlineMail />
                   </Tooltip>
                   {user.email}
                 </li>
-                 <li>
+                <li className="flex items-center gap-2">
                   <Tooltip content={"User ID"}>
-                    <HiOutlineUserCircle className="inline mr-2 cursor-pointer" />
+                    <HiOutlineUserCircle />
                   </Tooltip>
-                  {removeDashes(user.id)}
+                  <TruncatedId id={user.id} />
                 </li>
-                <li>
+                <li className="flex items-center gap-2">
                   <Tooltip content={t("phone")}>
-                    <HiOutlinePhone className="inline mr-2 cursor-pointer" />
+                    <HiOutlinePhone />
                   </Tooltip>
                   {formatPhoneNumber(user.phone)}
                 </li>
-                <li>
+                <li className="flex items-center gap-2">
                   <Tooltip content={t("accountType")}>
-                    <HiOutlineUser className="inline mr-2 cursor-pointer" />
+                    <HiOutlineUser />
                   </Tooltip>
                   {_.capitalize(user.accountType)}
                 </li>
-                <li>
+                <li className="flex items-center gap-2">
                   <Tooltip content={t("organization")}>
-                    <HiOutlineBuildingOffice2 className="inline mr-2 cursor-pointer" />
+                    <HiOutlineBuildingOffice2 />
                   </Tooltip>
                   {user.organizationName}
                 </li>
-                <li>
+                <li className="flex items-center gap-2">
                   <Tooltip content={"Organization ID"}>
-                    <HiOutlineBuildingOffice2 className="inline mr-2 cursor-pointer" />
+                    <HiOutlineBuildingOffice2 />
                   </Tooltip>
-                  {removeDashes(user?.organizationId)}
+                  <TruncatedId id={user?.organizationId} />
                 </li>
-                <li>
+                <li className="flex items-center gap-2">
                   <Tooltip content={t("timezone")}>
-                    <HiOutlineClock className="inline mr-2 cursor-pointer" />
+                    <HiOutlineClock />
                   </Tooltip>
                   {user.timezone}
                 </li>
-                <li>
+                <li className="flex items-center gap-2">
                   <Tooltip content={t("lastLogin")}>
-                    <HiOutlineCalendarDays className="inline mr-2 cursor-pointer" />
+                    <HiOutlineCalendarDays />
                   </Tooltip>
                   {user?.lastLogin
                     ? formattedDate(new Date(user.lastLogin))
@@ -132,23 +175,32 @@ export default function ProfilePage() {
               </ul>
             </div>
 
+            {/* Permissions */}
             <div className="space-y-3">
               <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">
                 {t("permissions")}
               </h3>
-              {user.permissions?.length ? (
+              {permissions?.length ? (
                 <ul className="list-disc list-inside text-sm text-gray-700 dark:text-gray-300">
-                  {uniquePermissions.map((perm) => (
-                    <li key={perm} className="flex items-center gap-2">
-                      <HiOutlineShieldCheck className="text-green-500" />
-                      <span>
-                        {t(`permissions_${perm.replace(/[:.]/g, "_")}`) !==
-                        `permissions_${perm.replace(/[:.]/g, "_")}`
-                          ? t(`permissions_${perm.replace(/[:.]/g, "_")}`)
-                          : perm}
-                      </span>
-                    </li>
-                  ))}
+                  {uniquePermissions.map((permObj: any) => {
+                    // permObj can be string or { permission: string, ... }
+                    const permStr =
+                      typeof permObj === "string"
+                        ? permObj
+                        : permObj.permission;
+
+                    return (
+                      <li key={permStr} className="flex items-center gap-2">
+                        <HiOutlineShieldCheck className="text-green-500" />
+                        <span>
+                          {t(`permissions_${permStr.replace(/[:.]/g, "_")}`) !==
+                          `permissions_${permStr.replace(/[:.]/g, "_")}`
+                            ? t(`permissions_${permStr.replace(/[:.]/g, "_")}`)
+                            : permStr}
+                        </span>
+                      </li>
+                    );
+                  })}
                 </ul>
               ) : (
                 <p className="text-gray-400 text-sm">{t("noPermissions")}</p>
@@ -156,6 +208,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
+          {/* Actions */}
           <div className="flex flex-wrap justify-center gap-3 pt-6 border-t border-neutral-200 dark:border-neutral-700">
             <Button
               startContent={<HiOutlineKey />}
@@ -195,11 +248,7 @@ export default function ProfilePage() {
               placeholder={user.email}
               type="email"
             />
-            <Button
-              color="primary"
-              variant="solid"
-              className="mt-3"
-            >
+            <Button color="primary" variant="solid" className="mt-3">
               {t("resetPassword")}
             </Button>
           </ModalBody>
