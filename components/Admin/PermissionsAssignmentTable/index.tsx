@@ -38,6 +38,17 @@ import { addDashes } from "@/components/Admin/PermissionsAssignmentTable/helper"
 type ResourceType = "user" | "team" | "project";
 const resourceTypes: ResourceType[] = ["user", "team", "project"];
 
+// Full access mapping
+const fullAccessMap: Record<string, string[]> = {
+  "backlog:crud": [
+    "backlog:create",
+    "backlog:read",
+    "backlog:update",
+    "backlog:delete",
+  ],
+  "tasks:crud": ["tasks:create", "tasks:read", "tasks:update", "tasks:delete"],
+};
+
 interface PermissionsProps {
   systemPermissions: SystemPermission[];
 }
@@ -61,15 +72,11 @@ export default function PermissionAssignmentTable({
     useState<keyof SystemPermission>("category");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
+  const [selectedForRevoke, setSelectedForRevoke] = useState<string[]>([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const confirmModal = useDisclosure();
-  const [pendingDelete, setPendingDelete] = useState<{
-    ids: string[];
-    permissionNames: string[];
-  } | null>(null);
 
-  const [isResourceFetched, setIsResourceFetched] = useState<boolean>(false);
+  const [isResourceFetched, setIsResourceFetched] = useState(false);
   const [isFetchingUser, setIsFetchingUser] = useState(false);
   const [isAssigning, setIsAssigning] = useState(false);
 
@@ -90,14 +97,11 @@ export default function PermissionAssignmentTable({
     let value = e.target.value.replace(/[^a-fA-F0-9]/g, "");
     if (value.length === 32) {
       try {
-        const dashed = addDashes(value);
-        setResourceId(dashed);
+        setResourceId(addDashes(value));
       } catch {
         setResourceId(value);
       }
-    } else {
-      setResourceId(value);
-    }
+    } else setResourceId(value);
   };
 
   const handleFetchResource = () => {
@@ -153,6 +157,7 @@ export default function PermissionAssignmentTable({
           title: t("permissionAssigned"),
           description: `'${selectedPermission}' ${t("permissionGranted")}`,
           color: "success",
+          variant: "solid",
           timeout: 3000,
         });
         setSelectedPermission("");
@@ -160,56 +165,25 @@ export default function PermissionAssignmentTable({
       .finally(() => setIsAssigning(false));
   };
 
-  const confirmRevoke = (ids: string[], permissionNames: string[]) => {
-    setPendingDelete({ ids, permissionNames });
-    confirmModal.onOpen();
-  };
-
-  const handleRevoke = () => {
-    if (!pendingDelete) return;
-
-    const { ids, permissionNames } = pendingDelete;
-    setAssignedPermissions((prev) => prev.filter((p) => !ids.includes(p.id)));
-    setSelectedPermissions([]);
-
-    ids.forEach((id, idx) => {
-      let undo = false;
-      const timeout = setTimeout(() => {
-        if (!undo) {
-          dispatch(removePermission(id)).catch(() => {
-            addToast({
-              title: t("error"),
-              description: `${t("failedToRevoke")} '${permissionNames[idx]}'.`,
-              color: "danger",
-              timeout: 3000,
-            });
-          });
-        }
-      }, 3000);
-
-      addToast({
-        title: t("permissionRevoked"),
-        description: `'${permissionNames[idx]}' ${t("permissionRemoved")}`,
-        color: "success",
-        variant: "solid",
-        timeout: 3000,
-      });
-    });
-
-    confirmModal.onClose();
-    setPendingDelete(null);
+  const handleClearUser = () => {
+    setResourceId("");
+    setUserData(null);
+    setAssignedPermissions([]);
+    setIsResourceFetched(false);
+    setSelectedPermission("");
+    setSelectedForRevoke([]);
   };
 
   const handleSort = (column: keyof SystemPermission) => {
-    if (sortColumn === column) {
-      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
-    } else {
+    if (sortColumn === column)
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    else {
       setSortColumn(column);
       setSortDirection("asc");
     }
   };
 
-  const filteredPermissions = [...systemPermissions]
+  const filteredPermissions = systemPermissions
     .filter((perm) =>
       [perm.label, perm.key, perm.category, perm.description]
         .join(" ")
@@ -224,18 +198,53 @@ export default function PermissionAssignmentTable({
         : valB.localeCompare(valA);
     });
 
-  const handleClearUser = () => {
-    setResourceId("");
-    setUserData(null);
-    setAssignedPermissions([]);
-    setIsResourceFetched(false);
-    setSelectedPermission("");
-    setSelectedPermissions([]);
+  const toggleSelectPermission = (perm: string) => {
+    setSelectedForRevoke((prev) =>
+      prev.includes(perm) ? prev.filter((p) => p !== perm) : [...prev, perm]
+    );
+  };
+
+  const handleBatchRevoke = () => {
+    if (selectedForRevoke.length === 0) return;
+
+    let allToDelete: string[] = [];
+
+    selectedForRevoke.forEach((perm) => {
+      // If perm is a full access permission, delete full + all its children
+      if (fullAccessMap[perm]) {
+        allToDelete.push(perm, ...fullAccessMap[perm]);
+      } else {
+        // If perm is an individual CRUD, delete only it
+        allToDelete.push(perm);
+      }
+    });
+
+    // Remove duplicates
+    allToDelete = Array.from(new Set(allToDelete));
+
+    // Remove from local state
+    setAssignedPermissions((prev) =>
+      prev.filter((p) => !allToDelete.includes(p.permission))
+    );
+
+    // Dispatch remove for each permission
+    allToDelete.forEach((perm) => {
+      const target = assignedPermissions.find((p) => p.permission === perm);
+      if (target) dispatch(removePermission(target.id));
+    });
+
+    setSelectedForRevoke([]);
+
+    addToast({
+      title: t("permissionRevoked"),
+      description: t("revokeSelected", { count: allToDelete.length }),
+      color: "success",
+      timeout: 3000,
+    });
   };
 
   return (
     <div className="space-y-10 text-sm">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h2 className="text-2xl font-bold tracking-tight">
           {t("userPermissions")}
@@ -281,12 +290,13 @@ export default function PermissionAssignmentTable({
               >
                 {(perm) => <SelectItem key={perm.key}>{perm.label}</SelectItem>}
               </Select>
+
               <div className="flex gap-2">
                 <Button
                   color="primary"
+                  size="lg"
                   isDisabled={!resourceId || !selectedPermission}
                   isLoading={isAssigning}
-                  size="lg"
                   variant="shadow"
                   onPress={handleAssign}
                 >
@@ -295,7 +305,7 @@ export default function PermissionAssignmentTable({
                 <Button
                   color="secondary"
                   size="lg"
-                  variant="flat"
+                  variant="shadow"
                   onPress={handleClearUser}
                 >
                   {t("clearUser")}
@@ -305,9 +315,9 @@ export default function PermissionAssignmentTable({
           ) : (
             <Button
               color="primary"
+              size="lg"
               isDisabled={!resourceId}
               isLoading={isFetchingUser}
-              size="lg"
               variant="shadow"
               onPress={handleFetchResource}
             >
@@ -317,86 +327,35 @@ export default function PermissionAssignmentTable({
         </div>
       </div>
 
-      {/* Permission Chips with multi-select */}
+      {/* Permission Chips */}
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">{t("assignedPermissions")}</h3>
         {assignedPermissions.length === 0 ? (
           <p className="text-foreground-400 italic">{t("noneAssigned")}</p>
         ) : (
-          <>
-            <div className="flex flex-wrap gap-2">
-              {assignedPermissions.map(({ id, permission }, index) => (
-                <Chip
-                  className="cursor-pointer select-none"
-                  key={index}
-                  color="primary"
-                  size="md"
-                  variant={selectedPermissions.includes(id) ? "solid" : "flat"}
-                  onClick={() => {
-                    setSelectedPermissions((prev) =>
-                      prev.includes(id)
-                        ? prev.filter((p) => p !== id)
-                        : [...prev, id]
-                    );
-                  }}
-                  onClose={() => confirmRevoke([id], [permission])}
-                >
-                  {permission}
-                </Chip>
-              ))}
-            </div>
-            {selectedPermissions.length > 0 && (
-              <Button
-                color="danger"
-                size="md"
-                onPress={() =>
-                  confirmRevoke(
-                    selectedPermissions,
-                    assignedPermissions
-                      .filter((p) => selectedPermissions.includes(p.id))
-                      .map((p) => p.permission)
-                  )
+          <div className="flex flex-wrap gap-2">
+            {assignedPermissions.map(({ id, permission }) => (
+              <Chip
+                className="cursor-pointer user-select-none"
+                key={id}
+                color={
+                  selectedForRevoke.includes(permission) ? "danger" : "primary"
                 }
+                size="md"
+                variant="flat"
+                onClick={() => toggleSelectPermission(permission)}
               >
-                {t("revokeSelected", { count: selectedPermissions.length })}
-              </Button>
-            )}
-          </>
+                {permission}
+              </Chip>
+            ))}
+          </div>
+        )}
+        {selectedForRevoke.length > 0 && (
+          <Button color="danger" onPress={() => handleBatchRevoke()}>
+            {t("revokeSelected", { count: selectedForRevoke.length })}
+          </Button>
         )}
       </div>
-
-      {/* User Info */}
-      {userData && (
-        <div className="bg-muted p-6 rounded-xl border border-border shadow-sm max-w-5xl">
-          <h3 className="text-lg font-semibold mb-4">{t("userProfile")}</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <div className="text-xs font-semibold text-foreground-400">
-                {t("name")}
-              </div>
-              <div>{userData.name}</div>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-foreground-400">
-                {t("email")}
-              </div>
-              <div>{userData.email}</div>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-foreground-400">
-                {t("phone")}
-              </div>
-              <div>{userData.phone}</div>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-foreground-400">
-                {t("role")}
-              </div>
-              <div>{userData.role}</div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Permission Modal */}
       <Modal
@@ -457,36 +416,6 @@ export default function PermissionAssignmentTable({
               <ModalFooter>
                 <Button color="danger" variant="flat" onPress={onClose}>
                   {t("close")}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-
-      {/* Confirm Revoke Modal */}
-      <Modal
-        isOpen={confirmModal.isOpen}
-        onOpenChange={confirmModal.onOpenChange}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader>{t("confirmRevoke")}</ModalHeader>
-              <ModalBody>
-                <p>{t("confirmRevokeMessage")}</p>
-                <ul className="list-disc ml-6 mt-2 text-red-500">
-                  {pendingDelete?.permissionNames.map((name) => (
-                    <li key={name}>{name}</li>
-                  ))}
-                </ul>
-              </ModalBody>
-              <ModalFooter className="flex gap-2">
-                <Button variant="light" onPress={onClose}>
-                  {t("cancel")}
-                </Button>
-                <Button className="bg-red-500" onPress={handleRevoke}>
-                  {t("revoke")}
                 </Button>
               </ModalFooter>
             </>
