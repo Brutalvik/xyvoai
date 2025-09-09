@@ -207,24 +207,28 @@ export default function PermissionAssignmentTable({
   const handleBatchRevoke = () => {
     if (selectedForRevoke.length === 0) return;
 
-    let allToDelete: string[] = [];
+    let allToDelete: Set<string> = new Set();
 
     selectedForRevoke.forEach((perm) => {
-      // If perm is a full access permission, delete full + all its children
+      // Always remove the selected permission itself
+      allToDelete.add(perm);
+
+      // If it's a full access permission, remove all children
       if (fullAccessMap[perm]) {
-        allToDelete.push(perm, ...fullAccessMap[perm]);
+        fullAccessMap[perm].forEach((child) => allToDelete.add(child));
       } else {
-        // If perm is an individual CRUD, delete only it
-        allToDelete.push(perm);
+        // If it's a child/CRUD permission, remove its parent as well
+        Object.entries(fullAccessMap).forEach(([parent, children]) => {
+          if (children.includes(perm)) {
+            allToDelete.add(parent); // Add parent
+          }
+        });
       }
     });
 
-    // Remove duplicates
-    allToDelete = Array.from(new Set(allToDelete));
-
     // Remove from local state
     setAssignedPermissions((prev) =>
-      prev.filter((p) => !allToDelete.includes(p.permission))
+      prev.filter((p) => !allToDelete.has(p.permission))
     );
 
     // Dispatch remove for each permission
@@ -237,7 +241,7 @@ export default function PermissionAssignmentTable({
 
     addToast({
       title: t("permissionRevoked"),
-      description: t("revokeSelected", { count: allToDelete.length }),
+      description: t("revokeSelected", { count: allToDelete.size }),
       color: "success",
       timeout: 3000,
     });
