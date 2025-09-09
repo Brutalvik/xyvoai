@@ -51,20 +51,22 @@ function TruncatedId({ id }: { id: string }) {
   };
 
   return (
-    <span className="flex items-center gap-1">
-      {truncated}
-      <button
-        onClick={handleCopy}
-        className="p-1 rounded hover:bg-gray-200 dark:hover:bg-neutral-700 transition"
-        title="Copy full ID"
-      >
-        {copied ? (
-          <FiCheckSquare className="w-4 h-4 text-green-500" />
-        ) : (
-          <FiCopy className="w-4 h-4" />
-        )}
-      </button>
-    </span>
+    <Tooltip content={id}>
+      <span className="flex items-center gap-1">
+        {truncated}
+        <button
+          onClick={handleCopy}
+          className="p-1 rounded hover:bg-gray-200 dark:hover:bg-neutral-700 transition"
+          title="Copy full ID"
+        >
+          {copied ? (
+            <FiCheckSquare className="w-4 h-4 text-green-500" />
+          ) : (
+            <FiCopy className="w-4 h-4" />
+          )}
+        </button>
+      </span>
+    </Tooltip>
   );
 }
 
@@ -73,6 +75,8 @@ export default function ProfilePage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user }: any = useAppSelector(selectUser);
+
+  console.log("User data:", user);
 
   const [permissions, setPermissions] = useState<string[]>([]);
   const [showPasswordResetModal, setShowPasswordResetModal] = useState(false);
@@ -124,49 +128,49 @@ export default function ProfilePage() {
               <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                 <li className="flex items-center gap-2">
                   <Tooltip content={t("email")}>
-                    <HiOutlineMail />
+                    <HiOutlineMail className="cursor-pointer" />
                   </Tooltip>
                   {user.email}
                 </li>
                 <li className="flex items-center gap-2">
                   <Tooltip content={"User ID"}>
-                    <HiOutlineUserCircle />
+                    <HiOutlineUserCircle className="cursor-pointer" />
                   </Tooltip>
                   <TruncatedId id={user.id} />
                 </li>
                 <li className="flex items-center gap-2">
                   <Tooltip content={t("phone")}>
-                    <HiOutlinePhone />
+                    <HiOutlinePhone className="cursor-pointer" />
                   </Tooltip>
                   {formatPhoneNumber(user.phone)}
                 </li>
                 <li className="flex items-center gap-2">
                   <Tooltip content={t("accountType")}>
-                    <HiOutlineUser />
+                    <HiOutlineUser className="cursor-pointer" />
                   </Tooltip>
                   {_.capitalize(user.accountType)}
                 </li>
                 <li className="flex items-center gap-2">
                   <Tooltip content={t("organization")}>
-                    <HiOutlineBuildingOffice2 />
+                    <HiOutlineBuildingOffice2 className="cursor-pointer" />
                   </Tooltip>
                   {user.organizationName}
                 </li>
                 <li className="flex items-center gap-2">
                   <Tooltip content={"Organization ID"}>
-                    <HiOutlineBuildingOffice2 />
+                    <HiOutlineBuildingOffice2 className="cursor-pointer" />
                   </Tooltip>
                   <TruncatedId id={user?.organizationId} />
                 </li>
                 <li className="flex items-center gap-2">
                   <Tooltip content={t("timezone")}>
-                    <HiOutlineClock />
+                    <HiOutlineClock className="cursor-pointer" />
                   </Tooltip>
                   {user.timezone}
                 </li>
                 <li className="flex items-center gap-2">
                   <Tooltip content={t("lastLogin")}>
-                    <HiOutlineCalendarDays />
+                    <HiOutlineCalendarDays className="cursor-pointer" />
                   </Tooltip>
                   {user?.lastLogin
                     ? formattedDate(new Date(user.lastLogin))
