@@ -9,7 +9,8 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@heroui/react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Paperclip } from "lucide-react";
+import { Tooltip } from "@heroui/react";
 
 interface ProjectTableViewProps {
   columns: Column[];
@@ -58,7 +59,6 @@ export const TableView: React.FC<ProjectTableViewProps> = ({
     });
   };
 
-  // Helper to get color classes for status badges
   const getStatusColor = (columnId: string) => {
     const col = columns.find((c) => c.id === columnId);
     switch (col?.id) {
@@ -105,7 +105,9 @@ export const TableView: React.FC<ProjectTableViewProps> = ({
                 {col.tasks.map((task) => (
                   <tr key={task.id} className="hover:bg-gray-50">
                     <td className="p-2 border-b">{task.id}</td>
-                    <td className="p-2 border-b">
+
+                    {/* Title + attachments */}
+                    <td className="p-2 border-b flex items-center gap-2">
                       <EditableField
                         value={task.title}
                         onSave={(val) =>
@@ -113,7 +115,17 @@ export const TableView: React.FC<ProjectTableViewProps> = ({
                         }
                         required
                       />
+                      {task.attachments && task.attachments > 0 && (
+                        <Tooltip
+                          content={`${task.attachments} Attachment${task.attachments > 1 ? "s" : ""}`}
+                        >
+                          <div className="flex items-center text-gray-500 hover:text-gray-700 transition-transform transform hover:scale-110 cursor-pointer">
+                            <Paperclip className="w-4 h-4" />
+                          </div>
+                        </Tooltip>
+                      )}
                     </td>
+
                     <td className="p-2 border-b hidden md:table-cell">
                       <EditableField
                         value={task.description || ""}
@@ -123,9 +135,11 @@ export const TableView: React.FC<ProjectTableViewProps> = ({
                         multiline
                       />
                     </td>
+
                     <td className="p-2 border-b hidden sm:table-cell">
                       {task.assignee?.name || "Unassigned"}
                     </td>
+
                     <td className="p-2 border-b hidden sm:table-cell flex flex-wrap gap-1">
                       {task.tags.map((tag) => (
                         <span
@@ -136,6 +150,8 @@ export const TableView: React.FC<ProjectTableViewProps> = ({
                         </span>
                       ))}
                     </td>
+
+                    {/* Status */}
                     <td className="p-2 border-b">
                       <Dropdown placement="bottom-start">
                         <DropdownTrigger>

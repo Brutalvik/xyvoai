@@ -4,80 +4,77 @@ import React, { useState, useRef, useEffect } from "react";
 
 interface EditableFieldProps {
   value: string;
-  onSave: (value: string) => void;
-  placeholder?: string;
-  multiline?: boolean;
+  onSave: (newValue: string) => void;
   required?: boolean;
+  multiline?: boolean;
 }
 
 export const EditableField: React.FC<EditableFieldProps> = ({
   value,
   onSave,
-  placeholder = "Click to edit...",
-  multiline = false,
   required = false,
+  multiline = false,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(value);
+  const [inputValue, setInputValue] = useState(value);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
+    if (isEditing) {
+      inputRef.current?.focus();
     }
   }, [isEditing]);
 
   const handleSave = () => {
-    if (required && !editValue.trim()) return;
-    onSave(editValue);
+    if (required && !inputValue.trim()) return;
+    if (inputValue !== value) {
+      onSave(inputValue.trim());
+    }
     setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setEditValue(value);
+    setInputValue(value);
     setIsEditing(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !multiline) {
-      e.preventDefault();
-      handleSave();
-    } else if (e.key === "Escape") {
-      handleCancel();
-    }
   };
 
   if (isEditing) {
     return multiline ? (
       <textarea
         ref={inputRef as React.RefObject<HTMLTextAreaElement>}
-        value={editValue}
-        onChange={(e) => setEditValue(e.target.value)}
-        onKeyDown={handleKeyDown}
-        className="border px-2 py-1 rounded w-full text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-        placeholder={placeholder}
-        rows={3}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onBlur={handleSave}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) handleSave();
+          if (e.key === "Escape") handleCancel();
+        }}
+        className="w-full p-1 border rounded text-sm"
+        rows={2}
       />
     ) : (
       <input
         ref={inputRef as React.RefObject<HTMLInputElement>}
         type="text"
-        value={editValue}
-        onChange={(e) => setEditValue(e.target.value)}
-        onKeyDown={handleKeyDown}
-        className="border px-2 py-1 rounded w-full text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-        placeholder={placeholder}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onBlur={handleSave}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleSave();
+          if (e.key === "Escape") handleCancel();
+        }}
+        className="w-full p-1 border rounded text-sm"
       />
     );
   }
 
   return (
-    <span
-      className="cursor-pointer hover:bg-gray-50 px-1 py-0.5 rounded"
+    <div
+      className="cursor-text"
       onClick={() => setIsEditing(true)}
+      title="Click to edit"
     >
-      {value || placeholder}
-    </span>
+      {value || <span className="text-gray-400">—</span>}
+    </div>
   );
 };
