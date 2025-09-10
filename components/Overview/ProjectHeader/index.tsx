@@ -14,7 +14,15 @@ import { teamMembers } from "@/components/Overview/ProjectHeader/Teammembers";
 import QuarterSelector from "@/components/Overview/ProjectHeader/QuarterSelector";
 import MemberSelector from "@/components/Overview/ProjectHeader/MemberSelector";
 
-export default function ProjectHeader() {
+interface ProjectHeaderProps {
+  viewMode: "kanban" | "table";
+  setViewMode: (mode: "kanban" | "table") => void;
+}
+
+export default function ProjectHeader({
+  viewMode,
+  setViewMode,
+}: ProjectHeaderProps) {
   const [title, setTitle] = useState("Product Development");
   const [editing, setEditing] = useState(false);
 
@@ -45,8 +53,26 @@ export default function ProjectHeader() {
           <QuarterSelector />
         </div>
 
-        {/* Right: Actions and Members */}
+        {/* Right: Actions, Members, View Toggle */}
         <div className="flex items-center gap-3 ml-auto">
+          {/* View toggle with Hero UI buttons */}
+          <div className="flex border border-gray-300 rounded overflow-hidden">
+            <Button
+              variant={viewMode === "kanban" ? "solid" : "ghost"}
+              size="sm"
+              onPress={() => setViewMode("kanban")}
+            >
+              Kanban
+            </Button>
+            <Button
+              variant={viewMode === "table" ? "solid" : "ghost"}
+              size="sm"
+              onPress={() => setViewMode("table")}
+            >
+              Table
+            </Button>
+          </div>
+
           {/* Mobile dropdown */}
           <div className="flex sm:hidden">
             <Dropdown placement="bottom-end">
@@ -93,7 +119,7 @@ export default function ProjectHeader() {
               startContent={<Plus size={16} />}
               onPress={handleNewTask}
             >
-              New{" "}
+              New
             </Button>
           </div>
 

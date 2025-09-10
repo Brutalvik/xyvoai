@@ -49,6 +49,7 @@ export interface Task {
   businessValue?: number;
   parentId?: string;
   childrenIds?: string[];
+  deleted?: boolean;
 }
 
 export interface Column {
