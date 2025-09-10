@@ -749,7 +749,9 @@
     "project": "Project",
     "getUser": "Get User",
     "clearUser": "Clear User",
-    "revokeSelected": "Revoke {count} selected permission(s)"
+    "revokeSelected": "Revoke {count} selected permission(s)",
+    "total": "{count} permission(s)",
+    "noPermissionsAssigned": "No permissions assigned."
   },
   "FeaturesSection": {
     "title": "Built for Speed & Intelligence",

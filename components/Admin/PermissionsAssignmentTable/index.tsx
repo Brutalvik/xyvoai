@@ -7,7 +7,6 @@ import {
   SelectItem,
   Input,
   Button,
-  Chip,
   Table,
   TableHeader,
   TableColumn,
@@ -34,11 +33,11 @@ import {
 import { SystemPermission } from "@/types";
 import { selectUserId } from "@/store/selectors";
 import { addDashes } from "@/components/Admin/PermissionsAssignmentTable/helper";
+import GroupedPermissionsList from "./GroupedPermissionsList";
 
 type ResourceType = "user" | "team" | "project";
 const resourceTypes: ResourceType[] = ["user", "team", "project"];
 
-// Full access mapping
 const fullAccessMap: Record<string, string[]> = {
   "backlog:crud": [
     "backlog:create",
@@ -72,22 +71,19 @@ export default function PermissionAssignmentTable({
   const [sortColumn, setSortColumn] =
     useState<keyof SystemPermission>("category");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-
   const [selectedForRevoke, setSelectedForRevoke] = useState<string[]>([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const confirmModal = useDisclosure();
-
   const [isResourceFetched, setIsResourceFetched] = useState(false);
   const [isFetchingUser, setIsFetchingUser] = useState(false);
   const [isAssigning, setIsAssigning] = useState(false);
 
-  // Translate permission keys to human-readable labels
   const translatePermission = (permKey?: string) => {
-    if (typeof permKey !== "string") return ""; // or fallback text
+    if (typeof permKey !== "string") return "";
     const key = permKey.replace(/[:.]/g, "_");
     const translated = tx(`permissions_${key}`);
     return translated !== `permissions_${key}` ? translated : permKey;
   };
+
   const getResourceTypeLabel = (type: ResourceType) => {
     switch (type) {
       case "user":
@@ -140,35 +136,28 @@ export default function PermissionAssignmentTable({
     if (!selectedPermission || !resourceId) return;
     setIsAssigning(true);
 
-    // Prepare permissions to assign
     let permissionsToAssign = [selectedPermission];
-
-    // If all CRUD children are already assigned + the new selection completes the set, assign the parent instead
     if (!fullAccessMap[selectedPermission]) {
       Object.entries(fullAccessMap).forEach(([parent, children]) => {
         const alreadyAssignedChildren = assignedPermissions
           .map((p) => p.permission)
           .filter((p) => children.includes(p));
-
-        // If selecting this child completes the full set
         if (
           children.includes(selectedPermission) &&
           [...alreadyAssignedChildren, selectedPermission].length ===
             children.length
         ) {
-          // Remove individual children from assignment and assign the parent instead
           permissionsToAssign = [parent];
         }
       });
     }
 
-    // Dispatch assignment
     dispatch(
       assignPermission({
         user_id: resourceType === "user" ? resourceId : "",
         resource_type: resourceType,
         resource_id: resourceId,
-        permission: permissionsToAssign[0], // only one at a time in your current workflow
+        permission: permissionsToAssign[0],
         granted_by: currentUserId as string,
       })
     )
@@ -187,7 +176,7 @@ export default function PermissionAssignmentTable({
         }
         addToast({
           title: t("permissionAssigned"),
-          description: `'${permissionsToAssign[0]}' ${t("permissionGranted")}`,
+          description: `'${translatePermission(permissionsToAssign[0])}' ${t("permissionGranted")}`,
           color: "success",
           variant: "flat",
           timeout: 3000,
@@ -240,37 +229,29 @@ export default function PermissionAssignmentTable({
     if (selectedForRevoke.length === 0) return;
 
     let allToDelete: Set<string> = new Set();
-
     selectedForRevoke.forEach((perm) => {
-      // Always remove the selected permission itself
       allToDelete.add(perm);
-
-      // If it's a full access permission, remove all children
       if (fullAccessMap[perm]) {
         fullAccessMap[perm].forEach((child) => allToDelete.add(child));
       } else {
-        // If it's a child/CRUD permission, remove its parent as well
         Object.entries(fullAccessMap).forEach(([parent, children]) => {
           if (children.includes(perm)) {
-            allToDelete.add(parent); // Add parent
+            allToDelete.add(parent);
           }
         });
       }
     });
 
-    // Remove from local state
     setAssignedPermissions((prev) =>
       prev.filter((p) => !allToDelete.has(p.permission))
     );
 
-    // Dispatch remove for each permission
     allToDelete.forEach((perm) => {
       const target = assignedPermissions.find((p) => p.permission === perm);
       if (target) dispatch(removePermission(target.id));
     });
 
     setSelectedForRevoke([]);
-
     addToast({
       title: t("permissionRevoked"),
       description: t("revokeSelected", { count: allToDelete.size }),
@@ -278,6 +259,15 @@ export default function PermissionAssignmentTable({
       timeout: 3000,
     });
   };
+
+  const assignedPermissionsWithCategory = assignedPermissions.map((up) => {
+    const meta = systemPermissions.find((p) => p.key === up.permission);
+    return {
+      id: up.id,
+      permission: up.permission,
+      category: meta?.category ?? "Other",
+    };
+  });
 
   return (
     <div className="space-y-10 text-sm">
@@ -365,31 +355,38 @@ export default function PermissionAssignmentTable({
 
       {/* Permission Chips */}
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold">{t("assignedPermissions")}</h3>
-        {assignedPermissions.length === 0 ? (
-          <p className="text-foreground-400 italic">{t("noneAssigned")}</p>
-        ) : (
-          <div className="flex flex-wrap gap-2">
-            {assignedPermissions.map(({ id, permission }) => (
-              <Chip
-                className="cursor-pointer user-select-none"
-                key={id}
-                color={
-                  selectedForRevoke.includes(permission) ? "danger" : "primary"
-                }
-                size="md"
-                variant="flat"
-                onClick={() => toggleSelectPermission(permission)}
-              >
-                {translatePermission(permission)}
-              </Chip>
-            ))}
-          </div>
+        {isResourceFetched && assignedPermissions.length === 0 && (
+          <p className="text-sm text-muted-foreground">
+            {t("noPermissionsAssigned")}
+          </p>
         )}
-        {selectedForRevoke.length > 0 && (
-          <Button color="danger" onPress={() => handleBatchRevoke()}>
-            {t("revokeSelected", { count: selectedForRevoke.length })}
-          </Button>
+
+        {isResourceFetched && assignedPermissions.length > 0 && (
+          <>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                {t("assignedPermissions")} ({assignedPermissions.length})
+              </h2>
+              {selectedForRevoke.length > 0 && (
+                <Button
+                  color="danger"
+                  size="sm"
+                  className="self-start sm:self-auto"
+                  onPress={() => handleBatchRevoke()}
+                >
+                  {t("revokeSelected", { count: selectedForRevoke.length })}
+                </Button>
+              )}
+            </div>
+
+            <GroupedPermissionsList
+              assignedPermissions={assignedPermissionsWithCategory}
+              isFetched={isResourceFetched}
+              selectedForRevoke={selectedForRevoke}
+              onSelectPermission={toggleSelectPermission}
+              translatePermission={translatePermission}
+            />
+          </>
         )}
       </div>
 
