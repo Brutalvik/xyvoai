@@ -82,13 +82,12 @@ export default function PermissionAssignmentTable({
   const [isAssigning, setIsAssigning] = useState(false);
 
   // Translate permission keys to human-readable labels
-  const translatePermission = (permKey: string) => {
+  const translatePermission = (permKey?: string) => {
+    if (typeof permKey !== "string") return ""; // or fallback text
     const key = permKey.replace(/[:.]/g, "_");
     const translated = tx(`permissions_${key}`);
-    // Fallback to the raw key if no translation is found
     return translated !== `permissions_${key}` ? translated : permKey;
   };
-
   const getResourceTypeLabel = (type: ResourceType) => {
     switch (type) {
       case "user":

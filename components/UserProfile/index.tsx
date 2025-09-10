@@ -79,6 +79,13 @@ export default function ProfilePage() {
   const [permissions, setPermissions] = useState<string[]>([]);
   const [showPasswordResetModal, setShowPasswordResetModal] = useState(false);
 
+  const translatePermission = (permKey?: string) => {
+    if (typeof permKey !== "string") return ""; // or fallback text
+    const key = permKey.replace(/[:.]/g, "_");
+    const translated = t(`permissions_${key}`);
+    return translated !== `permissions_${key}` ? translated : permKey;
+  };
+
   // Fetch permissions only if user exists and permissions not loaded yet
   useEffect(() => {
     if (user?.id && permissions.length === 0) {
@@ -189,15 +196,17 @@ export default function ProfilePage() {
                 {t("permissions")}
               </h3>
               {uniquePermissions.length > 0 ? (
-                <ul className="list-disc list-inside text-sm text-gray-700 dark:text-gray-300">
-                  {uniquePermissions.map((permStr: string) => (
-                    <li key={permStr} className="flex items-center gap-2">
+                <ul>
+                  {uniquePermissions.map((perm: any, index: number) => (
+                    <li
+                      key={typeof perm === "string" ? perm : (perm.id ?? index)}
+                      className="flex items-center gap-2"
+                    >
                       <HiOutlineShieldCheck className="text-green-500" />
                       <span>
-                        {t(`permissions_${permStr?.replace(/[:.]/g, "_")}`) !==
-                        `permissions_${permStr?.replace(/[:.]/g, "_")}`
-                          ? t(`permissions_${permStr.replace(/[:.]/g, "_")}`)
-                          : permStr}
+                        {translatePermission(
+                          typeof perm === "string" ? perm : perm.permission
+                        )}
                       </span>
                     </li>
                   ))}
