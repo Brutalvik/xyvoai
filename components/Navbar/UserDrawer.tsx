@@ -36,10 +36,16 @@ import {
 } from "@/store/auth/verifyCodeThunk";
 import { mapVerifyCodeError } from "@/utils/mapVerifyCodeErrors";
 import { setUser } from "@/store/slices/userSlice";
+import { decodeToken } from "@/lib/utils";
+import { useEffect, useMemo, useState } from "react";
 
 interface UserDrawerProps {
   isOpen: boolean;
   onOpenChange: () => void;
+}
+
+interface DecodedJWT {
+  permissions?: string[];
 }
 
 export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
@@ -51,6 +57,47 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
   const firstName = user?.name?.split(" ")[0];
   const verificationModal = useDisclosure();
   const pathname = usePathname();
+
+  // --- decode JWT from cookie ---
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("x-token="))
+      ?.split("=")[1];
+
+    if (token) {
+      try {
+        const decoded: DecodedJWT = decodeToken(token);
+        if (decoded.permissions?.includes("admin:full")) {
+          setIsAdmin(true);
+        }
+      } catch (err) {
+        console.error("Failed to decode JWT:", err);
+      }
+    }
+  }, []);
+
+  const extendedNavItems = useMemo(() => {
+    const items = [...drawerNavItems];
+    if (isAdmin) {
+      items.push(
+        {
+          title: "Access Management",
+          icon: Settings2,
+          path: "/admin/permissions",
+          tooltip: "Access Management",
+        },
+        {
+          title: "Notifications",
+          icon: Settings2,
+          path: "/admin/notifications",
+          tooltip: "Notifications",
+        }
+      );
+    }
+    return items;
+  }, [isAdmin]);
 
   const handleVerify = async (code: string) => {
     try {
@@ -142,31 +189,33 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
 
               <DrawerBody>
                 <div className="flex flex-col gap-2 px-1">
-                  {drawerNavItems.map(({ title, icon: Icon, path, badge }) => {
-                    const isActive = pathname === path;
+                  {extendedNavItems.map(
+                    ({ title, icon: Icon, path, badge }) => {
+                      const isActive = pathname === path;
 
-                    return (
-                      <Link
-                        key={title}
-                        href={path}
-                        onClick={onClose}
-                        className={clsx(
-                          "flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors",
-                          isActive && "bg-gray-100 dark:bg-neutral-800"
-                        )}
-                      >
-                        <div className="flex items-center gap-2 text-sm text-neutral-800 dark:text-neutral-200">
-                          <Icon size={18} />
-                          <span>{title}</span>
-                        </div>
-                        {badge && (
-                          <span className="ml-auto text-xs px-2 py-0.5 rounded bg-blue-500 text-white">
-                            {badge}
-                          </span>
-                        )}
-                      </Link>
-                    );
-                  })}
+                      return (
+                        <Link
+                          key={title}
+                          href={path}
+                          onClick={onClose}
+                          className={clsx(
+                            "flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors",
+                            isActive && "bg-gray-100 dark:bg-neutral-800"
+                          )}
+                        >
+                          <div className="flex items-center gap-2 text-sm text-neutral-800 dark:text-neutral-200">
+                            <Icon size={18} />
+                            <span>{title}</span>
+                          </div>
+                          {badge && (
+                            <span className="ml-auto text-xs px-2 py-0.5 rounded bg-blue-500 text-white">
+                              {badge}
+                            </span>
+                          )}
+                        </Link>
+                      );
+                    }
+                  )}
                 </div>
               </DrawerBody>
 

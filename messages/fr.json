@@ -846,5 +846,11 @@
     "bookDemo": "Réserver une démo",
     "trialDetails": "Aucune carte de crédit requise • Essai gratuit de 14 jours • Configuration en 2 minutes",
     "ariaSubheading": "Zone de description de l'appel à l'action"
+  },
+  "Unauthorized": {
+    "title": "Accès non autorisé",
+    "message": "Vous n'avez pas la permission d'accéder à cette ressource.",
+    "goHome": "Aller à l'accueil",
+    "goBack": "Retour à l'accueil"
   }
 }

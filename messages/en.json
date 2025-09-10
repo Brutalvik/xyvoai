@@ -847,5 +847,11 @@
     "bookDemo": "Book a Demo",
     "trialDetails": "No credit card required • 14-day free trial • Setup in 2 minutes",
     "ariaSubheading": "CTA description area"
+  },
+  "Unauthorized": {
+    "title": "Access Denied",
+    "message": "You do not have permission to view this page.",
+    "goBack": "Go Back",
+    "goHome": "Back to Home"
   }
 }
