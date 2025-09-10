@@ -190,7 +190,8 @@
       "suspended": "Suspendu",
       "pending": "En attente",
       "inactive": "Inactif"
-    }
+    },
+    "loadingPermissions": "Chargement des permissions..."
   },
   "Search": {
     "placeholder": "Rechercher...",

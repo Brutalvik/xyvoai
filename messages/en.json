@@ -177,7 +177,8 @@
       "suspended": "Suspended",
       "pending": "Pending",
       "inactive": "Inactive"
-    }
+    },
+    "loadingPermissions": "Loading permissions..."
   },
   "Search": {
     "placeholder": "Search...",

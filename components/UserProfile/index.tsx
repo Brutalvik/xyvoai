@@ -77,6 +77,7 @@ export default function ProfilePage() {
   const { user }: any = useAppSelector(selectUser);
 
   const [permissions, setPermissions] = useState<string[]>([]);
+  const [loadingPermissions, setLoadingPermissions] = useState(false);
   const [showPasswordResetModal, setShowPasswordResetModal] = useState(false);
 
   const translatePermission = (permKey?: string) => {
@@ -86,19 +87,37 @@ export default function ProfilePage() {
     return translated !== `permissions_${key}` ? translated : permKey;
   };
 
-  // Fetch permissions only if user exists and permissions not loaded yet
+  // Fetch permissions only if user exists and permissions array is empty.
+  // Proper loading state handling with mounted guard to avoid state updates after unmount.
   useEffect(() => {
-    if (user?.id && permissions.length === 0) {
-      dispatch(fetchUserPermissions(user.id))
-        .then((res: any) => {
-          if (res.payload?.permissions) {
-            setPermissions(res.payload.permissions);
-          }
-        })
-        .catch(() => {
+    let mounted = true;
+
+    const loadPermissions = async () => {
+      if (!user?.id) return;
+      // Only fetch when we don't already have permissions
+      if (permissions.length > 0) return;
+
+      try {
+        setLoadingPermissions(true);
+        const res: any = await dispatch(fetchUserPermissions(user.id));
+        if (!mounted) return;
+        if (res?.payload?.permissions) {
+          setPermissions(res.payload.permissions);
+        } else {
           setPermissions([]);
-        });
-    }
+        }
+      } catch (err) {
+        if (mounted) setPermissions([]);
+      } finally {
+        if (mounted) setLoadingPermissions(false);
+      }
+    };
+
+    loadPermissions();
+
+    return () => {
+      mounted = false;
+    };
   }, [user?.id, dispatch, permissions.length]);
 
   const uniquePermissions = Array.from(new Set(permissions));
@@ -191,30 +210,40 @@ export default function ProfilePage() {
             </div>
 
             {/* Permissions */}
-            <div className="space-y-3">
-              <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">
-                {t("permissions")}
-              </h3>
-              {uniquePermissions.length > 0 ? (
-                <ul>
-                  {uniquePermissions.map((perm: any, index: number) => (
-                    <li
-                      key={typeof perm === "string" ? perm : (perm.id ?? index)}
-                      className="flex items-center gap-2"
-                    >
-                      <HiOutlineShieldCheck className="text-green-500" />
-                      <span>
-                        {translatePermission(
-                          typeof perm === "string" ? perm : perm.permission
-                        )}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-gray-400 text-sm">{t("noPermissions")}</p>
-              )}
-            </div>
+            {loadingPermissions ? (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-sm text-gray-500">
+                  {t("loadingPermissions")}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">
+                  {t("permissions")}
+                </h3>
+                {uniquePermissions.length > 0 ? (
+                  <ul>
+                    {uniquePermissions.map((perm: any, index: number) => (
+                      <li
+                        key={
+                          typeof perm === "string" ? perm : (perm.id ?? index)
+                        }
+                        className="flex items-center gap-2"
+                      >
+                        <HiOutlineShieldCheck className="text-green-500" />
+                        <span className="text-sm text-gray-700 dark:text-gray-300">
+                          {translatePermission(
+                            typeof perm === "string" ? perm : perm.permission
+                          )}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-400 text-sm">{t("noPermissions")}</p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Actions */}
