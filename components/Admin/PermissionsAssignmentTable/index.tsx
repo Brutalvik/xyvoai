@@ -57,6 +57,7 @@ export default function PermissionAssignmentTable({
   systemPermissions,
 }: PermissionsProps) {
   const t = useTranslations("PermissionAssignment");
+  const tx = useTranslations("Profile");
   const dispatch = useAppDispatch();
   const currentUserId = useAppSelector(selectUserId);
 
@@ -79,6 +80,14 @@ export default function PermissionAssignmentTable({
   const [isResourceFetched, setIsResourceFetched] = useState(false);
   const [isFetchingUser, setIsFetchingUser] = useState(false);
   const [isAssigning, setIsAssigning] = useState(false);
+
+  // Translate permission keys to human-readable labels
+  const translatePermission = (permKey: string) => {
+    const key = permKey.replace(/[:.]/g, "_");
+    const translated = tx(`permissions_${key}`);
+    // Fallback to the raw key if no translation is found
+    return translated !== `permissions_${key}` ? translated : permKey;
+  };
 
   const getResourceTypeLabel = (type: ResourceType) => {
     switch (type) {
@@ -181,7 +190,7 @@ export default function PermissionAssignmentTable({
           title: t("permissionAssigned"),
           description: `'${permissionsToAssign[0]}' ${t("permissionGranted")}`,
           color: "success",
-          variant: "solid",
+          variant: "flat",
           timeout: 3000,
         });
         setSelectedPermission("");
@@ -373,7 +382,7 @@ export default function PermissionAssignmentTable({
                 variant="flat"
                 onClick={() => toggleSelectPermission(permission)}
               >
-                {permission}
+                {translatePermission(permission)}
               </Chip>
             ))}
           </div>

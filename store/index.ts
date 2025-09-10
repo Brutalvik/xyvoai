@@ -18,6 +18,7 @@ import authReducer from "@/store/slices/authSlice";
 import projectsReducer from "@/store/slices/projectsSlice";
 import permissionsSlice from "@/store/slices/permissionsSlice";
 import tasksReducer from "@/store/slices/tasksSlice";
+import notificationReducer from "@/store/slices/notificationSlice";
 
 // combined reducer
 
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   projects: projectsReducer,
   permissions: permissionsSlice,
   tasks: tasksReducer,
+  notifications: notificationReducer,
   // other reducers...
 });
 

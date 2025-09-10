@@ -76,24 +76,27 @@ export default function ProfilePage() {
   const dispatch = useAppDispatch();
   const { user }: any = useAppSelector(selectUser);
 
-  console.log("User data:", user);
-
   const [permissions, setPermissions] = useState<string[]>([]);
   const [showPasswordResetModal, setShowPasswordResetModal] = useState(false);
 
-  // Fetch permissions on mount and whenever user ID changes
+  // Fetch permissions only if user exists and permissions not loaded yet
   useEffect(() => {
-    if (user?.id) {
-      dispatch(fetchUserPermissions(user.id)).then((res: any) => {
-        if (res.payload?.permissions) {
-          setPermissions(res.payload.permissions);
-        }
-      });
+    if (user?.id && permissions.length === 0) {
+      dispatch(fetchUserPermissions(user.id))
+        .then((res: any) => {
+          if (res.payload?.permissions) {
+            setPermissions(res.payload.permissions);
+          }
+        })
+        .catch(() => {
+          setPermissions([]);
+        });
     }
-  }, [user?.id, dispatch]);
+  }, [user?.id, dispatch, permissions.length]);
 
-  // Unique permissions for display
-  const uniquePermissions: string[] = Array.from(new Set(permissions));
+  const uniquePermissions = Array.from(new Set(permissions));
+
+  if (!user) return null; // Prevent render before user data
 
   return (
     <div className="flex flex-col items-center justify-center py-10 px-4 min-h-screen bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-900 dark:to-neutral-950">
@@ -103,17 +106,18 @@ export default function ProfilePage() {
             <Avatar
               size="lg"
               className="ring-2 ring-white shadow-md cursor-pointer"
-              name={user?.name?.toUpperCase()}
+              name={user?.name?.toUpperCase() || ""}
               src={user.image}
             />
             <div>
               <h2 className="text-2xl font-bold">
-                {_.capitalize(user.firstName)} {_.capitalize(user.lastName)}
+                {_.capitalize(user.firstName || "")}{" "}
+                {_.capitalize(user.lastName || "")}
               </h2>
               <p className="text-sm text-white/80">{user.email}</p>
             </div>
             <Chip className="text-sm px-3 py-1" color="primary">
-              {_.capitalize(user.role)}
+              {_.capitalize(user.role || "")}
             </Chip>
           </div>
         </div>
@@ -142,37 +146,37 @@ export default function ProfilePage() {
                   <Tooltip content={t("phone")}>
                     <HiOutlinePhone className="cursor-pointer" />
                   </Tooltip>
-                  {formatPhoneNumber(user.phone)}
+                  {formatPhoneNumber(user.phone || "")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Tooltip content={t("accountType")}>
                     <HiOutlineUser className="cursor-pointer" />
                   </Tooltip>
-                  {_.capitalize(user.accountType)}
+                  {_.capitalize(user.accountType || "")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Tooltip content={t("organization")}>
                     <HiOutlineBuildingOffice2 className="cursor-pointer" />
                   </Tooltip>
-                  {user.organizationName}
+                  {user.organizationName || "-"}
                 </li>
                 <li className="flex items-center gap-2">
                   <Tooltip content={"Organization ID"}>
                     <HiOutlineBuildingOffice2 className="cursor-pointer" />
                   </Tooltip>
-                  <TruncatedId id={user?.organizationId} />
+                  <TruncatedId id={user.organizationId || ""} />
                 </li>
                 <li className="flex items-center gap-2">
                   <Tooltip content={t("timezone")}>
                     <HiOutlineClock className="cursor-pointer" />
                   </Tooltip>
-                  {user.timezone}
+                  {user.timezone || "UTC"}
                 </li>
                 <li className="flex items-center gap-2">
                   <Tooltip content={t("lastLogin")}>
                     <HiOutlineCalendarDays className="cursor-pointer" />
                   </Tooltip>
-                  {user?.lastLogin
+                  {user.lastLogin
                     ? formattedDate(new Date(user.lastLogin))
                     : t("noLastLogin")}
                 </li>
@@ -184,27 +188,19 @@ export default function ProfilePage() {
               <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">
                 {t("permissions")}
               </h3>
-              {permissions?.length ? (
+              {uniquePermissions.length > 0 ? (
                 <ul className="list-disc list-inside text-sm text-gray-700 dark:text-gray-300">
-                  {uniquePermissions.map((permObj: any) => {
-                    // permObj can be string or { permission: string, ... }
-                    const permStr =
-                      typeof permObj === "string"
-                        ? permObj
-                        : permObj.permission;
-
-                    return (
-                      <li key={permStr} className="flex items-center gap-2">
-                        <HiOutlineShieldCheck className="text-green-500" />
-                        <span>
-                          {t(`permissions_${permStr.replace(/[:.]/g, "_")}`) !==
-                          `permissions_${permStr.replace(/[:.]/g, "_")}`
-                            ? t(`permissions_${permStr.replace(/[:.]/g, "_")}`)
-                            : permStr}
-                        </span>
-                      </li>
-                    );
-                  })}
+                  {uniquePermissions.map((permStr: string) => (
+                    <li key={permStr} className="flex items-center gap-2">
+                      <HiOutlineShieldCheck className="text-green-500" />
+                      <span>
+                        {t(`permissions_${permStr?.replace(/[:.]/g, "_")}`) !==
+                        `permissions_${permStr?.replace(/[:.]/g, "_")}`
+                          ? t(`permissions_${permStr.replace(/[:.]/g, "_")}`)
+                          : permStr}
+                      </span>
+                    </li>
+                  ))}
                 </ul>
               ) : (
                 <p className="text-gray-400 text-sm">{t("noPermissions")}</p>
