@@ -56,9 +56,10 @@ export default function ProjectHeader({
         {/* Right: Actions, Members, View Toggle */}
         <div className="flex items-center gap-3 ml-auto">
           {/* View toggle with Hero UI buttons */}
-          <div className="flex border border-gray-300 rounded overflow-hidden">
+          <div className="flex rounded overflow-hidden">
             <Button
               variant={viewMode === "kanban" ? "solid" : "ghost"}
+              color={viewMode === "kanban" ? "primary" : "default"}
               size="sm"
               onPress={() => setViewMode("kanban")}
             >
@@ -66,6 +67,7 @@ export default function ProjectHeader({
             </Button>
             <Button
               variant={viewMode === "table" ? "solid" : "ghost"}
+              color={viewMode === "table" ? "primary" : "default"}
               size="sm"
               onPress={() => setViewMode("table")}
             >
