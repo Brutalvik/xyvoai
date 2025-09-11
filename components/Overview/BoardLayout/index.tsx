@@ -103,7 +103,7 @@ export function BoardLayout({ children }: BoardLayoutProps) {
                 }))
               );
             }}
-            viewMode={ViewMode.Day as any}
+            viewMode={"Day" as any} // use string literal instead of ViewMode.Day
           />
         </div>
       )}
