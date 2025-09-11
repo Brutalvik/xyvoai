@@ -11,7 +11,7 @@ import {
 } from "@/components/Overview/Dummy/data";
 import { Column, Task } from "@/components/Overview/Kanban/types";
 import GanttView from "@/components/Overview/GanttView";
-import { ViewMode } from "react-gantt-chart";
+import { ViewMode } from "react-modern-gantt";
 
 interface BoardLayoutProps {
   children?: ReactNode; // add this
@@ -103,7 +103,7 @@ export function BoardLayout({ children }: BoardLayoutProps) {
                 }))
               );
             }}
-            viewMode={"Day" as any} // use string literal instead of ViewMode.Day
+            viewMode={ViewMode.Day as any} // use string literal instead of ViewMode.Day
           />
         </div>
       )}
