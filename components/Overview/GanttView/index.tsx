@@ -15,7 +15,7 @@ type Props = {
 export default function GanttView({
   columns,
   onTaskUpdate,
-  viewMode = ViewMode.Day,
+  viewMode = ViewMode.DAY,
 }: Props) {
   // Convert Kanban columns → task groups
   const taskGroups = useMemo(() => {
