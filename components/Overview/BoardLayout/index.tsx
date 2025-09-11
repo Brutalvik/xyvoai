@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { ReactNode, useState } from "react";
 import ProjectHeader from "@/components/Overview/ProjectHeader";
 import { KanbanBoard } from "@/components/Overview/Kanban";
 import { TableView } from "@/components/Overview/TableView";
@@ -13,7 +13,11 @@ import { Column, Task } from "@/components/Overview/Kanban/types";
 import GanttView from "@/components/Overview/GanttView";
 import { ViewMode } from "react-gantt-chart";
 
-export function BoardLayout() {
+interface BoardLayoutProps {
+  children?: ReactNode; // add this
+}
+
+export function BoardLayout({ children }: BoardLayoutProps) {
   const [view, setView] = useState<"kanban" | "table" | "gantt">("kanban");
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
@@ -24,11 +28,12 @@ export function BoardLayout() {
       </div>
       <div className="border-t border-gray-200 dark:border-neutral-700" />
 
+      {children}
+
       {view === "kanban" && (
         <KanbanBoard
           columns={columns}
           onTaskMove={(tid, from, to) => {
-            // same logic as before
             setColumns((prev) => {
               const cols = prev.map((c) => ({ ...c, tasks: [...c.tasks] }));
               let moving: Task | undefined;
@@ -98,10 +103,12 @@ export function BoardLayout() {
                 }))
               );
             }}
-            viewMode={ViewMode.Day as any} // or WEEK / MONTH / QUARTER
+            viewMode={ViewMode.Day as any}
           />
         </div>
       )}
     </div>
   );
 }
+
+export default BoardLayout;
