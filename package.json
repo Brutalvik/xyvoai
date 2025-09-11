@@ -46,6 +46,7 @@
     "react": "^19.1.0",
     "react-color": "^2.19.3",
     "react-dom": "^19.1.0",
+    "react-gantt-chart": "^0.3.0-rc.11",
     "react-icons": "^5.5.0",
     "react-modern-gantt": "^0.5.2",
     "react-redux": "^9.2.0",
