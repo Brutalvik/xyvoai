@@ -1,14 +1,16 @@
+// components/Overview/Kanban/types.ts
+
 export interface User {
   id: string;
   name: string;
-  avatar: string;
-  color: string;
+  avatar: string; // initials or URL
+  color: string; // Tailwind color classes
 }
 
 export interface Tag {
   id: string;
   name: string;
-  color: string;
+  color: string; // Tailwind color classes
 }
 
 export type WorkItemType =
@@ -35,10 +37,12 @@ export interface Task {
   id: string;
   title: string;
   description?: string;
+
   assignee?: User;
   comments?: number;
   attachments?: number;
   workItems?: number;
+
   tags: Tag[];
   completedDate?: string;
   priority?: "low" | "medium" | "high" | "critical";
@@ -50,6 +54,14 @@ export interface Task {
   parentId?: string;
   childrenIds?: string[];
   deleted?: boolean;
+
+  /** Gantt fields */
+  startDate: string; // ISO string
+  endDate: string; // ISO string
+
+  /** 🆕 Dependencies for Gantt libraries */
+  dependencies?: string[]; // array of other Task IDs this task depends on
+  progress?: number; // 0–100 (percentage complete)
 }
 
 export interface Column {
@@ -66,6 +78,7 @@ export interface KanbanBoardProps {
   workItemTypes?: WorkItemTypeConfig[];
   availableUsers?: User[];
   availableTags?: Tag[];
+
   onTaskMove?: (
     taskId: string,
     fromColumnId: string,
@@ -77,8 +90,10 @@ export interface KanbanBoardProps {
   ) => void;
   onTaskEdit?: (taskId: string, updates: Partial<Task>) => void;
   onTaskDelete?: (taskId: string) => void;
+
   onColumnAdd?: () => void;
   onColumnEdit?: (columnId: string, updates: Partial<Column>) => void;
   onColumnDelete?: (columnId: string) => void;
+
   onWorkItemTypeCreate?: (workItemType: Omit<WorkItemTypeConfig, "id">) => void;
 }

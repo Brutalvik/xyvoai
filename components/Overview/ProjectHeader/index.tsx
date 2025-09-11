@@ -15,8 +15,8 @@ import QuarterSelector from "@/components/Overview/ProjectHeader/QuarterSelector
 import MemberSelector from "@/components/Overview/ProjectHeader/MemberSelector";
 
 interface ProjectHeaderProps {
-  viewMode: "kanban" | "table";
-  setViewMode: (mode: "kanban" | "table") => void;
+  viewMode: "kanban" | "table" | "gantt";
+  setViewMode: (mode: "kanban" | "table" | "gantt") => void;
 }
 
 export default function ProjectHeader({
@@ -30,9 +30,9 @@ export default function ProjectHeader({
   const handleNewTask = () => alert("Create Task functionality coming soon.");
 
   return (
-    <div className="w-full border-b border-gray-200 dark:border-neutral-700 px-4 py-3">
+    <div className="w-full border-b border-gray-200 px-4 py-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        {/* Left: Title and QuarterSelector */}
+        {/* Left */}
         <div className="flex items-center gap-2 min-w-0">
           {editing ? (
             <input
@@ -40,11 +40,11 @@ export default function ProjectHeader({
               onChange={(e) => setTitle(e.target.value)}
               onBlur={() => setEditing(false)}
               autoFocus
-              className="text-base font-semibold truncate px-1 py-0.5 border-b border-primary focus:outline-none bg-transparent text-default-900 dark:text-white"
+              className="text-base font-semibold truncate px-1 py-0.5 border-b border-primary focus:outline-none bg-transparent"
             />
           ) : (
             <h2
-              className="text-base font-semibold truncate text-default-900 dark:text-white cursor-pointer"
+              className="text-base font-semibold truncate cursor-pointer"
               onClick={() => setEditing(true)}
             >
               {title}
@@ -53,9 +53,9 @@ export default function ProjectHeader({
           <QuarterSelector />
         </div>
 
-        {/* Right: Actions, Members, View Toggle */}
+        {/* Right */}
         <div className="flex items-center gap-3 ml-auto">
-          {/* View toggle with Hero UI buttons */}
+          {/* View toggle */}
           <div className="flex rounded overflow-hidden">
             <Button
               variant={viewMode === "kanban" ? "solid" : "ghost"}
@@ -72,6 +72,14 @@ export default function ProjectHeader({
               onPress={() => setViewMode("table")}
             >
               Table
+            </Button>
+            <Button
+              variant={viewMode === "gantt" ? "solid" : "ghost"}
+              color={viewMode === "gantt" ? "primary" : "default"}
+              size="sm"
+              onPress={() => setViewMode("gantt")}
+            >
+              Gantt
             </Button>
           </div>
 
@@ -102,7 +110,7 @@ export default function ProjectHeader({
             </Dropdown>
           </div>
 
-          {/* Tablet/Desktop buttons */}
+          {/* Desktop */}
           <div className="hidden sm:flex gap-2">
             <Button
               color="default"
@@ -113,7 +121,6 @@ export default function ProjectHeader({
             >
               Invite
             </Button>
-
             <Button
               color="primary"
               variant="solid"
@@ -125,7 +132,6 @@ export default function ProjectHeader({
             </Button>
           </div>
 
-          {/* Avatar Dropdown with Search */}
           <MemberSelector members={teamMembers} maxVisible={4} />
         </div>
       </div>

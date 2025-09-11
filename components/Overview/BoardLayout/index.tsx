@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import React, { useState, useMemo } from "react";
 import ProjectHeader from "@/components/Overview/ProjectHeader";
 import { KanbanBoard } from "@/components/Overview/Kanban";
 import { TableView } from "@/components/Overview/TableView";
@@ -10,111 +10,97 @@ import {
   sampleTags,
 } from "@/components/Overview/Dummy/data";
 import { Column, Task } from "@/components/Overview/Kanban/types";
+import GanttView from "@/components/Overview/GanttView";
+import { ViewMode } from "react-gantt-chart";
 
-interface BoardLayoutProps {
-  children?: ReactNode;
-}
-
-export function BoardLayout({ children }: BoardLayoutProps) {
-  const [viewMode, setViewMode] = useState<"kanban" | "table">("kanban");
+export function BoardLayout() {
+  const [view, setView] = useState<"kanban" | "table" | "gantt">("kanban");
   const [columns, setColumns] = useState<Column[]>(initialColumns);
-
-  // Update a task
-  const handleTaskEdit = (taskId: string, updates: Partial<Task>) => {
-    setColumns((prevCols) =>
-      prevCols.map((col) => ({
-        ...col,
-        tasks: col.tasks.map((t) =>
-          t.id === taskId ? { ...t, ...updates } : t
-        ),
-      }))
-    );
-  };
-
-  // Move task between columns
-  const handleTaskMove = (
-    taskId: string,
-    fromColumnId: string,
-    toColumnId: string
-  ) => {
-    setColumns((prevCols) => {
-      const newCols = prevCols.map((col) => ({
-        ...col,
-        tasks: [...col.tasks],
-      }));
-      let taskToMove: Task | null = null;
-
-      // Remove from old column
-      for (const col of newCols) {
-        const idx = col.tasks.findIndex((t) => t.id === taskId);
-        if (idx > -1) {
-          taskToMove = col.tasks.splice(idx, 1)[0];
-          break;
-        }
-      }
-
-      // Add to target column
-      if (taskToMove) {
-        const targetCol = newCols.find((c) => c.id === toColumnId);
-        if (targetCol) targetCol.tasks.push(taskToMove);
-      }
-
-      return newCols;
-    });
-  };
-
-  // Reorder tasks within a column
-  const handleTaskReorder = (
-    columnId: string,
-    taskId: string,
-    direction: "up" | "down"
-  ) => {
-    setColumns((prevCols) =>
-      prevCols.map((col) => {
-        if (col.id !== columnId) return col;
-        const idx = col.tasks.findIndex((t) => t.id === taskId);
-        if (idx === -1) return col;
-        const newIndex = direction === "up" ? idx - 1 : idx + 1;
-        if (newIndex < 0 || newIndex >= col.tasks.length) return col;
-        const newTasks = [...col.tasks];
-        [newTasks[idx], newTasks[newIndex]] = [
-          newTasks[newIndex],
-          newTasks[idx],
-        ];
-        return { ...col, tasks: newTasks };
-      })
-    );
-  };
 
   return (
     <div className="flex flex-col h-screen w-full">
-      {/* Fixed Header */}
-      <div className="sticky top-[56px] z-20 bg-white border-b border-gray-200 dark:border-neutral-700 dark:bg-neutral-900">
-        <ProjectHeader viewMode={viewMode} setViewMode={setViewMode} />
+      <div className="sticky top-[56px] z-20 bg-white border-b border-gray-200 dark:bg-neutral-900 dark:border-neutral-700">
+        <ProjectHeader viewMode={view} setViewMode={setView} />
       </div>
-
-      {/* Divider */}
       <div className="border-t border-gray-200 dark:border-neutral-700" />
 
-      {/* Board Content */}
-      {viewMode === "kanban" ? (
+      {view === "kanban" && (
         <KanbanBoard
           columns={columns}
-          onTaskMove={handleTaskMove}
-          onTaskEdit={handleTaskEdit}
-          onTaskDelete={(taskId) => handleTaskEdit(taskId, { deleted: true })}
-          onColumnAdd={() => console.log("Add column")}
-          onColumnEdit={(colId, updates) =>
-            console.log("Edit column", colId, updates)
+          onTaskMove={(tid, from, to) => {
+            // same logic as before
+            setColumns((prev) => {
+              const cols = prev.map((c) => ({ ...c, tasks: [...c.tasks] }));
+              let moving: Task | undefined;
+              cols.forEach((c) => {
+                const idx = c.tasks.findIndex((t) => t.id === tid);
+                if (idx >= 0) {
+                  moving = c.tasks.splice(idx, 1)[0];
+                }
+              });
+              if (moving) {
+                const target = cols.find((c) => c.id === to);
+                if (target) target.tasks.push(moving);
+              }
+              return cols;
+            });
+          }}
+          onTaskEdit={(tid, updates) =>
+            setColumns((prev) =>
+              prev.map((col) => ({
+                ...col,
+                tasks: col.tasks.map((t) =>
+                  t.id === tid ? { ...t, ...updates } : t
+                ),
+              }))
+            )
           }
-          onColumnDelete={(colId) => console.log("Delete column", colId)}
+          onTaskDelete={(tid) =>
+            setColumns((prev) =>
+              prev.map((col) => ({
+                ...col,
+                tasks: col.tasks.filter((t) => t.id !== tid),
+              }))
+            )
+          }
+          onColumnAdd={() => {}}
+          onColumnEdit={() => {}}
+          onColumnDelete={() => {}}
         />
-      ) : (
+      )}
+
+      {view === "table" && (
         <TableView
           columns={columns}
           availableUsers={sampleUsers}
           availableTags={sampleTags}
         />
+      )}
+
+      {view === "gantt" && (
+        <div className="h-full w-full overflow-auto">
+          <GanttView
+            columns={columns}
+            onTaskUpdate={(updatedTask) => {
+              setColumns((prev) =>
+                prev.map((col) => ({
+                  ...col,
+                  tasks: col.tasks.map((t) =>
+                    t.id === updatedTask.id
+                      ? {
+                          ...t,
+                          startDate: updatedTask.startDate,
+                          endDate: updatedTask.endDate,
+                          workItems: updatedTask.workItems,
+                        }
+                      : t
+                  ),
+                }))
+              );
+            }}
+            viewMode={ViewMode.Day as any} // or WEEK / MONTH / QUARTER
+          />
+        </div>
       )}
     </div>
   );
