@@ -76,6 +76,8 @@ export default function GanttView({
         viewMode={viewMode}
         darkMode={false}
         showProgress={true}
+        startDate={new Date()}
+        endDate={new Date(new Date().setMonth(new Date().getMonth() + 6))}
         onTaskUpdate={handleTaskUpdate}
       />
     </div>
