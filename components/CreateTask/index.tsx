@@ -11,7 +11,7 @@ import {
   DropdownItem,
   Select,
   SelectItem,
-  Tooltip,
+  Chip,
 } from "@heroui/react";
 import { teamMembers } from "@/components/Overview/ProjectHeader/Teammembers";
 import Quill from "quill";
@@ -20,21 +20,29 @@ import "quill/dist/quill.snow.css";
 export default function CreateTaskAzureLike({
   onCancel,
   onCreated,
+  currentUser,
 }: {
   onCancel?: () => void;
   onCreated?: (task: any) => void;
+  currentUser: { id: string; name: string; avatar?: string };
 }) {
   // Form state
   const [title, setTitle] = useState("");
   const [assignee, setAssignee] = useState("");
   const [priority, setPriority] = useState("low");
   const [activity, setActivity] = useState("Development");
-  const [originalEstimate, setOriginalEstimate] = useState("0");
-  const [remaining, setRemaining] = useState("0");
-  const [completed, setCompleted] = useState("0");
+  const [originalEstimate, setOriginalEstimate] = useState(0);
+  const [remaining, setRemaining] = useState(0);
+  const [completed, setCompleted] = useState(0);
   const [taskNumber, setTaskNumber] = useState(
     Math.floor(Math.random() * 1000)
   );
+
+  const [tags, setTags] = useState<string[]>([]);
+  const [newComment, setNewComment] = useState("");
+  const [comments, setComments] = useState<
+    { userId: string; avatar?: string; comment: string; timestamp: string }[]
+  >([]);
 
   // Edit toggles
   const priorities = [
@@ -84,18 +92,43 @@ export default function CreateTaskAzureLike({
     }
   }, [assignee]);
 
+  // Update remaining automatically
+  useEffect(() => {
+    const orig = Number(originalEstimate) || 0;
+    const comp = Number(completed) || 0;
+    setRemaining(Math.max(orig - comp, 0));
+  }, [originalEstimate, completed]);
+
+  const handleAddComment = () => {
+    if (!newComment.trim()) return;
+    setComments([
+      ...comments,
+      {
+        userId: currentUser.id,
+        avatar: currentUser.avatar,
+        comment: newComment,
+        timestamp: new Date().toISOString(),
+      },
+    ]);
+    setNewComment("");
+  };
+
   const handleSubmit = () => {
     const description = quillRef.current?.root.innerHTML || "";
     const payload = {
       taskNumber,
       title,
       description,
-      assignee,
+      assignee: assignee
+        ? teamMembers.find((m) => m.id?.toString() === assignee)
+        : null,
       priority,
       activity,
       originalEstimate,
       remaining,
       completed,
+      tags: tags.map((t) => ({ name: t })),
+      comments,
     };
     console.log("Creating task:", payload);
     onCreated?.(payload);
@@ -105,9 +138,11 @@ export default function CreateTaskAzureLike({
     setAssignee("");
     setPriority("medium");
     setActivity("Development");
-    setOriginalEstimate("0");
-    setRemaining("0");
-    setCompleted("0");
+    setOriginalEstimate(0);
+    setRemaining(0);
+    setCompleted(0);
+    setTags([]);
+    setComments([]);
     quillRef.current?.setContents([]);
     setTaskNumber(Math.floor(Math.random() * 1000));
   };
@@ -133,6 +168,32 @@ export default function CreateTaskAzureLike({
             className="bg-white dark:bg-neutral-900 min-h-[200px] border border-border rounded-md p-2"
           />
         </div>
+
+        {/* Comments */}
+        <div className="mt-4">
+          <h4 className="text-sm font-semibold mb-1">Comments</h4>
+          <div className="space-y-2">
+            {comments.map((c, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <Avatar size="sm" src={c.avatar} name={c.userId} />
+                <div className="text-sm">{c.comment}</div>
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-2 mt-2">
+            <Input
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Add a comment..."
+              fullWidth
+              size="sm"
+            />
+            <Button size="sm" onPress={handleAddComment}>
+              Add
+            </Button>
+          </div>
+        </div>
+
         <div className="flex justify-end gap-2 pt-2">
           {onCancel && (
             <Button variant="light" onPress={onCancel}>
@@ -157,8 +218,6 @@ export default function CreateTaskAzureLike({
               <label className="text-xs font-medium text-gray-600 mb-1">
                 Priority
               </label>
-
-              {/* Container maintains width and styling */}
               <div
                 className="relative cursor-pointer text-sm"
                 onClick={() => setEditPriority(true)}
@@ -217,52 +276,63 @@ export default function CreateTaskAzureLike({
             Effort
           </h4>
           <div className="mt-3 space-y-3">
-            {[
-              {
-                label: "Original",
-                value: originalEstimate,
-                edit: editOriginal,
-                set: setOriginalEstimate,
-                setEdit: setEditOriginal,
-              },
-              {
-                label: "Remaining",
-                value: remaining,
-                edit: editRemaining,
-                set: setRemaining,
-                setEdit: setEditRemaining,
-              },
-              {
-                label: "Completed",
-                value: completed,
-                edit: editCompleted,
-                set: setCompleted,
-                setEdit: setEditCompleted,
-              },
-            ].map((item) => (
-              <div key={item.label} className="flex flex-col">
-                <label className="text-xs font-medium text-gray-600 mb-1">
-                  {item.label}
-                </label>
-                {item.edit ? (
-                  <Input
-                    variant="underlined"
-                    size="sm"
-                    value={item.value}
-                    onChange={(e) => item.set(e.target.value)}
-                    onBlur={() => item.setEdit(false)}
-                    autoFocus
-                  />
-                ) : (
-                  <span
-                    className="text-sm cursor-pointer"
-                    onClick={() => item.setEdit(true)}
-                  >
-                    {item.value}
-                  </span>
-                )}
-              </div>
-            ))}
+            {/* Original */}
+            <div className="flex flex-col">
+              <label className="text-xs font-medium text-gray-600 mb-1">
+                Original
+              </label>
+              {editOriginal ? (
+                <Input
+                  variant="underlined"
+                  size="sm"
+                  value={originalEstimate?.toString()}
+                  onChange={(e) =>
+                    setOriginalEstimate(Number(e.target.value) || 0)
+                  }
+                  onBlur={() => setEditOriginal(false)}
+                  autoFocus
+                />
+              ) : (
+                <span
+                  className="text-sm cursor-pointer"
+                  onClick={() => setEditOriginal(true)}
+                >
+                  {originalEstimate}
+                </span>
+              )}
+            </div>
+
+            {/* Completed */}
+            <div className="flex flex-col">
+              <label className="text-xs font-medium text-gray-600 mb-1">
+                Completed
+              </label>
+              {editCompleted ? (
+                <Input
+                  variant="underlined"
+                  size="sm"
+                  value={completed?.toString()}
+                  onChange={(e) => setCompleted(Number(e.target.value) || 0)}
+                  onBlur={() => setEditCompleted(false)}
+                  autoFocus
+                />
+              ) : (
+                <span
+                  className="text-sm cursor-pointer"
+                  onClick={() => setEditCompleted(true)}
+                >
+                  {completed}
+                </span>
+              )}
+            </div>
+
+            {/* Remaining (read-only) */}
+            <div className="flex flex-col">
+              <label className="text-xs font-medium text-gray-600 mb-1">
+                Remaining
+              </label>
+              <span className="text-sm">{remaining}</span>
+            </div>
           </div>
         </div>
 
@@ -315,6 +385,37 @@ export default function CreateTaskAzureLike({
                 ))}
               </DropdownMenu>
             </Dropdown>
+          </div>
+        </div>
+
+        {/* Tags */}
+        <div>
+          <h4 className="text-sm font-semibold uppercase border-b border-gray-300 pb-1">
+            Tags
+          </h4>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {tags.map((t, i) => (
+              <Chip
+                key={i}
+                variant="light"
+                onClose={() => setTags(tags.filter((_, idx) => idx !== i))}
+              >
+                {t}
+              </Chip>
+            ))}
+            <Input
+              size="sm"
+              placeholder="Add tag"
+              value={""}
+              onChange={() => {}}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && e.currentTarget.value.trim()) {
+                  setTags([...tags, e.currentTarget.value.trim()]);
+                  e.currentTarget.value = "";
+                  e.preventDefault();
+                }
+              }}
+            />
           </div>
         </div>
       </div>

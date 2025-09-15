@@ -13,12 +13,15 @@ import { Column, Task } from "@/components/Overview/Kanban/types";
 import GanttView from "@/components/Overview/GanttView";
 import { ViewMode } from "react-modern-gantt";
 import CreateTask from "@/components/CreateTask";
+import { selectUser } from "@/store/selectors";
+import { useAppSelector } from "@/store/hooks";
 
 interface BoardLayoutProps {
   children?: ReactNode; // add this
 }
 
 export function BoardLayout({ children }: BoardLayoutProps) {
+  const { user }: any = useAppSelector(selectUser);
   const [view, setView] = useState<
     "kanban" | "table" | "gantt" | "showCreateTask"
   >("kanban");
@@ -111,7 +114,7 @@ export function BoardLayout({ children }: BoardLayoutProps) {
         </div>
       )}
 
-      {view === "showCreateTask" && <CreateTask />}
+      {view === "showCreateTask" && <CreateTask currentUser={user} />}
     </div>
   );
 }
