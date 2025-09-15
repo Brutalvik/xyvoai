@@ -18,21 +18,32 @@ export default function GanttView({
   viewMode = ViewMode.DAY,
 }: Props) {
   // Convert Kanban columns → task groups
+  // inside your useMemo in GanttView
   const taskGroups = useMemo(() => {
+    const today = new Date();
+
     return columns.map((col) => ({
       id: col.id,
       name: col.title,
       description: col.title,
-      tasks: col.tasks.map((t) => ({
-        id: t.id,
-        name: t.title,
-        startDate: t.startDate ? new Date(t.startDate) : new Date(),
-        endDate: t.endDate ? new Date(t.endDate) : new Date(),
-        color: t.assignee?.color || "#3b82f6",
-        percent: t.workItems ? Math.min(100, t.workItems) : 0,
-        dependencies: t.dependencies ?? [],
-        assignee: t.assignee?.name,
-      })),
+      tasks: col.tasks.map((t) => {
+        // pick a color depending on your conditions
+        let color = "#3b82f6"; // default blue
+        if (t.priority === "high") color = "#ef4444"; // red
+        if (t.priority === "medium") color = "#f59e0b"; // amber
+        if (new Date(t.endDate) < today) color = "#6b7280"; // grey for overdue
+
+        return {
+          id: t.id,
+          name: t.title,
+          startDate: t.startDate ? new Date(t.startDate) : today,
+          endDate: t.endDate ? new Date(t.endDate) : today,
+          color, // 👈 custom color here
+          percent: t.workItems ? Math.min(100, t.workItems) : 0,
+          dependencies: t.dependencies ?? [],
+          assignee: t.assignee?.name,
+        };
+      }),
     }));
   }, [columns]);
 
