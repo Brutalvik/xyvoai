@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   Button,
   Input,
@@ -16,6 +16,15 @@ import {
 import { teamMembers } from "@/components/Overview/ProjectHeader/Teammembers";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
+import { getBgColor } from "@/utils";
+
+// Unified type for user
+type User = {
+  id: string | number;
+  name: string;
+  avatar?: string;
+  image?: string;
+};
 
 export default function CreateTaskAzureLike({
   onCancel,
@@ -24,11 +33,11 @@ export default function CreateTaskAzureLike({
 }: {
   onCancel?: () => void;
   onCreated?: (task: any) => void;
-  currentUser: { id: string; name: string; avatar?: string };
+  currentUser: User;
 }) {
   // Form state
   const [title, setTitle] = useState("");
-  const [assignee, setAssignee] = useState("");
+  const [assignee, setAssignee] = useState<string>(currentUser.id.toString());
   const [priority, setPriority] = useState("low");
   const [activity, setActivity] = useState("Development");
   const [originalEstimate, setOriginalEstimate] = useState(0);
@@ -41,7 +50,13 @@ export default function CreateTaskAzureLike({
   const [tags, setTags] = useState<string[]>([]);
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState<
-    { userId: string; avatar?: string; comment: string; timestamp: string }[]
+    {
+      userId: string;
+      avatar?: string;
+      comment: string;
+      timestamp: string;
+      name: string;
+    }[]
   >([]);
 
   // Edit toggles
@@ -60,6 +75,27 @@ export default function CreateTaskAzureLike({
   // Quill
   const editorRef = useRef<HTMLDivElement | null>(null);
   const quillRef = useRef<Quill | null>(null);
+
+  // Helper: get initials from first and last name letters
+  const getInitials = (name: string) => {
+    if (!name) return "";
+    const parts = name.trim().split(" ");
+    if (parts.length === 1) return parts[0][0].toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
+
+  // Selected user for avatar display
+  const selectedUser: User = useMemo(() => {
+    const user =
+      assignee && teamMembers.find((m) => m.id.toString() === assignee);
+    return user || currentUser;
+  }, [assignee, currentUser]);
+
+  const avatarBg = useMemo(
+    () =>
+      selectedUser?.id ? getBgColor(selectedUser.id.toString()) : "bg-gray-400",
+    [selectedUser?.id]
+  );
 
   useEffect(() => {
     if (editorRef.current && !quillRef.current) {
@@ -83,7 +119,7 @@ export default function CreateTaskAzureLike({
     }
   }, []);
 
-  // Random assignee
+  // Random assignee if none
   useEffect(() => {
     if (!assignee && teamMembers.length > 0) {
       const random =
@@ -104,10 +140,11 @@ export default function CreateTaskAzureLike({
     setComments([
       ...comments,
       {
-        userId: currentUser.id,
+        userId: currentUser.id.toString(),
         avatar: currentUser.avatar,
         comment: newComment,
         timestamp: new Date().toISOString(),
+        name: currentUser.name,
       },
     ]);
     setNewComment("");
@@ -120,7 +157,7 @@ export default function CreateTaskAzureLike({
       title,
       description,
       assignee: assignee
-        ? teamMembers.find((m) => m.id?.toString() === assignee)
+        ? teamMembers.find((m) => m.id.toString() === assignee)
         : null,
       priority,
       activity,
@@ -135,7 +172,7 @@ export default function CreateTaskAzureLike({
 
     // Reset form
     setTitle("");
-    setAssignee("");
+    setAssignee(currentUser.id.toString());
     setPriority("medium");
     setActivity("Development");
     setOriginalEstimate(0);
@@ -171,12 +208,35 @@ export default function CreateTaskAzureLike({
 
         {/* Comments */}
         <div className="mt-4">
-          <h4 className="text-sm font-semibold mb-1">Comments</h4>
+          <h4 className="text-sm font-semibold mb-2">Comments</h4>
           <div className="space-y-2">
             {comments.map((c, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <Avatar size="sm" src={c.avatar} name={c.userId} />
-                <div className="text-sm">{c.comment}</div>
+              <div key={i} className="flex items-start gap-2">
+                <Avatar
+                  style={{
+                    backgroundColor: getBgColor(c.userId),
+                    fontSize: "0.975rem",
+                    fontWeight: "700",
+                    color: "#fff",
+                  }}
+                  size="sm"
+                  src={c.avatar}
+                  name={getInitials(c.name)}
+                />
+                <div className="flex flex-col bg-sky-100 dark:bg-sky-200 rounded-xl p-2 max-w-[80%]">
+                  <div className="flex justify-between items-start gap-2">
+                    <span className="text-sm">{c.comment}</span>
+                    <span className="text-xs text-gray-500 whitespace-nowrap">
+                      {new Date(c.timestamp).toLocaleString(undefined, {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -285,7 +345,7 @@ export default function CreateTaskAzureLike({
                 <Input
                   variant="underlined"
                   size="sm"
-                  value={originalEstimate?.toString()}
+                  value={originalEstimate.toString()}
                   onChange={(e) =>
                     setOriginalEstimate(Number(e.target.value) || 0)
                   }
@@ -311,7 +371,7 @@ export default function CreateTaskAzureLike({
                 <Input
                   variant="underlined"
                   size="sm"
-                  value={completed?.toString()}
+                  value={completed.toString()}
                   onChange={(e) => setCompleted(Number(e.target.value) || 0)}
                   onBlur={() => setEditCompleted(false)}
                   autoFocus
@@ -326,7 +386,7 @@ export default function CreateTaskAzureLike({
               )}
             </div>
 
-            {/* Remaining (read-only) */}
+            {/* Remaining */}
             <div className="flex flex-col">
               <label className="text-xs font-medium text-gray-600 mb-1">
                 Remaining
@@ -346,26 +406,18 @@ export default function CreateTaskAzureLike({
               <DropdownTrigger>
                 <div className="flex items-center gap-2 cursor-pointer">
                   <Avatar
+                    className="cursor-pointer text-white"
+                    style={{
+                      backgroundColor: avatarBg,
+                      fontSize: "0.975rem",
+                      fontWeight: "700",
+                      color: "#fff",
+                    }}
                     size="sm"
-                    src={
-                      assignee
-                        ? teamMembers.find((m) => m.id?.toString() === assignee)
-                            ?.src
-                        : undefined
-                    }
-                    name={
-                      assignee
-                        ? teamMembers.find((m) => m.id?.toString() === assignee)
-                            ?.name
-                        : "Unassigned"
-                    }
+                    src={selectedUser.image || selectedUser.avatar}
+                    name={getInitials(selectedUser.name)}
                   />
-                  <span className="text-sm">
-                    {assignee
-                      ? teamMembers.find((m) => m.id?.toString() === assignee)
-                          ?.name
-                      : "Unassigned"}
-                  </span>
+                  <span className="text-sm">{selectedUser.name}</span>
                 </div>
               </DropdownTrigger>
               <DropdownMenu aria-label="Select Assignee" variant="faded">
@@ -376,7 +428,17 @@ export default function CreateTaskAzureLike({
                     className="flex flex-row items-center gap-2"
                   >
                     <div className="flex items-center gap-3">
-                      <Avatar size="sm" src={m.src} name={m.name} />
+                      <Avatar
+                        size="sm"
+                        src={m.src}
+                        name={getInitials(m.name)}
+                        style={{
+                          backgroundColor: getBgColor(m.id.toString()),
+                          fontSize: "0.875rem",
+                          fontWeight: "600",
+                          color: "#fff",
+                        }}
+                      />
                       <span className="text-sm text-default-900 truncate">
                         {m.name}
                       </span>
