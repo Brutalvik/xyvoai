@@ -12,9 +12,5 @@ export default function ProfilePage() {
   const activeUser: any = useAppSelector(selectUser);
   const router = useRouter();
 
-  return (
-    <BoardLayout>
-      <h1>Overview</h1>
-    </BoardLayout>
-  );
+  return <BoardLayout />;
 }
