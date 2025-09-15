@@ -14,9 +14,12 @@ import { teamMembers } from "@/components/Overview/ProjectHeader/Teammembers";
 import QuarterSelector from "@/components/Overview/ProjectHeader/QuarterSelector";
 import MemberSelector from "@/components/Overview/ProjectHeader/MemberSelector";
 
+import { FaFileCirclePlus, FaFolderPlus } from "react-icons/fa6";
+import { BsClipboardPlusFill } from "react-icons/bs";
+
 interface ProjectHeaderProps {
-  viewMode: "kanban" | "table" | "gantt";
-  setViewMode: (mode: "kanban" | "table" | "gantt") => void;
+  viewMode: "kanban" | "table" | "gantt" | "showCreateTask";
+  setViewMode: (mode: "kanban" | "table" | "gantt" | "showCreateTask") => void;
 }
 
 export default function ProjectHeader({
@@ -27,7 +30,9 @@ export default function ProjectHeader({
   const [editing, setEditing] = useState(false);
 
   const handleInvite = () => alert("Invite functionality coming soon.");
-  const handleNewTask = () => alert("Create Task functionality coming soon.");
+  const handleNewTask = () => {
+    setViewMode("showCreateTask");
+  };
 
   return (
     <div className="w-full border-b border-gray-200 px-4 py-3">
@@ -99,13 +104,6 @@ export default function ProjectHeader({
                 >
                   Invite
                 </DropdownItem>
-                <DropdownItem
-                  key="task"
-                  startContent={<Plus size={16} />}
-                  onClick={handleNewTask}
-                >
-                  New
-                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -121,15 +119,44 @@ export default function ProjectHeader({
             >
               Invite
             </Button>
-            <Button
-              color="primary"
-              variant="solid"
-              size="sm"
-              startContent={<Plus size={16} />}
-              onPress={handleNewTask}
-            >
-              New
-            </Button>
+            <Dropdown>
+              <DropdownTrigger>
+                <Button
+                  color="primary"
+                  variant="solid"
+                  size="sm"
+                  startContent={<Plus size={16} />}
+                >
+                  New
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Create menu" variant="faded">
+                <DropdownItem
+                  key="create-task"
+                  shortcut="⌘T"
+                  startContent={<FaFileCirclePlus />}
+                  onClick={handleNewTask}
+                >
+                  Task
+                </DropdownItem>
+                <DropdownItem
+                  key="create-project"
+                  shortcut="⌘P"
+                  startContent={<FaFolderPlus />}
+                  onClick={() => alert("Create Project coming soon.")}
+                >
+                  Project
+                </DropdownItem>
+                <DropdownItem
+                  key="new-backlog"
+                  shortcut="⌘P"
+                  startContent={<BsClipboardPlusFill />}
+                  onClick={() => alert("Create Backlog coming soon.")}
+                >
+                  Backlog
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </div>
 
           <MemberSelector members={teamMembers} maxVisible={4} />

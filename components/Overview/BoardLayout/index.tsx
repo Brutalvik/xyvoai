@@ -12,13 +12,16 @@ import {
 import { Column, Task } from "@/components/Overview/Kanban/types";
 import GanttView from "@/components/Overview/GanttView";
 import { ViewMode } from "react-modern-gantt";
+import CreateTask from "@/components/CreateTask";
 
 interface BoardLayoutProps {
   children?: ReactNode; // add this
 }
 
 export function BoardLayout({ children }: BoardLayoutProps) {
-  const [view, setView] = useState<"kanban" | "table" | "gantt">("kanban");
+  const [view, setView] = useState<
+    "kanban" | "table" | "gantt" | "showCreateTask"
+  >("kanban");
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
   return (
@@ -107,6 +110,8 @@ export function BoardLayout({ children }: BoardLayoutProps) {
           />
         </div>
       )}
+
+      {view === "showCreateTask" && <CreateTask />}
     </div>
   );
 }
