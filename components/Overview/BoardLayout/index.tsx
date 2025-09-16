@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import ProjectHeader from "@/components/Overview/ProjectHeader";
 import { KanbanBoard } from "@/components/Overview/Kanban";
 import { TableView } from "@/components/Overview/TableView";
@@ -15,19 +15,39 @@ import { ViewMode } from "react-modern-gantt";
 import CreateTask from "@/components/CreateTask";
 import { selectUser } from "@/store/selectors";
 import { useAppSelector } from "@/store/hooks";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface BoardLayoutProps {
   children?: ReactNode;
 }
 
 export function BoardLayout({ children }: BoardLayoutProps) {
-  // safe selector: if selectUser returns null, activeUser will be null
   const activeUser: any = useAppSelector(selectUser);
-  const user = activeUser?.user; // undefined if not logged in
+  const user = activeUser?.user;
 
-  const [view, setView] = useState<
-    "kanban" | "table" | "gantt" | "showCreateTask"
-  >("kanban");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // read the view param from the URL, fallback to kanban
+  const viewParam = searchParams.get("view") as
+    | "kanban"
+    | "table"
+    | "gantt"
+    | "createTask"
+    | null;
+
+  const [view, setView] = useState<"kanban" | "table" | "gantt" | "createTask">(
+    viewParam || "kanban"
+  );
+
+  // whenever view changes, push it to the URL without a full reload
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("view", view);
+    router.replace(`?${params.toString()}`, { scroll: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view]);
+
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
   return (
@@ -117,7 +137,7 @@ export function BoardLayout({ children }: BoardLayoutProps) {
         </div>
       )}
 
-      {view === "showCreateTask" && user && <CreateTask currentUser={user} />}
+      {view === "createTask" && user && <CreateTask currentUser={user} />}
     </div>
   );
 }

@@ -18,8 +18,8 @@ import { FaFileCirclePlus, FaFolderPlus } from "react-icons/fa6";
 import { BsClipboardPlusFill } from "react-icons/bs";
 
 interface ProjectHeaderProps {
-  viewMode: "kanban" | "table" | "gantt" | "showCreateTask";
-  setViewMode: (mode: "kanban" | "table" | "gantt" | "showCreateTask") => void;
+  viewMode: "kanban" | "table" | "gantt" | "createTask";
+  setViewMode: (mode: "kanban" | "table" | "gantt" | "createTask") => void;
 }
 
 export default function ProjectHeader({
@@ -31,7 +31,7 @@ export default function ProjectHeader({
 
   const handleInvite = () => alert("Invite functionality coming soon.");
   const handleNewTask = () => {
-    setViewMode("showCreateTask");
+    setViewMode("createTask");
   };
 
   return (
