@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Button,
-  Input,
-  Link,
-  Checkbox,
-} from "@heroui/react";
+import { Button, Input, Link, Checkbox, addToast } from "@heroui/react";
 import { motion } from "framer-motion";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -18,23 +13,25 @@ import { Logo } from "@/components/icons";
 import { HiBan, HiBadgeCheck } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
 import { FaMicrosoft } from "react-icons/fa6";
-import { addToast } from "@heroui/react";
 import { Mail } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
-  onSuccessRedirect: () => void;
   onSignupClick?: () => void;
   onForgotPasswordClick?: () => void;
 };
 
 export default function SigninPage({
-  onSuccessRedirect,
   onSignupClick,
   onForgotPasswordClick,
 }: Props) {
   const dispatch = useAppDispatch();
   const t = useTranslations("Signin");
   const v = useTranslations("SigninValidation");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  // read redirect param or fallback
+  const redirect = searchParams.get("redirect") || "/overview";
 
   const formik = useFormik({
     initialValues: {
@@ -55,7 +52,8 @@ export default function SigninPage({
           color: "success",
           icon: <HiBadgeCheck />,
         });
-        onSuccessRedirect();
+        // redirect back to previous page
+        router.push(redirect);
       } catch (error: any) {
         addToast({
           title: t("errorTitle"),
@@ -120,9 +118,7 @@ export default function SigninPage({
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              isInvalid={
-                !!(formik.touched.password && formik.errors.password)
-              }
+              isInvalid={!!(formik.touched.password && formik.errors.password)}
               errorMessage={
                 formik.touched.password ? formik.errors.password : undefined
               }

@@ -12,10 +12,17 @@ const adminRoutes = ["/admin"];
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const locale = request.nextUrl.locale || "en";
+  // strip locale prefix for checking
   const pathWithoutLocale = pathname.replace(`/${locale}`, "") || "/";
 
   const token = request.cookies.get("x-token")?.value;
   const isLoggedIn = Boolean(token);
+
+  // For building redirect URL
+  const currentUrl = request.nextUrl.clone();
+  const redirectTarget = encodeURIComponent(
+    currentUrl.pathname + currentUrl.search
+  );
 
   // Protected routes
   if (
@@ -23,7 +30,7 @@ export function middleware(request: NextRequest) {
     !isLoggedIn
   ) {
     return NextResponse.redirect(
-      new URL(`/${locale}/auth/signin?redirected=1`, request.url)
+      new URL(`/${locale}/auth/signin?redirect=${redirectTarget}`, request.url)
     );
   }
 
@@ -31,7 +38,10 @@ export function middleware(request: NextRequest) {
   if (adminRoutes.some((r) => pathWithoutLocale.startsWith(r))) {
     if (!token) {
       return NextResponse.redirect(
-        new URL(`/${locale}/auth/signin?redirected=1`, request.url)
+        new URL(
+          `/${locale}/auth/signin?redirect=${redirectTarget}`,
+          request.url
+        )
       );
     }
 
