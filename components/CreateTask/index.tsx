@@ -23,6 +23,7 @@ import {
   updateTask,
   deleteTask,
   Task,
+  addCommentAsync,
 } from "@/store/slices/taskSlice";
 import { teamMembers } from "@/components/Overview/ProjectHeader/Teammembers";
 
@@ -155,17 +156,26 @@ export default function CreateTaskAzureLike({
 
   // ---- Comments ----
   const handleAddComment = () => {
-    if (!newComment.trim()) return;
-    setComments([
-      ...comments,
-      {
-        userId: currentUser.id.toString(),
-        avatar: currentUser.avatar,
-        comment: newComment,
-        timestamp: new Date().toISOString(),
-        name: currentUser.name,
-      },
-    ]);
+    // create comment object
+    const commentObj: Comment = {
+      userId: currentUser.id.toString(),
+      avatar: currentUser.avatar,
+      comment: newComment.trim(),
+      timestamp: new Date().toISOString(),
+      name: currentUser.name,
+    };
+
+    if (editingTask?.id) {
+      dispatch(
+        addCommentAsync({
+          taskId: editingTask.id,
+          comment: commentObj,
+        })
+      );
+    }
+
+    // update local state immediately
+    setComments((prev) => [...prev, commentObj]);
     setNewComment("");
   };
 

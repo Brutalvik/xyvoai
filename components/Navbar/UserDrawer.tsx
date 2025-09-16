@@ -11,13 +11,12 @@ import {
   useDisclosure,
   addToast,
 } from "@heroui/react";
-import { Settings2 } from "lucide-react";
+import { BellPlus, Settings2, ShieldUser } from "lucide-react";
+
 import _ from "lodash";
 import { useTranslations } from "next-intl";
 import { useRouter, usePathname } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { selectUser } from "@/store/selectors";
-import { signoutThunk } from "@/store/auth/thunks";
+import { useAppDispatch } from "@/store/hooks";
 import {
   HiBadgeCheck,
   HiExclamationCircle,
@@ -36,47 +35,24 @@ import {
 } from "@/store/auth/verifyCodeThunk";
 import { mapVerifyCodeError } from "@/utils/mapVerifyCodeErrors";
 import { setUser } from "@/store/slices/userSlice";
-import { decodeToken } from "@/lib/utils";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { signoutThunk } from "@/store/auth/thunks";
 
 interface UserDrawerProps {
   isOpen: boolean;
   onOpenChange: () => void;
 }
 
-interface DecodedJWT {
-  permissions?: string[];
-}
-
 export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
   const t = useTranslations("Navbar");
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const activeUser: any = useAppSelector(selectUser);
-  const { user } = activeUser || {};
-  const firstName = user?.name?.split(" ")[0];
-  const verificationModal = useDisclosure();
   const pathname = usePathname();
 
-  // --- decode JWT from cookie ---
-  const [isAdmin, setIsAdmin] = useState(false);
-  useEffect(() => {
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("x-token="))
-      ?.split("=")[1];
-
-    if (token) {
-      try {
-        const decoded: DecodedJWT = decodeToken(token);
-        if (decoded.permissions?.includes("admin:full")) {
-          setIsAdmin(true);
-        }
-      } catch (err) {
-        console.error("Failed to decode JWT:", err);
-      }
-    }
-  }, []);
+  const { user, isAdmin } = useAuth();
+  const firstName = user?.name?.split(" ")[0];
+  const verificationModal = useDisclosure();
 
   const extendedNavItems = useMemo(() => {
     const items = [...drawerNavItems];
@@ -84,13 +60,13 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
       items.push(
         {
           title: "Access Management",
-          icon: Settings2,
+          icon: ShieldUser,
           path: "/admin/permissions",
           tooltip: "Access Management",
         },
         {
           title: "Notifications",
-          icon: Settings2,
+          icon: BellPlus,
           path: "/admin/notifications",
           tooltip: "Notifications",
         }
@@ -114,7 +90,6 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
       verificationModal.onClose();
     } catch (err: any) {
       const mapped = mapVerifyCodeError(err);
-
       addToast({
         title: t("verifyErrors.defaultTitle"),
         description: mapped.message,
@@ -129,7 +104,6 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
       await dispatch(
         resendVerificationCodeThunk({ email: user?.email })
       ).unwrap();
-
       addToast({
         title: t("resendToast.title"),
         description: t("resendToast.description"),
@@ -138,7 +112,6 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
       });
     } catch (err: any) {
       const mapped = mapVerifyCodeError(err);
-
       addToast({
         title: t("verifyErrors.defaultTitle"),
         description: mapped.message,
@@ -192,7 +165,6 @@ export default function UserDrawer({ isOpen, onOpenChange }: UserDrawerProps) {
                   {extendedNavItems.map(
                     ({ title, icon: Icon, path, badge }) => {
                       const isActive = pathname === path;
-
                       return (
                         <Link
                           key={title}

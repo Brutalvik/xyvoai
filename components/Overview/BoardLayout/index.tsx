@@ -17,11 +17,14 @@ import { selectUser } from "@/store/selectors";
 import { useAppSelector } from "@/store/hooks";
 
 interface BoardLayoutProps {
-  children?: ReactNode; // add this
+  children?: ReactNode;
 }
 
 export function BoardLayout({ children }: BoardLayoutProps) {
-  const { user }: any = useAppSelector(selectUser);
+  // safe selector: if selectUser returns null, activeUser will be null
+  const activeUser: any = useAppSelector(selectUser);
+  const user = activeUser?.user; // undefined if not logged in
+
   const [view, setView] = useState<
     "kanban" | "table" | "gantt" | "showCreateTask"
   >("kanban");
@@ -109,12 +112,12 @@ export function BoardLayout({ children }: BoardLayoutProps) {
                 }))
               );
             }}
-            viewMode={ViewMode.DAY} // use string literal instead of ViewMode.Day
+            viewMode={ViewMode.DAY}
           />
         </div>
       )}
 
-      {view === "showCreateTask" && <CreateTask currentUser={user} />}
+      {view === "showCreateTask" && user && <CreateTask currentUser={user} />}
     </div>
   );
 }

@@ -132,6 +132,37 @@ export const deleteTask = createAsyncThunk<
   }
 });
 
+// store/slices/tasksSlice.ts
+
+export const addCommentAsync = createAsyncThunk<
+  Task,
+  { taskId: string; comment: Task["comments"][0] },
+  { state: RootState }
+>("tasks/addCommentAsync", async ({ taskId, comment }, thunkAPI) => {
+  try {
+    const state = thunkAPI.getState() as RootState;
+    const task = state.tasks.items.find((t) => t.id === taskId);
+    if (!task) throw new Error("Task not found in state");
+
+    // Build the new comments array
+    const updatedComments = [...task.comments, comment];
+
+    const res = await fetchWithAuth(`/tasks/${taskId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ comments: updatedComments }),
+    });
+
+    if (!res.success) {
+      throw new Error(res.error || "Failed to add comment");
+    }
+
+    return res.task as Task;
+  } catch (err: any) {
+    console.error("❌ addCommentAsync error:", err);
+    return thunkAPI.rejectWithValue(err.message || "Failed to add comment");
+  }
+});
+
 // -----------------------------
 // Slice
 // -----------------------------
@@ -199,6 +230,12 @@ const tasksSlice = createSlice({
       })
       .addCase(deleteTask.fulfilled, (state, action) => {
         state.items = state.items.filter((t) => t.id !== action.payload);
+      })
+      .addCase(addCommentAsync.fulfilled, (state, action) => {
+        const index = state.items.findIndex((t) => t.id === action.payload.id);
+        if (index !== -1) {
+          state.items[index] = action.payload; // update whole task with new comments
+        }
       });
   },
 });
