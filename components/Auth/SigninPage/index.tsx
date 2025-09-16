@@ -1,3 +1,4 @@
+// components/Auth/SigninPage.tsx
 "use client";
 
 import { Button, Input, Link, Checkbox, addToast } from "@heroui/react";
@@ -14,24 +15,21 @@ import { HiBan, HiBadgeCheck } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
 import { FaMicrosoft } from "react-icons/fa6";
 import { Mail } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
   onSignupClick?: () => void;
   onForgotPasswordClick?: () => void;
+  onSuccessRedirect?: () => void;
 };
 
 export default function SigninPage({
   onSignupClick,
   onForgotPasswordClick,
+  onSuccessRedirect, // ✅ receive the callback
 }: Props) {
   const dispatch = useAppDispatch();
   const t = useTranslations("Signin");
   const v = useTranslations("SigninValidation");
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  // read redirect param or fallback
-  const redirect = searchParams.get("redirect") || "/overview";
 
   const formik = useFormik({
     initialValues: {
@@ -52,8 +50,9 @@ export default function SigninPage({
           color: "success",
           icon: <HiBadgeCheck />,
         });
-        // redirect back to previous page
-        router.push(redirect);
+
+        // ✅ call callback if provided
+        onSuccessRedirect?.();
       } catch (error: any) {
         addToast({
           title: t("errorTitle"),

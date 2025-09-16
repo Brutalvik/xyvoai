@@ -1,4 +1,4 @@
-// app/[locale]/auth/signin/page.tsx or pages/auth/signin.tsx (depending on your setup)
+// app/[locale]/auth/signin/page.tsx
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
