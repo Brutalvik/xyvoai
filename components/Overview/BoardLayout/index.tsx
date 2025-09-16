@@ -4,18 +4,17 @@ import React, { ReactNode, useEffect, useState } from "react";
 import ProjectHeader from "@/components/Overview/ProjectHeader";
 import { KanbanBoard } from "@/components/Overview/Kanban";
 import { TableView } from "@/components/Overview/TableView";
-import {
-  initialColumns,
-  sampleUsers,
-  sampleTags,
-} from "@/components/Overview/Dummy/data";
-import { Column, Task } from "@/components/Overview/Kanban/types";
 import GanttView from "@/components/Overview/GanttView";
-import { ViewMode } from "react-modern-gantt";
 import CreateTask from "@/components/CreateTask";
-import { selectUser } from "@/store/selectors";
+import { initialColumns } from "@/components/Overview/Dummy/data";
+import { Column } from "@/components/Overview/Kanban/types";
+import { ViewMode } from "react-modern-gantt";
 import { useAppSelector } from "@/store/hooks";
+import { selectUser } from "@/store/selectors";
 import { useRouter, useSearchParams } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
+
+export type BoardViewType = "kanban" | "table" | "gantt" | "createTask";
 
 interface BoardLayoutProps {
   children?: ReactNode;
@@ -28,116 +27,69 @@ export function BoardLayout({ children }: BoardLayoutProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // read the view param from the URL, fallback to kanban
-  const viewParam = searchParams.get("view") as
-    | "kanban"
-    | "table"
-    | "gantt"
-    | "createTask"
-    | null;
+  // Extract view from URL query
+  const initialView = (searchParams.get("view") as BoardViewType) || "kanban";
+  const [view, setView] = useState<BoardViewType>(initialView);
+  const [columns, setColumns] = useState<Column[]>(initialColumns);
 
-  const [view, setView] = useState<"kanban" | "table" | "gantt" | "createTask">(
-    viewParam || "kanban"
-  );
-
-  // whenever view changes, push it to the URL without a full reload
+  // Sync view with URL
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("view", view);
     router.replace(`?${params.toString()}`, { scroll: false });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view]);
 
-  const [columns, setColumns] = useState<Column[]>(initialColumns);
+  const handleCreateNewTask = () => {
+    const newTaskId = uuidv4();
+    router.push(`/tasks/${newTaskId}?view=createTask`);
+    setView("createTask");
+  };
 
   return (
     <div className="flex flex-col h-screen w-full">
-      <div className="sticky top-[56px] z-20 bg-white border-b border-gray-200 dark:bg-neutral-900 dark:border-neutral-700">
+      {/* HEADER */}
+      <div className="sticky top-[56px] z-20 bg-white border-b border-gray-200 dark:bg-neutral-900 dark:border-neutral-700 flex items-center justify-between px-4 py-2">
         <ProjectHeader viewMode={view} setViewMode={setView} />
+        {view === "kanban" && (
+          <button
+            onClick={handleCreateNewTask}
+            className="ml-4 px-3 py-1 bg-blue-500 text-white rounded"
+          >
+            Create New Task
+          </button>
+        )}
       </div>
+
       <div className="border-t border-gray-200 dark:border-neutral-700" />
 
-      {children}
+      {/* VIEW RENDERER */}
+      <div className="flex-grow overflow-auto">
+        {view === "kanban" && (
+          <KanbanBoard
+            columns={columns}
+            onTaskMove={() => {}}
+            onTaskEdit={() => {}}
+            onTaskDelete={() => {}}
+            onColumnAdd={() => {}}
+            onColumnEdit={() => {}}
+            onColumnDelete={() => {}}
+          />
+        )}
 
-      {view === "kanban" && (
-        <KanbanBoard
-          columns={columns}
-          onTaskMove={(tid, from, to) => {
-            setColumns((prev) => {
-              const cols = prev.map((c) => ({ ...c, tasks: [...c.tasks] }));
-              let moving: Task | undefined;
-              cols.forEach((c) => {
-                const idx = c.tasks.findIndex((t) => t.id === tid);
-                if (idx >= 0) {
-                  moving = c.tasks.splice(idx, 1)[0];
-                }
-              });
-              if (moving) {
-                const target = cols.find((c) => c.id === to);
-                if (target) target.tasks.push(moving);
-              }
-              return cols;
-            });
-          }}
-          onTaskEdit={(tid, updates) =>
-            setColumns((prev) =>
-              prev.map((col) => ({
-                ...col,
-                tasks: col.tasks.map((t) =>
-                  t.id === tid ? { ...t, ...updates } : t
-                ),
-              }))
-            )
-          }
-          onTaskDelete={(tid) =>
-            setColumns((prev) =>
-              prev.map((col) => ({
-                ...col,
-                tasks: col.tasks.filter((t) => t.id !== tid),
-              }))
-            )
-          }
-          onColumnAdd={() => {}}
-          onColumnEdit={() => {}}
-          onColumnDelete={() => {}}
-        />
-      )}
+        {view === "table" && (
+          <TableView columns={columns} availableUsers={[]} availableTags={[]} />
+        )}
 
-      {view === "table" && (
-        <TableView
-          columns={columns}
-          availableUsers={sampleUsers}
-          availableTags={sampleTags}
-        />
-      )}
-
-      {view === "gantt" && (
-        <div className="h-full w-full overflow-auto">
+        {view === "gantt" && (
           <GanttView
             columns={columns}
-            onTaskUpdate={(updatedTask) => {
-              setColumns((prev) =>
-                prev.map((col) => ({
-                  ...col,
-                  tasks: col.tasks.map((t) =>
-                    t.id === updatedTask.id
-                      ? {
-                          ...t,
-                          startDate: updatedTask.startDate,
-                          endDate: updatedTask.endDate,
-                          workItems: updatedTask.workItems,
-                        }
-                      : t
-                  ),
-                }))
-              );
-            }}
+            onTaskUpdate={() => {}}
             viewMode={ViewMode.DAY}
           />
-        </div>
-      )}
+        )}
 
-      {view === "createTask" && user && <CreateTask currentUser={user} />}
+        {view === "createTask" && user && <CreateTask currentUser={user} />}
+      </div>
     </div>
   );
 }

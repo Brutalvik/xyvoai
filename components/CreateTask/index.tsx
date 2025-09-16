@@ -12,8 +12,11 @@ import {
   Select,
   SelectItem,
   Chip,
+  Tooltip,
+  Textarea,
 } from "@heroui/react";
 import { useDispatch } from "react-redux";
+import { useRouter, useParams } from "next/navigation";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import { getBgColor } from "@/utils";
@@ -26,8 +29,8 @@ import {
   addCommentAsync,
 } from "@/store/slices/taskSlice";
 import { teamMembers } from "@/components/Overview/ProjectHeader/Teammembers";
+import { v4 as uuidv4 } from "uuid";
 
-// Unified type for user
 type User = {
   id: string | number;
   name: string;
@@ -35,7 +38,6 @@ type User = {
   image?: string;
 };
 
-// Comment type
 type Comment = {
   userId: string;
   avatar?: string;
@@ -48,7 +50,7 @@ export default function CreateTaskAzureLike({
   onCancel,
   onCreated,
   currentUser,
-  editingTask, // optional: task to edit
+  editingTask,
 }: {
   onCancel?: () => void;
   onCreated?: (task: Task) => void;
@@ -56,8 +58,19 @@ export default function CreateTaskAzureLike({
   editingTask?: Task;
 }) {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const params = useParams();
 
-  // ---- Form state ----
+  const [taskId, setTaskId] = useState<string>(
+    editingTask?.id || (params.taskId as string) || uuidv4()
+  );
+
+  useEffect(() => {
+    if (!editingTask && !params.taskId) {
+      router.replace(`/tasks/${taskId}?view=createTask`, { scroll: false });
+    }
+  }, [taskId, editingTask, params.taskId, router]);
+
   const [title, setTitle] = useState<string>(editingTask?.title || "");
   const [tagInput, setTagInput] = useState<string>("");
   const [assignee, setAssignee] = useState(
@@ -82,7 +95,6 @@ export default function CreateTaskAzureLike({
   const [tags, setTags] = useState<string[]>(
     editingTask?.tags?.map((t) => t.name) || []
   );
-  const [newComment, setNewComment] = useState<string>("");
   const [comments, setComments] = useState<Comment[]>(
     editingTask?.comments || []
   );
@@ -92,9 +104,13 @@ export default function CreateTaskAzureLike({
   const [editOriginal, setEditOriginal] = useState<boolean>(false);
   const [editCompleted, setEditCompleted] = useState<boolean>(false);
 
-  // ---- Editable state for title & description ----
-  const [isTitleEditable, setIsTitleEditable] = useState(true);
-  const [isDescriptionEditable, setIsDescriptionEditable] = useState(true);
+  const [isTitleEditable, setIsTitleEditable] = useState<boolean>(false);
+  const [isDescriptionEditable, setIsDescriptionEditable] =
+    useState<boolean>(true);
+
+  const [isCreated, setIsCreated] = useState<boolean>(!!editingTask?.id);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [newComment, setNewComment] = useState<string>("");
 
   const priorities = [
     { key: "low", label: "Low" },
@@ -103,7 +119,6 @@ export default function CreateTaskAzureLike({
     { key: "critical", label: "Critical" },
   ];
 
-  // ---- Quill editor ----
   const editorRef = useRef<HTMLDivElement | null>(null);
   const quillRef = useRef<Quill | null>(null);
 
@@ -126,21 +141,18 @@ export default function CreateTaskAzureLike({
           ],
         },
       });
-
       if (editingTask?.description) {
         quillRef.current.root.innerHTML = editingTask.description;
       }
     }
   }, [editingTask]);
 
-  // ---- Calculate remaining automatically ----
   useEffect(() => {
     const orig = Number(originalEstimate) || 0;
     const comp = Number(completed) || 0;
     setRemaining(Math.max(orig - comp, 0));
   }, [originalEstimate, completed]);
 
-  // ---- Selected user & avatar ----
   const selectedUser: User = useMemo(() => {
     const user = assignee
       ? teamMembers.find((m) => m.id.toString() === assignee)
@@ -154,9 +166,10 @@ export default function CreateTaskAzureLike({
     [selectedUser?.id]
   );
 
-  // ---- Comments ----
-  const handleAddComment = () => {
-    // create comment object
+  const handleAddComment = async () => {
+    if (!isCreated) return; // ❌ cannot comment until task is created
+    if (!newComment.trim()) return;
+
     const commentObj: Comment = {
       userId: currentUser.id.toString(),
       avatar: currentUser.avatar,
@@ -165,23 +178,20 @@ export default function CreateTaskAzureLike({
       name: currentUser.name,
     };
 
-    if (editingTask?.id) {
-      dispatch(
-        addCommentAsync({
-          taskId: editingTask.id,
-          comment: commentObj,
-        })
-      );
-    }
-
-    // update local state immediately
     setComments((prev) => [...prev, commentObj]);
     setNewComment("");
+
+    try {
+      await dispatch(addCommentAsync({ taskId, comment: commentObj })).unwrap();
+    } catch (err) {
+      console.error("❌ Failed to add comment:", err);
+      setComments((prev) => prev.filter((c) => c !== commentObj));
+    }
   };
 
-  // ---- Submit (Create / Update) ----
   const handleSubmit = async () => {
-    const description = quillRef.current?.getText().trim() || "";
+    setIsSubmitting(true);
+    const description = quillRef.current?.root.innerHTML || "";
     const assigneeObj =
       assignee && teamMembers.find((m) => m.id.toString() === assignee)
         ? {
@@ -194,7 +204,9 @@ export default function CreateTaskAzureLike({
             name: currentUser.name,
             avatar: currentUser.image,
           };
+
     const payload: Partial<Task> = {
+      id: taskId,
       taskNumber,
       title,
       description,
@@ -216,14 +228,17 @@ export default function CreateTaskAzureLike({
         ).unwrap();
       } else {
         task = await dispatch(createTask(payload)).unwrap();
+        setIsCreated(true);
+        onCreated?.(task);
+        router.push(`/tasks/${task.id}`);
       }
-      onCreated?.(task);
 
-      // Make title & description read-only after successful create/update
       setIsTitleEditable(false);
       setIsDescriptionEditable(false);
     } catch (err: any) {
       console.error("❌ Task submit failed:", err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -248,108 +263,117 @@ export default function CreateTaskAzureLike({
     <div className="w-full flex flex-col md:flex-row gap-6 p-4">
       {/* LEFT SIDE */}
       <div className="md:w-2/3 w-full space-y-4 relative">
-        <span className="absolute top-0 right-0 text-sm font-semibold text-gray-500">
-          #{taskNumber}
-        </span>
-        <h3 className="text-xl font-semibold">
-          {editingTask ? "Edit Task" : "Create Task"}
-        </h3>
+        <div className="absolute top-0 right-0 flex items-center gap-2">
+          <span className="text-sm font-semibold text-gray-500">
+            #{taskNumber}
+          </span>
+          <Button
+            size="sm"
+            color="primary"
+            onPress={handleSubmit}
+            isLoading={isSubmitting}
+          >
+            {editingTask ? "Save" : "Create Task"}
+          </Button>
+        </div>
 
-        {/* Title */}
         {isTitleEditable ? (
           <Input
             label="Title"
             value={title}
+            variant="underlined"
             onChange={(e) => setTitle(e.target.value)}
             fullWidth
-            onClick={() => setIsTitleEditable(true)}
+            onBlur={() => setIsTitleEditable(false)}
           />
         ) : (
-          <div
-            className="cursor-pointer font-semibold text-lg"
-            onClick={() => setIsTitleEditable(true)}
+          <Tooltip
+            showArrow
+            content="Click to edit title"
+            placement="top-start"
           >
-            {title || "Untitled"}
-          </div>
+            <div
+              className="cursor-pointer font-semibold text-lg"
+              onClick={() => setIsTitleEditable(true)}
+            >
+              {title || "New Task"}
+            </div>
+          </Tooltip>
         )}
 
-        {/* Description */}
         <div>
           <label className="block mb-1 font-semibold">Description</label>
-          {isDescriptionEditable ? (
+          {isCreated || !isDescriptionEditable ? (
+            <Tooltip
+              showArrow
+              content="Click to edit description"
+              placement="top-start"
+            >
+              <div
+                className="bg-gray-50 dark:bg-neutral-800 min-h-[200px] border border-border rounded-md p-2 cursor-pointer"
+                onClick={() => setIsDescriptionEditable(true)}
+                dangerouslySetInnerHTML={{
+                  __html: quillRef.current?.root.innerHTML || "",
+                }}
+              />
+            </Tooltip>
+          ) : (
             <div
               ref={editorRef}
               className="bg-white dark:bg-neutral-900 min-h-[200px] border border-border rounded-md p-2"
-              onClick={() => setIsDescriptionEditable(true)}
-            />
-          ) : (
-            <div
-              className="bg-gray-50 dark:bg-neutral-800 min-h-[200px] border border-border rounded-md p-2 cursor-pointer"
-              dangerouslySetInnerHTML={{
-                __html: quillRef.current?.root.innerHTML || "",
-              }}
-              onClick={() => setIsDescriptionEditable(true)}
             />
           )}
         </div>
 
-        {/* Comments */}
-        <div className="mt-4">
-          <h4 className="text-sm font-semibold mb-2">Comments</h4>
-          <div className="space-y-2">
-            {comments.map((c, i) => (
-              <div key={i} className="flex items-start gap-2">
-                <Avatar
-                  style={{
-                    backgroundColor: getBgColor(c.userId),
-                    fontSize: "0.975rem",
-                    fontWeight: "700",
-                    color: "#fff",
-                  }}
-                  size="sm"
-                  src={c.avatar}
-                  name={getInitials(c.name)}
-                />
-                <div className="flex flex-col bg-sky-100 dark:bg-sky-200 rounded-xl p-2 max-w-[80%]">
-                  <div className="flex justify-between items-start gap-2">
-                    <span className="text-sm">{c.comment}</span>
-                    <span className="text-xs text-gray-500 whitespace-nowrap">
-                      {new Date(c.timestamp).toLocaleString()}
-                    </span>
+        {isCreated && (
+          <div className="mt-4">
+            <h4 className="text-sm font-semibold mb-2">Comments</h4>
+            <div className="space-y-2">
+              {comments.map((c, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <Avatar
+                    style={{
+                      backgroundColor: getBgColor(c.userId),
+                      fontSize: "0.975rem",
+                      fontWeight: "700",
+                      color: "#fff",
+                    }}
+                    size="sm"
+                    src={c.avatar}
+                    name={getInitials(c.name)}
+                  />
+                  <div className="flex flex-col bg-sky-100 dark:bg-sky-200 rounded-xl p-2 max-w-[80%]">
+                    <div className="flex justify-between items-start gap-2">
+                      <span className="text-sm">{c.comment}</span>
+                      <span className="text-xs text-gray-500 whitespace-nowrap">
+                        {new Date(c.timestamp).toLocaleString()}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          <div className="flex gap-2 mt-2">
-            <Input
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Add a comment..."
-              fullWidth
-              size="sm"
-            />
-            <Button size="sm" onPress={handleAddComment}>
-              Add
-            </Button>
-          </div>
-        </div>
+              ))}
+            </div>
 
-        <div className="flex justify-end gap-2 pt-2">
-          {editingTask && (
-            <Button variant="flat" color="danger" onPress={handleDelete}>
-              Delete
-            </Button>
-          )}
-          {onCancel && (
-            <Button variant="light" onPress={onCancel}>
-              Cancel
-            </Button>
-          )}
-          <Button color="primary" onPress={handleSubmit}>
-            {editingTask ? "Update" : "Create"}
-          </Button>
-        </div>
+            <div className="flex gap-2 mt-2">
+              <Textarea
+                placeholder="Add a comment..."
+                value={newComment}
+                onValueChange={setNewComment}
+                variant="underlined"
+                size="sm"
+                className="flex-1 min-h-[60px]"
+                disabled={!isCreated}
+              />
+              <Button
+                size="sm"
+                onPress={handleAddComment}
+                disabled={!isCreated}
+              >
+                Add
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* RIGHT SIDE */}
@@ -360,7 +384,6 @@ export default function CreateTaskAzureLike({
             Planning
           </h4>
           <div className="mt-3 space-y-3">
-            {/* Priority */}
             <div className="flex flex-col">
               <label className="text-xs font-medium text-gray-600 mb-1">
                 Priority
@@ -398,7 +421,6 @@ export default function CreateTaskAzureLike({
               </div>
             </div>
 
-            {/* Activity */}
             <div className="flex flex-col">
               <label className="text-xs font-medium text-gray-600 mb-1">
                 Activity
@@ -430,7 +452,6 @@ export default function CreateTaskAzureLike({
             Effort
           </h4>
           <div className="mt-3 space-y-3">
-            {/* Original */}
             <div className="flex flex-col">
               <label className="text-xs font-medium text-gray-600 mb-1">
                 Original
@@ -456,7 +477,6 @@ export default function CreateTaskAzureLike({
               )}
             </div>
 
-            {/* Completed */}
             <div className="flex flex-col">
               <label className="text-xs font-medium text-gray-600 mb-1">
                 Completed
@@ -480,7 +500,6 @@ export default function CreateTaskAzureLike({
               )}
             </div>
 
-            {/* Remaining */}
             <div className="flex flex-col">
               <label className="text-xs font-medium text-gray-600 mb-1">
                 Remaining

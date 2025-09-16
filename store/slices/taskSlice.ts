@@ -141,7 +141,7 @@ export const addCommentAsync = createAsyncThunk<
 >("tasks/addCommentAsync", async ({ taskId, comment }, thunkAPI) => {
   try {
     const state = thunkAPI.getState() as RootState;
-    const task = state.tasks.items.find((t) => t.id === taskId);
+    const task = state.tasks.items.find((t: Task) => t.id === taskId);
     if (!task) throw new Error("Task not found in state");
 
     // Build the new comments array
