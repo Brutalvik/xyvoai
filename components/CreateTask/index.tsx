@@ -13,10 +13,18 @@ import {
   SelectItem,
   Chip,
 } from "@heroui/react";
-import { teamMembers } from "@/components/Overview/ProjectHeader/Teammembers";
+import { useDispatch } from "react-redux";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import { getBgColor } from "@/utils";
+import { AppDispatch } from "@/store";
+import {
+  createTask,
+  updateTask,
+  deleteTask,
+  Task,
+} from "@/store/slices/taskSlice";
+import { teamMembers } from "@/components/Overview/ProjectHeader/Teammembers";
 
 // Unified type for user
 type User = {
@@ -26,76 +34,77 @@ type User = {
   image?: string;
 };
 
+// Comment type
+type Comment = {
+  userId: string;
+  avatar?: string;
+  comment: string;
+  timestamp: string;
+  name: string;
+};
+
 export default function CreateTaskAzureLike({
   onCancel,
   onCreated,
   currentUser,
+  editingTask, // optional: task to edit
 }: {
   onCancel?: () => void;
-  onCreated?: (task: any) => void;
+  onCreated?: (task: Task) => void;
   currentUser: User;
+  editingTask?: Task;
 }) {
-  // Form state
-  const [title, setTitle] = useState("");
-  const [assignee, setAssignee] = useState<string>(currentUser.id.toString());
-  const [priority, setPriority] = useState("low");
-  const [activity, setActivity] = useState("Development");
-  const [originalEstimate, setOriginalEstimate] = useState(0);
-  const [remaining, setRemaining] = useState(0);
-  const [completed, setCompleted] = useState(0);
-  const [taskNumber, setTaskNumber] = useState(
-    Math.floor(Math.random() * 1000)
+  const dispatch = useDispatch<AppDispatch>();
+
+  // ---- Form state ----
+  const [title, setTitle] = useState<string>(editingTask?.title || "");
+  const [tagInput, setTagInput] = useState<string>("");
+  const [assignee, setAssignee] = useState(
+    editingTask?.assignee?.id?.toString() || currentUser.id.toString()
+  );
+  const [priority, setPriority] = useState(editingTask?.priority || "low");
+  const [activity, setActivity] = useState<string>(
+    editingTask?.activity || "Development"
+  );
+  const [originalEstimate, setOriginalEstimate] = useState<number>(
+    editingTask?.originalEstimate || 0
+  );
+  const [remaining, setRemaining] = useState<number>(
+    editingTask?.remaining || 0
+  );
+  const [completed, setCompleted] = useState<number>(
+    editingTask?.completed || 0
+  );
+  const [taskNumber, setTaskNumber] = useState<number>(
+    editingTask?.taskNumber || Math.floor(Math.random() * 1000)
+  );
+  const [tags, setTags] = useState<string[]>(
+    editingTask?.tags?.map((t) => t.name) || []
+  );
+  const [newComment, setNewComment] = useState<string>("");
+  const [comments, setComments] = useState<Comment[]>(
+    editingTask?.comments || []
   );
 
-  const [tags, setTags] = useState<string[]>([]);
-  const [newComment, setNewComment] = useState("");
-  const [comments, setComments] = useState<
-    {
-      userId: string;
-      avatar?: string;
-      comment: string;
-      timestamp: string;
-      name: string;
-    }[]
-  >([]);
+  const [editPriority, setEditPriority] = useState<boolean>(false);
+  const [editActivity, setEditActivity] = useState<boolean>(false);
+  const [editOriginal, setEditOriginal] = useState<boolean>(false);
+  const [editCompleted, setEditCompleted] = useState<boolean>(false);
 
-  // Edit toggles
+  // ---- Editable state for title & description ----
+  const [isTitleEditable, setIsTitleEditable] = useState(true);
+  const [isDescriptionEditable, setIsDescriptionEditable] = useState(true);
+
   const priorities = [
     { key: "low", label: "Low" },
     { key: "medium", label: "Medium" },
     { key: "high", label: "High" },
     { key: "critical", label: "Critical" },
   ];
-  const [editPriority, setEditPriority] = useState(false);
-  const [editActivity, setEditActivity] = useState(false);
-  const [editOriginal, setEditOriginal] = useState(false);
-  const [editRemaining, setEditRemaining] = useState(false);
-  const [editCompleted, setEditCompleted] = useState(false);
 
-  // Quill
+  // ---- Quill editor ----
   const editorRef = useRef<HTMLDivElement | null>(null);
   const quillRef = useRef<Quill | null>(null);
-
-  // Helper: get initials from first and last name letters
-  const getInitials = (name: string) => {
-    if (!name) return "";
-    const parts = name.trim().split(" ");
-    if (parts.length === 1) return parts[0][0].toUpperCase();
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-  };
-
-  // Selected user for avatar display
-  const selectedUser: User = useMemo(() => {
-    const user =
-      assignee && teamMembers.find((m) => m.id.toString() === assignee);
-    return user || currentUser;
-  }, [assignee, currentUser]);
-
-  const avatarBg = useMemo(
-    () =>
-      selectedUser?.id ? getBgColor(selectedUser.id.toString()) : "bg-gray-400",
-    [selectedUser?.id]
-  );
 
   useEffect(() => {
     if (editorRef.current && !quillRef.current) {
@@ -116,25 +125,35 @@ export default function CreateTaskAzureLike({
           ],
         },
       });
-    }
-  }, []);
 
-  // Random assignee if none
-  useEffect(() => {
-    if (!assignee && teamMembers.length > 0) {
-      const random =
-        teamMembers[Math.floor(Math.random() * teamMembers.length)];
-      setAssignee(random.id.toString());
+      if (editingTask?.description) {
+        quillRef.current.root.innerHTML = editingTask.description;
+      }
     }
-  }, [assignee]);
+  }, [editingTask]);
 
-  // Update remaining automatically
+  // ---- Calculate remaining automatically ----
   useEffect(() => {
     const orig = Number(originalEstimate) || 0;
     const comp = Number(completed) || 0;
     setRemaining(Math.max(orig - comp, 0));
   }, [originalEstimate, completed]);
 
+  // ---- Selected user & avatar ----
+  const selectedUser: User = useMemo(() => {
+    const user = assignee
+      ? teamMembers.find((m) => m.id.toString() === assignee)
+      : undefined;
+    return user || currentUser;
+  }, [assignee, currentUser]);
+
+  const avatarBg = useMemo(
+    () =>
+      selectedUser?.id ? getBgColor(selectedUser.id.toString()) : "bg-gray-400",
+    [selectedUser?.id]
+  );
+
+  // ---- Comments ----
   const handleAddComment = () => {
     if (!newComment.trim()) return;
     setComments([
@@ -150,15 +169,26 @@ export default function CreateTaskAzureLike({
     setNewComment("");
   };
 
-  const handleSubmit = () => {
-    const description = quillRef.current?.root.innerHTML || "";
-    const payload = {
+  // ---- Submit (Create / Update) ----
+  const handleSubmit = async () => {
+    const description = quillRef.current?.getText().trim() || "";
+    const assigneeObj =
+      assignee && teamMembers.find((m) => m.id.toString() === assignee)
+        ? {
+            id: assignee.toString(),
+            name: currentUser.name,
+            avatar: currentUser.image,
+          }
+        : {
+            id: currentUser.id.toString(),
+            name: currentUser.name,
+            avatar: currentUser.image,
+          };
+    const payload: Partial<Task> = {
       taskNumber,
       title,
       description,
-      assignee: assignee
-        ? teamMembers.find((m) => m.id.toString() === assignee)
-        : null,
+      assignee: assigneeObj,
       priority,
       activity,
       originalEstimate,
@@ -167,21 +197,41 @@ export default function CreateTaskAzureLike({
       tags: tags.map((t) => ({ name: t })),
       comments,
     };
-    console.log("Creating task:", payload);
-    onCreated?.(payload);
 
-    // Reset form
-    setTitle("");
-    setAssignee(currentUser.id.toString());
-    setPriority("medium");
-    setActivity("Development");
-    setOriginalEstimate(0);
-    setRemaining(0);
-    setCompleted(0);
-    setTags([]);
-    setComments([]);
-    quillRef.current?.setContents([]);
-    setTaskNumber(Math.floor(Math.random() * 1000));
+    try {
+      let task: Task;
+      if (editingTask) {
+        task = await dispatch(
+          updateTask({ id: editingTask.id, updates: payload })
+        ).unwrap();
+      } else {
+        task = await dispatch(createTask(payload)).unwrap();
+      }
+      onCreated?.(task);
+
+      // Make title & description read-only after successful create/update
+      setIsTitleEditable(false);
+      setIsDescriptionEditable(false);
+    } catch (err: any) {
+      console.error("❌ Task submit failed:", err);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!editingTask) return;
+    try {
+      await dispatch(deleteTask(editingTask.id)).unwrap();
+      onCancel?.();
+    } catch (err: any) {
+      console.error("❌ Delete task failed:", err);
+    }
+  };
+
+  const getInitials = (name: string) => {
+    if (!name) return "";
+    const parts = name.trim().split(" ");
+    if (parts.length === 1) return parts[0][0].toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   };
 
   return (
@@ -191,19 +241,46 @@ export default function CreateTaskAzureLike({
         <span className="absolute top-0 right-0 text-sm font-semibold text-gray-500">
           #{taskNumber}
         </span>
-        <h3 className="text-xl font-semibold">Create Task</h3>
-        <Input
-          label="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          fullWidth
-        />
+        <h3 className="text-xl font-semibold">
+          {editingTask ? "Edit Task" : "Create Task"}
+        </h3>
+
+        {/* Title */}
+        {isTitleEditable ? (
+          <Input
+            label="Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            fullWidth
+            onClick={() => setIsTitleEditable(true)}
+          />
+        ) : (
+          <div
+            className="cursor-pointer font-semibold text-lg"
+            onClick={() => setIsTitleEditable(true)}
+          >
+            {title || "Untitled"}
+          </div>
+        )}
+
+        {/* Description */}
         <div>
           <label className="block mb-1 font-semibold">Description</label>
-          <div
-            ref={editorRef}
-            className="bg-white dark:bg-neutral-900 min-h-[200px] border border-border rounded-md p-2"
-          />
+          {isDescriptionEditable ? (
+            <div
+              ref={editorRef}
+              className="bg-white dark:bg-neutral-900 min-h-[200px] border border-border rounded-md p-2"
+              onClick={() => setIsDescriptionEditable(true)}
+            />
+          ) : (
+            <div
+              className="bg-gray-50 dark:bg-neutral-800 min-h-[200px] border border-border rounded-md p-2 cursor-pointer"
+              dangerouslySetInnerHTML={{
+                __html: quillRef.current?.root.innerHTML || "",
+              }}
+              onClick={() => setIsDescriptionEditable(true)}
+            />
+          )}
         </div>
 
         {/* Comments */}
@@ -227,13 +304,7 @@ export default function CreateTaskAzureLike({
                   <div className="flex justify-between items-start gap-2">
                     <span className="text-sm">{c.comment}</span>
                     <span className="text-xs text-gray-500 whitespace-nowrap">
-                      {new Date(c.timestamp).toLocaleString(undefined, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {new Date(c.timestamp).toLocaleString()}
                     </span>
                   </div>
                 </div>
@@ -255,13 +326,18 @@ export default function CreateTaskAzureLike({
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
+          {editingTask && (
+            <Button variant="flat" color="danger" onPress={handleDelete}>
+              Delete
+            </Button>
+          )}
           {onCancel && (
             <Button variant="light" onPress={onCancel}>
               Cancel
             </Button>
           )}
           <Button color="primary" onPress={handleSubmit}>
-            Create
+            {editingTask ? "Update" : "Create"}
           </Button>
         </div>
       </div>
@@ -274,6 +350,7 @@ export default function CreateTaskAzureLike({
             Planning
           </h4>
           <div className="mt-3 space-y-3">
+            {/* Priority */}
             <div className="flex flex-col">
               <label className="text-xs font-medium text-gray-600 mb-1">
                 Priority
@@ -288,7 +365,13 @@ export default function CreateTaskAzureLike({
                     variant="underlined"
                     selectedKeys={[priority]}
                     onSelectionChange={(keys) => {
-                      setPriority(Array.from(keys)[0] as string);
+                      setPriority(
+                        Array.from(keys)[0] as
+                          | "low"
+                          | "medium"
+                          | "high"
+                          | "critical"
+                      );
                       setEditPriority(false);
                     }}
                     size="sm"
@@ -305,6 +388,7 @@ export default function CreateTaskAzureLike({
               </div>
             </div>
 
+            {/* Activity */}
             <div className="flex flex-col">
               <label className="text-xs font-medium text-gray-600 mb-1">
                 Activity
@@ -459,7 +543,8 @@ export default function CreateTaskAzureLike({
             {tags.map((t, i) => (
               <Chip
                 key={i}
-                variant="light"
+                color="primary"
+                variant="flat"
                 onClose={() => setTags(tags.filter((_, idx) => idx !== i))}
               >
                 {t}
@@ -468,12 +553,12 @@ export default function CreateTaskAzureLike({
             <Input
               size="sm"
               placeholder="Add tag"
-              value={""}
-              onChange={() => {}}
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && e.currentTarget.value.trim()) {
-                  setTags([...tags, e.currentTarget.value.trim()]);
-                  e.currentTarget.value = "";
+                if (e.key === "Enter" && tagInput.trim()) {
+                  setTags([...tags, tagInput.trim()]);
+                  setTagInput("");
                   e.preventDefault();
                 }
               }}
