@@ -15,12 +15,12 @@ import {
   Tooltip,
   Textarea,
 } from "@heroui/react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter, useParams } from "next/navigation";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import { getBgColor } from "@/utils";
-import { AppDispatch } from "@/store";
+import { AppDispatch, RootState } from "@/store";
 import {
   createTask,
   updateTask,
@@ -31,22 +31,54 @@ import {
 import { teamMembers } from "@/components/Overview/ProjectHeader/Teammembers";
 import { v4 as uuidv4 } from "uuid";
 
-type User = {
+interface User {
   id: string | number;
   name: string;
   avatar?: string;
   image?: string;
-};
+}
 
-type Comment = {
+interface Comment {
   userId: string;
   avatar?: string;
   comment: string;
   timestamp: string;
   name: string;
+}
+
+interface TaskSettings {
+  namingConvention: "sequential" | "date" | "uuid" | "projectBased";
+  prefix?: string;
+  suffix?: string;
+  startNumber?: number;
+  zeroPadding?: number;
+
+  defaultAssignee?: string;
+  defaultPriority?: "low" | "medium" | "high" | "critical";
+  defaultActivity?: string;
+  defaultOriginalEstimate?: number;
+  defaultTags?: string[];
+
+  defaultView?: "kanban" | "table" | "gantt" | "createTask";
+  editableTitleByDefault?: boolean;
+  editableDescriptionByDefault?: boolean;
+  allowComments?: boolean;
+}
+
+const mockTaskSettings: TaskSettings = {
+  namingConvention: "uuid",
+  defaultAssignee: undefined,
+  defaultPriority: "medium",
+  defaultActivity: "Development",
+  defaultOriginalEstimate: 8,
+  defaultTags: [],
+  defaultView: "createTask",
+  editableTitleByDefault: true,
+  editableDescriptionByDefault: true,
+  allowComments: true,
 };
 
-export default function CreateTaskAzureLike({
+export default function CreateTask({
   onCancel,
   onCreated,
   currentUser,
@@ -61,27 +93,53 @@ export default function CreateTaskAzureLike({
   const router = useRouter();
   const params = useParams();
 
+  const taskSettings: TaskSettings =
+    useSelector((state: RootState) => state.taskSettings.current) ||
+    mockTaskSettings;
+
+  // ------------------ TASK ID ------------------
+  const generateTaskId = (): string => {
+    switch (taskSettings.namingConvention) {
+      case "sequential":
+        return `${taskSettings.prefix || ""}${
+          (taskSettings.startNumber || 1) + Math.floor(Math.random() * 1000)
+        }${taskSettings.suffix || ""}`;
+      case "date":
+        return `${taskSettings.prefix || ""}${new Date()
+          .toISOString()
+          .replace(/[-:.TZ]/g, "")}${taskSettings.suffix || ""}`;
+      case "projectBased":
+        return `${taskSettings.prefix || "PROJ"}-${Math.floor(
+          Math.random() * 1000
+        )}${taskSettings.suffix || ""}`;
+      case "uuid":
+      default:
+        return uuidv4();
+    }
+  };
+
   const [taskId, setTaskId] = useState<string>(
-    editingTask?.id || (params.taskId as string) || uuidv4()
+    editingTask?.id || (params.taskId as string) || generateTaskId()
   );
 
-  useEffect(() => {
-    if (!editingTask && !params.taskId) {
-      router.replace(`/tasks/${taskId}?view=createTask`, { scroll: false });
-    }
-  }, [taskId, editingTask, params.taskId, router]);
-
-  const [title, setTitle] = useState<string>(editingTask?.title || "");
+  // ------------------ FORM STATE ------------------
+  const [title, setTitle] = useState<string>(
+    editingTask?.title || "New Task (AI Suggestion)"
+  );
   const [tagInput, setTagInput] = useState<string>("");
   const [assignee, setAssignee] = useState(
-    editingTask?.assignee?.id?.toString() || currentUser.id.toString()
+    editingTask?.assignee?.id?.toString() ||
+      taskSettings.defaultAssignee ||
+      currentUser.id.toString()
   );
-  const [priority, setPriority] = useState(editingTask?.priority || "low");
-  const [activity, setActivity] = useState<string>(
-    editingTask?.activity || "Development"
+  const [priority, setPriority] = useState(
+    editingTask?.priority || taskSettings.defaultPriority || "low"
+  );
+  const [activity, setActivity] = useState(
+    editingTask?.activity || taskSettings.defaultActivity || "Development"
   );
   const [originalEstimate, setOriginalEstimate] = useState<number>(
-    editingTask?.originalEstimate || 0
+    editingTask?.originalEstimate || taskSettings.defaultOriginalEstimate || 0
   );
   const [remaining, setRemaining] = useState<number>(
     editingTask?.remaining || 0
@@ -93,7 +151,7 @@ export default function CreateTaskAzureLike({
     editingTask?.taskNumber || Math.floor(Math.random() * 1000)
   );
   const [tags, setTags] = useState<string[]>(
-    editingTask?.tags?.map((t) => t.name) || []
+    editingTask?.tags?.map((t) => t.name) || taskSettings.defaultTags || []
   );
   const [comments, setComments] = useState<Comment[]>(
     editingTask?.comments || []
@@ -104,9 +162,12 @@ export default function CreateTaskAzureLike({
   const [editOriginal, setEditOriginal] = useState<boolean>(false);
   const [editCompleted, setEditCompleted] = useState<boolean>(false);
 
-  const [isTitleEditable, setIsTitleEditable] = useState<boolean>(false);
-  const [isDescriptionEditable, setIsDescriptionEditable] =
-    useState<boolean>(true);
+  const [isTitleEditable, setIsTitleEditable] = useState(
+    taskSettings.editableTitleByDefault
+  );
+  const [isDescriptionEditable, setIsDescriptionEditable] = useState(
+    taskSettings.editableDescriptionByDefault
+  );
 
   const [isCreated, setIsCreated] = useState<boolean>(!!editingTask?.id);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -119,6 +180,7 @@ export default function CreateTaskAzureLike({
     { key: "critical", label: "Critical" },
   ];
 
+  // ------------------ QUILL ------------------
   const editorRef = useRef<HTMLDivElement | null>(null);
   const quillRef = useRef<Quill | null>(null);
 
@@ -153,6 +215,7 @@ export default function CreateTaskAzureLike({
     setRemaining(Math.max(orig - comp, 0));
   }, [originalEstimate, completed]);
 
+  // ------------------ USER ------------------
   const selectedUser: User = useMemo(() => {
     const user = assignee
       ? teamMembers.find((m) => m.id.toString() === assignee)
@@ -166,8 +229,9 @@ export default function CreateTaskAzureLike({
     [selectedUser?.id]
   );
 
+  // ------------------ HANDLERS ------------------
   const handleAddComment = async () => {
-    if (!isCreated) return; // ❌ cannot comment until task is created
+    if (!isCreated || !taskSettings.allowComments) return;
     if (!newComment.trim()) return;
 
     const commentObj: Comment = {
@@ -259,6 +323,7 @@ export default function CreateTaskAzureLike({
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   };
 
+  // ------------------ JSX ------------------
   return (
     <div className="w-full flex flex-col md:flex-row gap-6 p-4">
       {/* LEFT SIDE */}
@@ -325,7 +390,7 @@ export default function CreateTaskAzureLike({
           )}
         </div>
 
-        {isCreated && (
+        {isCreated && taskSettings.allowComments && (
           <div className="mt-4">
             <h4 className="text-sm font-semibold mb-2">Comments</h4>
             <div className="space-y-2">

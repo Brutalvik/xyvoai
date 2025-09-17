@@ -19,6 +19,7 @@ import projectsReducer from "@/store/slices/projectsSlice";
 import permissionsSlice from "@/store/slices/permissionsSlice";
 import notificationReducer from "@/store/slices/notificationSlice";
 import taskReducer from "@/store/slices/taskSlice";
+import taskSettingsReducer from "@/store/slices/taskSettingsSlice";
 
 // combined reducer
 
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   permissions: permissionsSlice,
   tasks: taskReducer,
   notifications: notificationReducer,
+  taskSettings: taskSettingsReducer,
 
   // other reducers...
 });
@@ -44,6 +46,7 @@ const whiteList = [
   "projects",
   "permissions",
   "tasks",
+  "taskSettings",
 ];
 
 const persistConfig = {
